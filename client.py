@@ -1,6 +1,11 @@
 import click
 from socket import *
 import time
+import json
+
+
+ENCODING = 'utf-8'
+MAX_MSG_SIZE = 540
 
 
 class Client:
@@ -32,8 +37,12 @@ def start(address, port):
     user = Client('ivanov', '123', 'online')
     with socket(AF_INET, SOCK_STREAM) as s:  # Создает сокет TCP
         s.connect((address, port))  # Присваивает адрес и порт
-        tm = s.recv(640)
-        print("Текущее время: %s" % tm.decode('utf-8'))
+        s.send(json.dumps(user.authenticate()).encode(ENCODING))
+        tm = s.recv(MAX_MSG_SIZE)
+        print(tm.decode(ENCODING))
+        s.send(json.dumps(user.disconnect()).encode(ENCODING))
+        tm = s.recv(MAX_MSG_SIZE)
+        print(tm.decode(ENCODING))
 
 
 if __name__ == '__main__':
