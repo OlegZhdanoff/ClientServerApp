@@ -15,8 +15,7 @@ def start(address, port):
     with socket(AF_INET, SOCK_STREAM) as s:  # Создает сокет TCP
         s.bind((ADDRESS, PORT))  # Присваивает адрес и порт
         s.listen(5)  # Переходит в режим ожидания запросов;
-        # одновременно обслуживает не более
-        # 5 запросов.
+        # одновременно обслуживает не более 5 запросов.
         while True:
             client, addr = s.accept()  # Принять запрос на соединение
             with closing(client) as cl:
