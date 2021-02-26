@@ -1,16 +1,34 @@
-# This is a sample Python script.
+import click
+from socket import *
+import time
+from contextlib import closing
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+ADDRESS = 'localhost'
+PORT = 7777
 
+@click.command()
+@click.argument('address', default="localhost")
+@click.argument('port', default=7777)
+def start(address, port):
+    ADDRESS, PORT = address, port
+    print(address, port)
+    with socket(AF_INET, SOCK_STREAM) as s:  # Создает сокет TCP
+        s.bind((ADDRESS, PORT))  # Присваивает адрес и порт
+        s.listen(5)  # Переходит в режим ожидания запросов;
+        # одновременно обслуживает не более
+        # 5 запросов.
+        while True:
+            client, addr = s.accept()  # Принять запрос на соединение
+            with closing(client) as cl:
+                print("Получен запрос на соединение от %s" % str(addr))
+                timestr = time.ctime(time.time()) + "\n"
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+                # Обратите внимание, дальнейшая работа ведётся с сокетом клиента
+                client.send(timestr.encode('ascii'))  # <- По сети должны передаваться байты,
+                # поэтому выполняется кодирование строки
 
-
-# Press the green button in the gutter to run the script.
+# print(ADDRESS, PORT)
 if __name__ == '__main__':
-    print_hi('PyCharm')
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    start()
+    # print(ADDRESS, PORT)
