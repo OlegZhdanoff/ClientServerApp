@@ -22,10 +22,7 @@ def start(address, port):
             with closing(client) as cl:
                 print("Получен запрос на соединение от %s" % str(addr))
                 timestr = time.ctime(time.time()) + "\n"
-
-                # Обратите внимание, дальнейшая работа ведётся с сокетом клиента
-                client.send(timestr.encode('ascii'))  # <- По сети должны передаваться байты,
-                # поэтому выполняется кодирование строки
+                client.send(timestr.encode('utf-8'))
 
 # print(ADDRESS, PORT)
 if __name__ == '__main__':

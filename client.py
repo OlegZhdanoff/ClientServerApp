@@ -9,8 +9,8 @@ import time
 def start(address, port):
     with socket(AF_INET, SOCK_STREAM) as s:  # Создает сокет TCP
         s.connect((address, port))  # Присваивает адрес и порт
-        tm = s.recv(640)  # Принять не более 1024 байтов данных
-        print("Текущее время: %s" % tm.decode('ascii'))
+        tm = s.recv(640)
+        print("Текущее время: %s" % tm.decode('utf-8'))
 
 
 if __name__ == '__main__':
