@@ -5,7 +5,7 @@ import json
 
 
 ENCODING = 'utf-8'
-MAX_MSG_SIZE = 540
+MAX_MSG_SIZE = 640
 
 
 class Client:
@@ -15,19 +15,19 @@ class Client:
         self.status = status
 
     def authenticate(self):
-        return {
+        return json.dumps({
             "action": "authenticate",
             "time": time.time(),
             "user": {
                     "account_name":  self.account_name,
                     "password":      self.password
             }
-        }
+        }).encode(ENCODING)
 
     def disconnect(self):
-        return {
+        return json.dumps({
             "action": "quit"
-        }
+        }).encode(ENCODING)
 
 
 @click.command()
@@ -37,10 +37,10 @@ def start(address, port):
     user = Client('ivanov', '123', 'online')
     with socket(AF_INET, SOCK_STREAM) as s:  # Создает сокет TCP
         s.connect((address, port))  # Присваивает адрес и порт
-        s.send(json.dumps(user.authenticate()).encode(ENCODING))
+        s.send(user.authenticate())
         tm = s.recv(MAX_MSG_SIZE)
         print(tm.decode(ENCODING))
-        s.send(json.dumps(user.disconnect()).encode(ENCODING))
+        s.send(user.disconnect())
         tm = s.recv(MAX_MSG_SIZE)
         print(tm.decode(ENCODING))
 
