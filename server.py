@@ -8,10 +8,10 @@ from contextlib import closing
 ENCODING = 'utf-8'
 MAX_MSG_SIZE = 640
 
-def works_for_all(func):
+
+def send_json(func):
     def inner(*args, **kwargs):
-        print("Я могу декорировать любую функцию")
-        return func(*args, **kwargs)
+        return json.dumps(func(*args, **kwargs)).encode(ENCODING)
     return inner
 
 
@@ -21,6 +21,7 @@ class ClientInstance:
         self.password = ''
         self.status = ''
 
+    @send_json
     def authenticate(self, user):
         self.username = user["account_name"]
         self.password = user["password"]
@@ -28,23 +29,23 @@ class ClientInstance:
         result_auth = self.check_pwd(user)
 
         if result_auth == 200:
-            return json.dumps({
+            return {
                 "response": 200,
                 "time": time.time(),
                 "alert": 'добро пожаловать в чат'
-            }).encode(ENCODING)
+            }
         elif result_auth == 402:
-            return json.dumps({
+            return {
                 "response": 402,
                 "time": time.time(),
                 "error": "This could be wrong password or no account with that name"
-            }).encode(ENCODING)
+            }
         elif result_auth == 409:
-            return json.dumps({
+            return {
                 "response": 409,
                 "time": time.time(),
                 "error": "Someone is already connected with the given user name"
-            }).encode(ENCODING)
+            }
 
     def check_pwd(self, user):
         return 200
@@ -72,11 +73,12 @@ class ClientInstance:
         elif action == 'leave':
             return self.leave(msg['user'])
 
+    @send_json
     def probe(self):
-        return json.dumps({
+        return {
             "action": "probe",
             "time": time.time(),
-        }).encode(ENCODING)
+        }
 
     def msg(self, msg):
         pass
