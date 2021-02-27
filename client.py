@@ -29,6 +29,22 @@ class Client:
             "action": "quit"
         }).encode(ENCODING)
 
+    def presence(self):
+        return json.dumps({
+            "action": "presence",
+            "time": time.time(),
+            "type": self.status,
+            "user": {
+                    "account_name":  self.account_name,
+                    "password":      self.password
+            }
+        }).encode(ENCODING)
+
+    def action_handler(self, action, **kwargs):
+        if action == 'probe':
+            return self.presence()
+
+
 
 @click.command()
 @click.argument('address', default="localhost")
