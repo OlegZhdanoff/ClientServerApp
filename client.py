@@ -55,10 +55,10 @@ def start(address, port):
         s.connect((address, port))  # Присваивает адрес и порт
         s.send(user.authenticate())
         tm = s.recv(MAX_MSG_SIZE)
-        print(tm.decode(ENCODING))
+        print(json.loads(tm.decode(ENCODING)))
         s.send(user.disconnect())
-        tm = s.recv(MAX_MSG_SIZE)
-        print(tm.decode(ENCODING))
+        # tm = s.recv(MAX_MSG_SIZE)
+        # print(tm.decode(ENCODING))
 
 
 if __name__ == '__main__':
