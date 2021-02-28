@@ -35,7 +35,7 @@ def client_messages(client_create):
                 "time": time.time(),
                 "type": client_create.status,
                 "user": {
-                    "account_name": client_create.account_name,
+                    "account_name": client_create.username,
                     "password": client_create.password
                 }
             }
