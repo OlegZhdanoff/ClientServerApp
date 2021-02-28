@@ -4,7 +4,7 @@ import click
 from socket import *
 import time
 from contextlib import closing
-from .server.client_instance import ClientInstance
+from server.client_instance import ClientInstance
 
 ENCODING = 'utf-8'
 MAX_MSG_SIZE = 640

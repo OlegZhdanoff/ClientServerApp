@@ -2,7 +2,7 @@ import click
 from socket import *
 import time
 import json
-from .client.client import Client
+from client.client import Client
 
 ENCODING = 'utf-8'
 MAX_MSG_SIZE = 640
