@@ -12,15 +12,13 @@ def send_json(func):
 
 
 class ClientInstance:
-    def __init__(self):
-        self.username = ''
-        self.password = ''
-        self.status = ''
+    def __init__(self, username='', password='', status=''):
+        self.username = username
+        self.password = password
+        self.status = status
 
     @send_json
     def authenticate(self, user):
-        self.username = user["account_name"]
-        self.password = user["password"]
         print(f'User {user["account_name"]} is authenticating...')
         result_auth = self.check_pwd(user)
 
@@ -44,7 +42,10 @@ class ClientInstance:
             }
 
     def check_pwd(self, user):
-        return 200
+        if self.username == user["account_name"] and self.password == user["password"]:
+            return 200
+        else:
+            return 402
 
     def client_disconnect(self, client):
         print(f'User {self.username} is disconnected')

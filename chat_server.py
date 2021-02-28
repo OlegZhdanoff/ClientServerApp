@@ -25,7 +25,7 @@ def start(address, port):
                 print("Получен запрос на соединение от %s" % str(addr))
                 # timestr = time.ctime(time.time()) + "\n"
 
-                ci = ClientInstance()
+                ci = ClientInstance('ivanov', '123', 'online')
                 while True:
                     tm = client.recv(MAX_MSG_SIZE).decode(ENCODING)
                     msg = json.loads(tm)
