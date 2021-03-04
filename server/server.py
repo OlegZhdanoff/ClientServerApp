@@ -1,5 +1,6 @@
 import json
 import time
+from client.client import Client
 
 ENCODING = 'utf-8'
 MAX_MSG_SIZE = 640
@@ -11,16 +12,23 @@ def send_json(func):
     return inner
 
 
-class ClientInstance:
-    def __init__(self, username='', password='', status=''):
-        self.username = username
-        self.password = password
-        self.status = status
+class Server:
+    def __init__(self):
+        self.clients = {}
+
+    # def find_client(self, cl: Client):
+    #     try:
+    #         idx = self.clients.index(cl)
+    #         return self.clients[idx]
+    #     except ValueError:
+    #         print(f'{cl} is not found')
+    #         return False
 
     @send_json
-    def authenticate(self, user):
+    def authenticate(self, user, addr):
         print(f'User {user["account_name"]} is authenticating...')
-        result_auth = self.check_pwd(user)
+        user_on_server = self.clients.setdefault(addr, Client(*user.values()))
+        result_auth = self.check_pwd(user_on_server, user)
 
         if result_auth == 200:
             return {
@@ -41,34 +49,35 @@ class ClientInstance:
                 "error": "Someone is already connected with the given user name"
             }
 
-    def check_pwd(self, user):
-        if self.username == user["account_name"] and self.password == user["password"]:
-            return 200
+    def check_pwd(self, user_on_server, user):
+        if user_on_server.account_name == user["account_name"] and user_on_server.password == user["password"]:
+            return 200 if user_on_server.status == 'disconnected' else 409
         else:
             return 402
 
-    def client_disconnect(self, client):
-        print(f'User {self.username} is disconnected')
+    def client_disconnect(self, client, addr):
+        print(f'User {self.clients[addr]} is disconnected')
+        self.clients[addr].status = 'disconnected'
         client.close()
         return False
 
-    def client_presence(self, msg):
+    def client_presence(self, msg, addr):
         pass
 
-    def action_handler(self, client, action, msg):
+    def action_handler(self, client, action, msg, addr):
         if action == 'authenticate':
             print(msg)
-            return client.send(self.authenticate(msg['user']))
+            return client.send(self.authenticate(msg['user'], addr))
         elif action == 'quit':
-            return self.client_disconnect(client)
+            return self.client_disconnect(client, addr)
         elif action == 'presence':
-            return self.client_presence(msg)
+            return self.client_presence(msg, addr)
         elif action == 'msg':
-            return self.msg(msg)
+            return self.msg(msg, addr)
         elif action == 'join':
-            return self.join(msg)
+            return self.join(msg, addr)
         elif action == 'leave':
-            return self.leave(msg['user'])
+            return self.leave(msg, addr)
 
     @send_json
     def probe(self):
@@ -77,11 +86,11 @@ class ClientInstance:
             "time": time.time(),
         }
 
-    def msg(self, msg):
+    def msg(self, msg, addr):
         pass
 
-    def join(self, msg):
+    def join(self, msg, addr):
         pass
 
-    def leave(self, chat_name):
+    def leave(self, msg, addr):
         pass

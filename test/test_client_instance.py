@@ -1,13 +1,13 @@
 import pytest
 
-from server.client_instance import *
+from server.server import *
 
 
 @pytest.fixture
 def client_create():
     try:
         print("create Client Instance")
-        ci = ClientInstance('testUser', '123', 'online')
+        ci = Server('testUser', '123', 'online')
         yield ci
     finally:
         del ci

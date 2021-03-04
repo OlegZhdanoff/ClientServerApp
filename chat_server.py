@@ -4,7 +4,7 @@ import click
 from socket import *
 import time
 from contextlib import closing
-from server.client_instance import ClientInstance
+from server.server import Server
 
 ENCODING = 'utf-8'
 MAX_MSG_SIZE = 640
@@ -25,12 +25,12 @@ def start(address, port):
                 print("Получен запрос на соединение от %s" % str(addr))
                 # timestr = time.ctime(time.time()) + "\n"
 
-                ci = ClientInstance('ivanov', '123', 'online')
+                ci = Server()
                 while True:
                     tm = client.recv(MAX_MSG_SIZE).decode(ENCODING)
                     msg = json.loads(tm)
                     if "action" in msg:
-                        if not ci.action_handler(client, msg['action'], msg):
+                        if not ci.action_handler(client, msg['action'], msg, addr[0]):
                             break
 
 
