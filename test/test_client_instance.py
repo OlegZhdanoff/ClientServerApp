@@ -1,21 +1,26 @@
 import pytest
 
 from server.server import *
+from client.client import Client
+
+
+ADDR = '127.0.0.1'
 
 
 @pytest.fixture
-def client_create():
+def server_create():
     try:
-        print("create Client Instance")
-        ci = Server('testUser', '123', 'online')
-        yield ci
+        print("create Server Instance")
+        serv = Server()
+        serv.clients.setdefault(ADDR, Client('ivanov', '123', 'disconnected'))
+        yield serv
     finally:
-        del ci
-        print('drop Client Instance on server')
+        del serv
+        print('drop Server Instance')
 
 
 @pytest.fixture
-def client_messages(client_create):
+def client_messages(server_create):
     try:
         print("fill message dict with data")
         yield {
@@ -23,8 +28,8 @@ def client_messages(client_create):
                 "action": "authenticate",
                 "time": time.time(),
                 "user": {
-                    "account_name": client_create.username,
-                    "password": client_create.password
+                    "account_name": server_create.clients[ADDR].account_name,
+                    "password": server_create.clients[ADDR].password
                 }
             },
             'quit': {
@@ -33,10 +38,10 @@ def client_messages(client_create):
             'presence': {
                 "action": "presence",
                 "time": time.time(),
-                "type": client_create.status,
+                "type": server_create.clients[ADDR].status,
                 "user": {
-                    "account_name": client_create.username,
-                    "password": client_create.password
+                    "account_name": server_create.clients[ADDR].account_name,
+                    "password": server_create.clients[ADDR].password
                 }
             }
         }
@@ -44,49 +49,59 @@ def client_messages(client_create):
         print("drop message dict")
 
 
-def test_check_pwd(client_create, client_messages):
-    assert client_create.check_pwd(client_messages['authenticate']['user']) == 200
+def test_check_pwd(server_create, client_messages):
+    assert server_create.check_pwd(server_create.clients[ADDR], client_messages['authenticate']['user']) == 200
 
 
-def test_check_pwd_wrong(client_create):
-    assert client_create.check_pwd({
-        "account_name": client_create.username,
-        "password": 'wrong password'
-    }) == 402
+def test_check_pwd_wrong(server_create):
+    assert server_create.check_pwd(server_create.clients[ADDR],
+                                   {
+                                        "account_name": server_create.clients[ADDR].account_name,
+                                        "password": 'wrong password'
+                                    }) == 402
 
 
-def test_authenticate_200(client_create, client_messages):
-    assert client_create.authenticate(client_messages['authenticate']['user']) == json.dumps({
+def test_authenticate_200(server_create, client_messages):
+    assert server_create.authenticate(client_messages['authenticate']['user'], ADDR) == json.dumps({
                 "response": 200,
                 "time": time.time(),
                 "alert": 'добро пожаловать в чат'
             }).encode(ENCODING)
 
 
-def test_authenticate_402_wrong_pwd(client_create):
-    assert client_create.authenticate({
-        "account_name": client_create.username,
+def test_authenticate_402_wrong_pwd(server_create):
+    assert server_create.authenticate({
+        "account_name": server_create.clients[ADDR].account_name,
         "password": 'wrong password'
-    }) == json.dumps({
+    }, ADDR) == json.dumps({
                 "response": 402,
                 "time": time.time(),
                 "error": "This could be wrong password or no account with that name"
             }).encode(ENCODING)
 
 
-def test_authenticate_402_wrong_user(client_create):
-    assert client_create.authenticate({
+def test_authenticate_402_wrong_user(server_create):
+    assert server_create.authenticate({
         "account_name": 'wrong username',
-        "password": client_create.password
-    }) == json.dumps({
+        "password": server_create.clients[ADDR].password
+    }, ADDR) == json.dumps({
                 "response": 402,
                 "time": time.time(),
                 "error": "This could be wrong password or no account with that name"
             }).encode(ENCODING)
 
 
-def test_probe(client_create):
-    assert client_create.probe() == json.dumps({
+def test_authenticate_409_already_connected(server_create, client_messages):
+    server_create.clients[ADDR].status = 'online'
+    assert server_create.authenticate(client_messages['authenticate']['user'], ADDR) == json.dumps({
+                "response": 409,
+                "time": time.time(),
+                "error": "Someone is already connected with the given user name"
+            }).encode(ENCODING)
+
+
+def test_probe(server_create):
+    assert server_create.probe() == json.dumps({
                 "action": "probe",
                 "time": time.time(),
             }).encode(ENCODING)
