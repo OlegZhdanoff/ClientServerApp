@@ -1,4 +1,5 @@
 import pytest
+from freezegun import freeze_time
 
 from client.client import *
 
@@ -14,6 +15,7 @@ def client_create():
         print('drop Client')
 
 
+@freeze_time("2012-01-14")
 def test_authenticate(client_create):
     assert client_create.authenticate() == json.dumps({
                 "action": "authenticate",
@@ -31,6 +33,7 @@ def test_disconnect(client_create):
             }).encode(ENCODING)
 
 
+@freeze_time("2012-01-14")
 def presence(client_create):
     assert client_create.disconnect() == json.dumps({
                 "action": "presence",
@@ -43,6 +46,7 @@ def presence(client_create):
             }).encode(ENCODING)
 
 
+@freeze_time("2012-01-14")
 def test_action_handler_probe(client_create):
     assert client_create.action_handler('probe') == json.dumps({
                 "action": "presence",

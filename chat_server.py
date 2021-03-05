@@ -1,13 +1,17 @@
 import json
-
+import structlog
 import click
 from socket import *
 import time
 from contextlib import closing
+
 from server.server import Server
+from log.log_config import log_config
 
 ENCODING = 'utf-8'
 MAX_MSG_SIZE = 640
+
+logger = log_config('server', 'server.log')
 
 
 @click.command()
@@ -15,11 +19,14 @@ MAX_MSG_SIZE = 640
 @click.argument('port', default=7777)
 def start(address, port):
     print(address, port)
-    with socket(AF_INET, SOCK_STREAM) as s:  # Создает сокет TCP
+    try:
+        s = socket(AF_INET, SOCK_STREAM)
+        # with socket(AF_INET, SOCK_STREAM) as s:  # Создает сокет TCP
         s.bind((address, port))  # Присваивает адрес и порт
         s.listen(5)  # Переходит в режим ожидания запросов;
         # одновременно обслуживает не более 5 запросов.
         ci = Server()
+        logger.info(f'Server is started on {address}:{port}')
         while True:
             client, addr = s.accept()  # Принять запрос на соединение
             with closing(client):
@@ -33,6 +40,11 @@ def start(address, port):
                     if "action" in msg:
                         if not ci.action_handler(client, msg['action'], msg, addr[0]):
                             break
+    except OSError:
+        logger.exception('Server cannot create socket')
+    finally:
+        s.close()
+        logger.info(f'Server {address}:{port} was closed ')
 
 
 if __name__ == '__main__':

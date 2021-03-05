@@ -1,9 +1,14 @@
 import json
 import time
+import structlog
+
 from client.client import Client
+from log.log_config import log_config
 
 ENCODING = 'utf-8'
 MAX_MSG_SIZE = 640
+
+logger = log_config('server', 'server.log')
 
 
 def send_json(func):
@@ -27,22 +32,26 @@ class Server:
     @send_json
     def authenticate(self, user, addr):
         print(f'User {user["account_name"]} is authenticating...')
+        logger.info(f'authenticate user {user["account_name"]}')
         user_on_server = self.clients.setdefault(addr, Client(*user.values()))
         result_auth = self.check_pwd(user_on_server, user)
 
         if result_auth == 200:
+            logger.info(f'User {user["account_name"]} is authenticating')
             return {
                 "response": 200,
                 "time": time.time(),
                 "alert": 'добро пожаловать в чат'
             }
         elif result_auth == 402:
+            logger.info(f'User {user["account_name"]} was entered wrong password')
             return {
                 "response": 402,
                 "time": time.time(),
                 "error": "This could be wrong password or no account with that name"
             }
         elif result_auth == 409:
+            logger.warning(f'User {user["account_name"]} was entered wrong password')
             return {
                 "response": 409,
                 "time": time.time(),
@@ -56,9 +65,10 @@ class Server:
             return 402
 
     def client_disconnect(self, client, addr):
-        print(f'User {self.clients[addr]} is disconnected')
+        # print(f'User {self.clients[addr]} is disconnected')
         self.clients[addr].status = 'disconnected'
         client.close()
+        logger.info(f'User {self.clients[addr]} was disconnected')
         return False
 
     def client_presence(self, msg, addr):
