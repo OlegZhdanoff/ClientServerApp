@@ -19,13 +19,14 @@ def start(address, port):
         s.bind((address, port))  # Присваивает адрес и порт
         s.listen(5)  # Переходит в режим ожидания запросов;
         # одновременно обслуживает не более 5 запросов.
+        ci = Server()
         while True:
             client, addr = s.accept()  # Принять запрос на соединение
             with closing(client):
                 print("Получен запрос на соединение от %s" % str(addr))
                 # timestr = time.ctime(time.time()) + "\n"
 
-                ci = Server()
+                # ci = Server()
                 while True:
                     tm = client.recv(MAX_MSG_SIZE).decode(ENCODING)
                     msg = json.loads(tm)

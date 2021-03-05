@@ -1,4 +1,5 @@
 import pytest
+from freezegun import freeze_time
 
 from server.server import *
 from client.client import Client
@@ -19,6 +20,7 @@ def server_create():
         print('drop Server Instance')
 
 
+@freeze_time("2012-01-14")
 @pytest.fixture
 def client_messages(server_create):
     try:
@@ -61,6 +63,7 @@ def test_check_pwd_wrong(server_create):
                                     }) == 402
 
 
+@freeze_time("2012-01-14")
 def test_authenticate_200(server_create, client_messages):
     assert server_create.authenticate(client_messages['authenticate']['user'], ADDR) == json.dumps({
                 "response": 200,
@@ -69,6 +72,7 @@ def test_authenticate_200(server_create, client_messages):
             }).encode(ENCODING)
 
 
+@freeze_time("2012-01-14")
 def test_authenticate_402_wrong_pwd(server_create):
     assert server_create.authenticate({
         "account_name": server_create.clients[ADDR].account_name,
@@ -80,6 +84,7 @@ def test_authenticate_402_wrong_pwd(server_create):
             }).encode(ENCODING)
 
 
+@freeze_time("2012-01-14")
 def test_authenticate_402_wrong_user(server_create):
     assert server_create.authenticate({
         "account_name": 'wrong username',
@@ -91,6 +96,7 @@ def test_authenticate_402_wrong_user(server_create):
             }).encode(ENCODING)
 
 
+@freeze_time("2012-01-14")
 def test_authenticate_409_already_connected(server_create, client_messages):
     server_create.clients[ADDR].status = 'online'
     assert server_create.authenticate(client_messages['authenticate']['user'], ADDR) == json.dumps({
@@ -100,6 +106,7 @@ def test_authenticate_409_already_connected(server_create, client_messages):
             }).encode(ENCODING)
 
 
+@freeze_time("2012-01-14")
 def test_probe(server_create):
     assert server_create.probe() == json.dumps({
                 "action": "probe",
