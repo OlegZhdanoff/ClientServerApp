@@ -3,6 +3,7 @@ from functools import wraps
 import logging
 import structlog
 from logging.handlers import TimedRotatingFileHandler
+import inspect
 
 
 def proc(logger, method_name, event_dict):
@@ -22,8 +23,12 @@ def log_config(logger_name, filename):
     return logger
 
 
-def log_default(func):
-    @wraps(func)
-    def call(*args, **kwargs):
-        return func(*args, **kwargs)
-    return call
+def log_default(logger):
+    def decorator(func):
+        @wraps(func)
+        def call(*args, **kwargs):
+            args_str = ', '.join([str(arg) for arg in args[1:]])
+            logger.info(f'function {func.__name__}({args_str}) called from {inspect.stack()[1].function}')
+            return func(*args, **kwargs)
+        return call
+    return decorator

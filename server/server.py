@@ -1,9 +1,8 @@
-import json
 import time
 import structlog
 
 from client.client import Client
-from log.log_config import log_config
+from log.log_config import log_config, log_default
 from settings import send_json
 
 logger = log_config('server', 'server.log')
@@ -21,6 +20,7 @@ class Server:
     #         print(f'{cl} is not found')
     #         return False
 
+    @log_default(logger)
     @send_json
     def authenticate(self, user, addr):
         print(f'User {user["account_name"]} is authenticating...')
