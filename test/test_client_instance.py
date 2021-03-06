@@ -3,7 +3,8 @@ from freezegun import freeze_time
 
 from server.server import *
 from client.client import Client
-
+import settings
+import json
 
 ADDR = '127.0.0.1'
 
@@ -69,7 +70,7 @@ def test_authenticate_200(server_create, client_messages):
                 "response": 200,
                 "time": time.time(),
                 "alert": 'добро пожаловать в чат'
-            }).encode(ENCODING)
+            }).encode(settings.ENCODING)
 
 
 @freeze_time("2012-01-14")
@@ -81,7 +82,7 @@ def test_authenticate_402_wrong_pwd(server_create):
                 "response": 402,
                 "time": time.time(),
                 "error": "This could be wrong password or no account with that name"
-            }).encode(ENCODING)
+            }).encode(settings.ENCODING)
 
 
 @freeze_time("2012-01-14")
@@ -93,7 +94,7 @@ def test_authenticate_402_wrong_user(server_create):
                 "response": 402,
                 "time": time.time(),
                 "error": "This could be wrong password or no account with that name"
-            }).encode(ENCODING)
+            }).encode(settings.ENCODING)
 
 
 @freeze_time("2012-01-14")
@@ -103,7 +104,7 @@ def test_authenticate_409_already_connected(server_create, client_messages):
                 "response": 409,
                 "time": time.time(),
                 "error": "Someone is already connected with the given user name"
-            }).encode(ENCODING)
+            }).encode(settings.ENCODING)
 
 
 @freeze_time("2012-01-14")
@@ -111,4 +112,4 @@ def test_probe(server_create):
     assert server_create.probe() == json.dumps({
                 "action": "probe",
                 "time": time.time(),
-            }).encode(ENCODING)
+            }).encode(settings.ENCODING)

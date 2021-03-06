@@ -1,6 +1,7 @@
 import pytest
 from freezegun import freeze_time
-
+import settings
+import json
 from client.client import *
 
 
@@ -24,13 +25,13 @@ def test_authenticate(client_create):
                     "account_name":  client_create.account_name,
                     "password":      client_create.password
                 }
-            }).encode(ENCODING)
+            }).encode(settings.ENCODING)
 
 
 def test_disconnect(client_create):
     assert client_create.disconnect() == json.dumps({
                 "action": "quit"
-            }).encode(ENCODING)
+            }).encode(settings.ENCODING)
 
 
 @freeze_time("2012-01-14")
@@ -43,7 +44,7 @@ def presence(client_create):
                         "account_name":  client_create.account_name,
                         "password":      client_create.password
                 }
-            }).encode(ENCODING)
+            }).encode(settings.ENCODING)
 
 
 @freeze_time("2012-01-14")
@@ -56,4 +57,4 @@ def test_action_handler_probe(client_create):
                         "account_name":  client_create.account_name,
                         "password":      client_create.password
                 }
-            }).encode(ENCODING)
+            }).encode(settings.ENCODING)
