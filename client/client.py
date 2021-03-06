@@ -1,15 +1,11 @@
 import time
 import json
+import structlog
 
+from log.log_config import log_config
+from settings import send_json
 
-ENCODING = 'utf-8'
-MAX_MSG_SIZE = 640
-
-
-def send_json(func):
-    def inner(*args, **kwargs):
-        return json.dumps(func(*args, **kwargs)).encode(ENCODING)
-    return inner
+logger = log_config('client', 'client.log')
 
 
 class Client:

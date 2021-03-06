@@ -7,16 +7,14 @@ from contextlib import closing
 
 from server.server import Server
 from log.log_config import log_config
-
-ENCODING = 'utf-8'
-MAX_MSG_SIZE = 640
+import settings
 
 logger = log_config('server', 'server.log')
 
 
 @click.command()
-@click.argument('address', default="localhost")
-@click.argument('port', default=7777)
+@click.argument('address', default=settings.DEFAULT_SERVER_IP)
+@click.argument('port', default=settings.DEFAULT_SERVER_PORT)
 def start(address, port):
     print(address, port)
     try:
@@ -35,7 +33,7 @@ def start(address, port):
 
                 # ci = Server()
                 while True:
-                    tm = client.recv(MAX_MSG_SIZE).decode(ENCODING)
+                    tm = client.recv(settings.MAX_MSG_SIZE).decode(settings.ENCODING)
                     msg = json.loads(tm)
                     if "action" in msg:
                         if not ci.action_handler(client, msg['action'], msg, addr[0]):

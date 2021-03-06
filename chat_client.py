@@ -6,24 +6,22 @@ import structlog
 
 from client.client import Client
 from log.log_config import log_config
-
-ENCODING = 'utf-8'
-MAX_MSG_SIZE = 640
+import settings
 
 logger = log_config('chat_client', 'client.log')
 
 
 @click.command()
-@click.argument('address', default="www.ya.ru")
-@click.argument('port', default=7777)
+@click.argument('address', default=settings.DEFAULT_SERVER_IP)
+@click.argument('port', default=settings.DEFAULT_SERVER_PORT)
 def start(address, port):
     user = Client('ivanov', '123', 'online')
     try:
         s = socket(AF_INET, SOCK_STREAM)  # Создает сокет TCP
         s.connect((address, port))  # Присваивает адрес и порт
         s.send(user.authenticate())
-        tm = s.recv(MAX_MSG_SIZE)
-        print(json.loads(tm.decode(ENCODING)))
+        tm = s.recv(settings.MAX_MSG_SIZE)
+        print(json.loads(tm.decode(settings.ENCODING)))
         # time.sleep(60)
         s.send(user.disconnect())
         # tm = s.recv(MAX_MSG_SIZE)
