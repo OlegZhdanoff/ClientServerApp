@@ -18,6 +18,7 @@ def start(address, port):
         s.send(user.authenticate())
         tm = s.recv(MAX_MSG_SIZE)
         print(json.loads(tm.decode(ENCODING)))
+        # time.sleep(60)
         s.send(user.disconnect())
         # tm = s.recv(MAX_MSG_SIZE)
         # print(tm.decode(ENCODING))

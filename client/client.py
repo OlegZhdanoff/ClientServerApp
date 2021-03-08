@@ -13,9 +13,18 @@ def send_json(func):
 
 
 class Client:
-    def __init__(self, account_name, password, status):
+    def __init__(self, account_name, password, status='disconnected'):
         self.account_name = account_name
         self.password = password
+        self.status = status
+
+    def __eq__(self, other):
+        return self.account_name == other.account_name
+
+    def __str__(self):
+        return self.account_name
+
+    def set_status(self, status):
         self.status = status
 
     @send_json
