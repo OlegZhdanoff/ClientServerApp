@@ -229,3 +229,14 @@ pyvenv.cfg
 .venv
 pip-selfcheck.json
 
+.idea/.gitignore
+.idea/ClientServerApps.iml
+.idea/encodings.xml
+.idea/inspectionProfiles/
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+server.log.2021-03-05_21-19
+server.log.2021-03-05_21-20
+test.bat
+client.log.2021-03-06

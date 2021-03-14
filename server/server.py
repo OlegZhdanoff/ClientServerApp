@@ -24,26 +24,27 @@ class Server:
     @send_json
     def authenticate(self, user, addr):
         print(f'User {user["account_name"]} is authenticating...')
-        logger.info(f'authenticate user {user["account_name"]}')
+        # logger.info(f'authenticate user {user["account_name"]}')
+        logger_with_name = logger.bind(account_name=user["account_name"])
         user_on_server = self.clients.setdefault(addr, Client(*user.values()))
         result_auth = self.check_pwd(user_on_server, user)
 
         if result_auth == 200:
-            logger.info(f'User {user["account_name"]} is authenticating')
+            logger_with_name.info('User is authenticating')
             return {
                 "response": 200,
                 "time": time.time(),
                 "alert": 'добро пожаловать в чат'
             }
         elif result_auth == 402:
-            logger.info(f'User {user["account_name"]} was entered wrong password')
+            logger_with_name.info(f'User was entered wrong password')
             return {
                 "response": 402,
                 "time": time.time(),
                 "error": "This could be wrong password or no account with that name"
             }
         elif result_auth == 409:
-            logger.warning(f'User {user["account_name"]} was entered wrong password')
+            logger_with_name.warning(f'User was entered wrong password')
             return {
                 "response": 409,
                 "time": time.time(),
@@ -56,16 +57,18 @@ class Server:
         else:
             return 402
 
+    @log_default(logger)
     def client_disconnect(self, client, addr):
-        # print(f'User {self.clients[addr]} is disconnected')
         self.clients[addr].status = 'disconnected'
+        logger_with_name = logger.bind(account_name=self.clients[addr])
+        logger_with_name.info('User was disconnected')
         client.close()
-        logger.info(f'User {self.clients[addr]} was disconnected')
         return False
 
     def client_presence(self, msg, addr):
         pass
 
+    @log_default(logger)
     def action_handler(self, client, action, msg, addr):
         if action == 'authenticate':
             print(msg)
@@ -81,6 +84,7 @@ class Server:
         elif action == 'leave':
             return self.leave(msg, addr)
 
+    @log_default(logger)
     @send_json
     def probe(self):
         return {
@@ -88,11 +92,14 @@ class Server:
             "time": time.time(),
         }
 
+    @log_default(logger)
     def msg(self, msg, addr):
         pass
 
+    @log_default(logger)
     def join(self, msg, addr):
         pass
 
+    @log_default(logger)
     def leave(self, msg, addr):
         pass
