@@ -14,8 +14,9 @@ logger = log_config('chat_client', 'client.log')
 @click.command()
 @click.argument('address', default=settings.DEFAULT_SERVER_IP)
 @click.argument('port', default=settings.DEFAULT_SERVER_PORT)
-def start(address, port):
-    user = Client('ivanov', '123', 'online')
+@click.option('--username', default='ivanov', help='username')
+def start(address, port, username):
+    user = Client(username, '123', 'online')
     try:
         s = socket(AF_INET, SOCK_STREAM)  # Создает сокет TCP
         s.connect((address, port))  # Присваивает адрес и порт
@@ -23,6 +24,10 @@ def start(address, port):
         tm = s.recv(settings.MAX_MSG_SIZE)
         print(json.loads(tm.decode(settings.ENCODING)))
         # time.sleep(60)
+        s.send(user.send_message('#main', 'hello'))
+        tm = s.recv(settings.MAX_MSG_SIZE)
+        print(json.loads(tm.decode(settings.ENCODING)))
+        time.sleep(5)
         s.send(user.disconnect())
         # tm = s.recv(MAX_MSG_SIZE)
         # print(tm.decode(ENCODING))

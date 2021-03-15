@@ -9,25 +9,34 @@ logger = log_config('server', 'server.log')
 
 
 class Server:
-    def __init__(self):
-        self.clients = {}
+    def __init__(self, conn, addr):
+        # self.clients = {}
+        self.conn = conn
+        self.addr = addr
+        self.status = ''
+        self.username = ''
+        self.password = ''
+        self.data = b''
 
-    # def find_client(self, cl: Client):
-    #     try:
-    #         idx = self.clients.index(cl)
-    #         return self.clients[idx]
-    #     except ValueError:
-    #         print(f'{cl} is not found')
-    #         return False
+    def find_client(self, user):  # как бы ищем клиента в БД
+        self.username = user["account_name"]
+        self.password = user["password"]
+        self.status = 'disconnected'
+        # try:
+        #     idx = self.clients.index(cl)
+        #     return self.clients[idx]
+        # except ValueError:
+        #     print(f'{cl} is not found')
+        #     return False
 
     @log_default(logger)
     @send_json
-    def authenticate(self, user, addr):
+    def authenticate(self, user):
         print(f'User {user["account_name"]} is authenticating...')
         # logger.info(f'authenticate user {user["account_name"]}')
         logger_with_name = logger.bind(account_name=user["account_name"])
-        user_on_server = self.clients.setdefault(addr, Client(*user.values()))
-        result_auth = self.check_pwd(user_on_server, user)
+        # user_on_server = self.clients.setdefault(addr, Client(*user.values()))
+        result_auth = self.check_pwd(user)
 
         if result_auth == 200:
             logger_with_name.info('User is authenticating')
@@ -51,38 +60,41 @@ class Server:
                 "error": "Someone is already connected with the given user name"
             }
 
-    def check_pwd(self, user_on_server, user):
-        if user_on_server.account_name == user["account_name"] and user_on_server.password == user["password"]:
-            return 200 if user_on_server.status == 'disconnected' else 409
+    def check_pwd(self, user):
+        self.find_client(user)
+        if self.username == user["account_name"] and self.password == user["password"]:
+            return 200 if self.status == 'disconnected' else 409
         else:
             return 402
 
     @log_default(logger)
-    def client_disconnect(self, client, addr):
-        self.clients[addr].status = 'disconnected'
-        logger_with_name = logger.bind(account_name=self.clients[addr])
+    def client_disconnect(self):
+        self.status = 'disconnected'
+        logger_with_name = logger.bind(account_name=self.username)
         logger_with_name.info('User was disconnected')
-        client.close()
+        # client.close()
         return False
 
-    def client_presence(self, msg, addr):
+    def client_presence(self, msg):
         pass
 
     @log_default(logger)
-    def action_handler(self, client, action, msg, addr):
+    def action_handler(self, action, msg, clients):
         if action == 'authenticate':
             print(msg)
-            return client.send(self.authenticate(msg['user'], addr))
+            self.data += self.authenticate(msg['user'])
+            return self.data
         elif action == 'quit':
-            return self.client_disconnect(client, addr)
+            return self.client_disconnect()
         elif action == 'presence':
-            return self.client_presence(msg, addr)
+            return self.client_presence(msg)
         elif action == 'msg':
-            return self.msg(msg, addr)
+            self.msg(msg, clients)
+            return True
         elif action == 'join':
-            return self.join(msg, addr)
+            return self.join(msg)
         elif action == 'leave':
-            return self.leave(msg, addr)
+            return self.leave(msg)
 
     @log_default(logger)
     @send_json
@@ -93,13 +105,36 @@ class Server:
         }
 
     @log_default(logger)
-    def msg(self, msg, addr):
+    def msg(self, msg, clients):
+        for client in clients.values():
+            print(client.username, self.username, msg['to'][:1])
+        if msg['to'][:1] == '#':
+            print('#main')
+            for client in clients.values():
+                if client.username != self.username:
+                    print(client.username)
+                    client.data += self.send_message(msg)
+        else:
+            for client in clients.values():
+                if client.username == msg['to']:
+                    client.data += self.send_message(msg)
+                    break
+
+    @log_default(logger)
+    @send_json
+    def send_message(self, msg):
+        return {
+            "action": "msg",
+            "time": time.time(),
+            "to": msg['to'],
+            "from": self.username,
+            "message": msg['message']
+        }
+
+    @log_default(logger)
+    def join(self, msg):
         pass
 
     @log_default(logger)
-    def join(self, msg, addr):
-        pass
-
-    @log_default(logger)
-    def leave(self, msg, addr):
+    def leave(self, msg):
         pass
