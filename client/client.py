@@ -68,6 +68,16 @@ class Client:
         }
 
     @log_default(logger)
-    def action_handler(self, action, **kwargs):
+    def action_handler(self, action, msg):
         if action == 'probe':
             return self.presence()
+        elif action == 'msg':
+            print(time.ctime(time.time()) + f': {msg["from"]}: {msg["message"]}')
+
+    @log_default(logger)
+    def response_processor(self, response, msg):
+        if response == 200:
+            print(time.ctime(time.time()) + f': {msg["alert"]}')
+            return 'You are connected...'
+        elif response == 402:
+            return 'Your password is incorrect'

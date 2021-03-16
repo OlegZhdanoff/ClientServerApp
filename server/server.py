@@ -106,19 +106,18 @@ class Server:
 
     @log_default(logger)
     def msg(self, msg, clients):
-        for client in clients.values():
-            print(client.username, self.username, msg['to'][:1])
+        # for client in clients.values():
+        #     print(client.username, self.username, msg['to'][:1])
         if msg['to'][:1] == '#':
-            print('#main')
             for client in clients.values():
                 if client.username != self.username:
-                    print(client.username)
                     client.data += self.send_message(msg)
         else:
             for client in clients.values():
                 if client.username == msg['to']:
                     client.data += self.send_message(msg)
                     break
+        self.data += self.send_response(200, 'message is received')
 
     @log_default(logger)
     @send_json
@@ -130,6 +129,16 @@ class Server:
             "from": self.username,
             "message": msg['message']
         }
+
+    @log_default(logger)
+    @send_json
+    def send_response(self, response, message):
+        if response == 200:
+            return {
+                    "response": 200,
+                    "time": time.time(),
+                    "alert": message
+                }
 
     @log_default(logger)
     def join(self, msg):

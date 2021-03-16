@@ -21,16 +21,27 @@ def start(address, port, username):
         s = socket(AF_INET, SOCK_STREAM)  # Создает сокет TCP
         s.connect((address, port))  # Присваивает адрес и порт
         s.send(user.authenticate())
-        tm = s.recv(settings.MAX_MSG_SIZE)
-        print(json.loads(tm.decode(settings.ENCODING)))
-        # time.sleep(60)
-        s.send(user.send_message('#main', 'hello'))
-        tm = s.recv(settings.MAX_MSG_SIZE)
-        print(json.loads(tm.decode(settings.ENCODING)))
-        time.sleep(5)
+        tm = s.recv(settings.MAX_MSG_SIZE).decode(settings.ENCODING)
+        msg = json.loads(tm)
+        if "response" in msg:
+            user.response_processor(msg["response"], msg)
+        while True:
+            command = input('Command list:\t'
+                            'q - exit\tm - message to all\t')
+            if command == 'q':
+                break
+            elif command == 'm':
+                message = input('Your message: ')
+                s.send(user.send_message('#main', message))
+
+            tm = s.recv(settings.MAX_MSG_SIZE).decode(settings.ENCODING)
+            msg = json.loads(tm)
+
+            if "action" in msg:
+                user.action_handler(msg["action"], msg)
+            elif "response" in msg:
+                user.response_processor(msg["response"], msg)
         s.send(user.disconnect())
-        # tm = s.recv(MAX_MSG_SIZE)
-        # print(tm.decode(ENCODING))
     except gaierror as e:
         logger.exception(f'Incorrect server IP-address {address}:{port}')
     except TimeoutError as e:
