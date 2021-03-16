@@ -33,27 +33,16 @@ def disconnect(sel, clients, conn):
     del clients[conn]
 
 
-def recv_all(conn):
-    data = ''
-    try:
-        while True:
-            data += conn.recv(settings.MAX_MSG_SIZE).decode(settings.ENCODING)
-    except socket.error as exc:
-        err = exc.args[0]
-        if err in (errno.EAGAIN, errno.EWOULDBLOCK):
-            return data
-
-        # raise
-
-
 def process(sel, clients, conn, mask):
     if mask & selectors.EVENT_READ:
-        data = recv_all(conn)
-        if data:
-            msg = json.loads(data)
-            if "action" in msg:
-                if not clients[conn].action_handler(msg['action'], msg, clients):
-                    disconnect(sel, clients, conn)
+        data = settings.recv_all(conn)
+        msg_list = settings.get_msg_list(data)
+        if msg_list:
+            for data in msg_list:
+                msg = json.loads(data)
+                if "action" in msg:
+                    if not clients[conn].action_handler(msg['action'], msg, clients):
+                        disconnect(sel, clients, conn)
         else:
             disconnect(sel, clients, conn)
 

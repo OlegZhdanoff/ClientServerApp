@@ -22,9 +22,9 @@ def start(address, port, username):
         s.connect((address, port))  # Присваивает адрес и порт
         s.send(user.authenticate())
         tm = s.recv(settings.MAX_MSG_SIZE).decode(settings.ENCODING)
-        msg = json.loads(tm)
-        if "response" in msg:
-            user.response_processor(msg["response"], msg)
+        # msg = json.loads(tm)
+        # if "response" in msg:
+        #     user.response_processor(msg["response"], msg)
         while True:
             command = input('Command list:\t'
                             'q - exit\tm - message to all\t')
@@ -35,8 +35,11 @@ def start(address, port, username):
                 s.send(user.send_message('#main', message))
 
             tm = s.recv(settings.MAX_MSG_SIZE).decode(settings.ENCODING)
-            msg = json.loads(tm)
-
+            print("tm: ", tm)
+            for line in tm:
+                print(line)
+            msg = json.loads(line)
+            print(msg)
             if "action" in msg:
                 user.action_handler(msg["action"], msg)
             elif "response" in msg:
@@ -49,7 +52,7 @@ def start(address, port, username):
     except ConnectionRefusedError as e:
         logger.exception(f'Server {address}:{port} is offline')
     except Exception as e:
-        logger.exception(f'Error connection with server {address}:{port}')
+        logger.exception(f'Error connection with server {address}:{port} - {e.args}')
     finally:
         s.close()
 
