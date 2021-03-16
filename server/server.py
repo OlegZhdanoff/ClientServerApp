@@ -118,7 +118,6 @@ class Server:
                     client.data += self.send_message(msg)
                     break
         self.data += self.send_response(200, 'message is received')
-        self.data += self.data
 
     @log_default(logger)
     @send_json

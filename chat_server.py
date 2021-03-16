@@ -48,14 +48,12 @@ def process(sel, clients, conn, mask):
 
     if mask & selectors.EVENT_WRITE:
         if conn in clients.keys():
-            out_data = clients[conn].data
-            if out_data:
-                sent_size = conn.send(out_data)
+            if clients[conn].data:
+                sent_size = conn.send(clients[conn].data)
                 if sent_size == 0:
                     disconnect(sel, clients, conn)
                     return
-
-                clients[conn].data = out_data[sent_size:]
+                clients[conn].data = clients[conn].data[sent_size:]
 
 
 def main_loop(sel):

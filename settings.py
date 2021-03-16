@@ -24,13 +24,14 @@ def recv_all(conn):
     data = ''
     try:
         while True:
+            # new_data = conn.recv(MAX_MSG_SIZE).decode(ENCODING)
             data += conn.recv(MAX_MSG_SIZE).decode(ENCODING)
     except socket.error as exc:
         err = exc.args[0]
         if err in (errno.EAGAIN, errno.EWOULDBLOCK):
 
             return data
-
+        return data
 
 def get_msg_list(data):
     res = []
@@ -38,10 +39,7 @@ def get_msg_list(data):
         length, end_length = get_msg_lengths(data)
         if length and len(data) >= (end_length + length):
             res.append(data[end_length:end_length + length])
-            print('data = ', data)
-            print(res)
             data = data[end_length + length:]
-            print('data new = ', data)
     return res
 
 
