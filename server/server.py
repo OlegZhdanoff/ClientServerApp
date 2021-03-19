@@ -34,7 +34,7 @@ class Server:
     def authenticate(self, user):
         print(f'User {user["account_name"]} is authenticating...')
         # logger.info(f'authenticate user {user["account_name"]}')
-        logger_with_name = logger.bind(account_name=user["account_name"])
+        logger_with_name = logger.bind(account_name=user["account_name"], address=self.addr)
         # user_on_server = self.clients.setdefault(addr, Client(*user.values()))
         result_auth = self.check_pwd(user)
 
@@ -70,7 +70,7 @@ class Server:
     @log_default(logger)
     def client_disconnect(self):
         self.status = 'disconnected'
-        logger_with_name = logger.bind(account_name=self.username)
+        logger_with_name = logger.bind(account_name=self.username, address=self.addr)
         logger_with_name.info('User was disconnected')
         # client.close()
         return False

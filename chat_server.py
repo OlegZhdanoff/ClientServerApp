@@ -27,13 +27,15 @@ def accept(sel, clients, sock, _):
 
 
 def disconnect(sel, clients, conn):
-    print(f"Клиент {clients[conn].username} {clients[conn].addr} отключился")
+    # logger.info(f"Клиент {clients[conn].username} {clients[conn].addr} отключился")
+    clients[conn].client_disconnect()
     sel.unregister(conn)
     conn.close()
     del clients[conn]
 
 
 def process(sel, clients, conn, mask):
+    logger_with_name = logger.bind(account_name=clients[conn].username, address=clients[conn].addr)
     if mask & selectors.EVENT_READ:
         data = settings.recv_all(conn)
         msg_list = settings.get_msg_list(data)
@@ -44,6 +46,7 @@ def process(sel, clients, conn, mask):
                     if not clients[conn].action_handler(msg['action'], msg, clients):
                         disconnect(sel, clients, conn)
         else:
+            logger_with_name.warning(f'no data in received messages')
             disconnect(sel, clients, conn)
 
     if mask & selectors.EVENT_WRITE:
@@ -51,6 +54,7 @@ def process(sel, clients, conn, mask):
             if clients[conn].data:
                 sent_size = conn.send(clients[conn].data)
                 if sent_size == 0:
+                    logger_with_name.warning(f"can't send data to client {clients[conn].data}")
                     disconnect(sel, clients, conn)
                     return
                 clients[conn].data = clients[conn].data[sent_size:]
