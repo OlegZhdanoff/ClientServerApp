@@ -5,7 +5,7 @@ from socket import *
 import time
 # import json
 # import structlog
-
+from client.shadow_user import ShadowUser
 from client.client import Client
 from client.client_thread import ClientThread, SelectableQueue
 from log.log_config import log_config
@@ -27,11 +27,16 @@ def start(address, port, username):
         # s.send(user.authenticate())
 
         gui_app_socket, client_app_socket = socketpair()
-        sq_gui = SelectableQueue(gui_app_socket, client_app_socket)
-        sq_client = SelectableQueue(client_app_socket, gui_app_socket)
+        # gui_app_socket.setblocking(False)
+        # client_app_socket.setblocking(False)
+        sq_client = SelectableQueue(gui_app_socket, client_app_socket)
+        sq_gui = SelectableQueue(client_app_socket, gui_app_socket)
 
         client_thread = ClientThread(s, user, sq_gui, sq_client)
         client_thread.start()
+
+        shadow_client = ShadowUser(sq_gui, sq_client)
+        shadow_client.start()
 
         while True:
             # tm = settings.recv_all(s)
@@ -47,12 +52,15 @@ def start(address, port, username):
             command = input('Command list:\t'
                             'q - exit\tm - message to all:\t')
             if command == 'q':
-                # вызов функции disconnect from client_thread
+                # вызов метода _close() from client_thread
+                sq_gui.put('')
                 user.feed_data(None)
                 break
             elif command == 'm':
                 message = input('>> ')
-                user.feed_data((user.send_message('#main', message)))
+                user.feed_data(user.send_message('#main', message))
+                # дублируем мессагу для shadow client
+                sq_gui.put(user.send_message('#main', message))
 
         client_thread.join()
         # s.send(user.disconnect())

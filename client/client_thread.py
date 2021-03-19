@@ -28,10 +28,23 @@ class SelectableQueue(queue.Queue):
     def put(self, item, *args, **kwargs):
         super().put(item, *args, **kwargs)
         self._put_socket.send(b'x')
+        # print('put')
 
     def get(self, *args, **kwargs):
+        # data = None
+        # try:
+        #     print('from get ', data)
+        #     data = super().get_nowait()
+        #     print('from get ', data)
+        #     self.task_done()
+        #     self._get_socket.recv(1)
+        # except queue.Empty as e:
+        #     pass
+        # except BlockingIOError as e:
+        #     pass
+        # return data
         self._get_socket.recv(1)
-        return super().get(*args, **kwargs)
+        return super().get()
 
     def is_not_empty(self):
         return not super().empty()
@@ -39,30 +52,6 @@ class SelectableQueue(queue.Queue):
     def close(self):
         self._get_socket.close()
         self._put_socket.close()
-
-# pq1 = SelectableQueue()
-# pq2 = SelectableQueue()
-
-#
-# def TimerHandler():
-#     print("hello, world")
-#     # pq1.put('1')
-#     # pq2.put('2')
-#
-#     t = threading.Timer(2.0, TimerHandler)
-#     t.start()
-#
-#
-# def TestPoolableQueue():
-#     t = threading.Timer(2.0, TimerHandler)
-#     t.start()
-
-    # while True:
-    #     print('.')
-    #     r, w, e = select.select([pq1, pq2], [], [])
-    #     for handle in r:
-    #         print(handle.get())
-    #         handle.task_done()
 
 
 class ClientThread(threading.Thread):
@@ -92,26 +81,45 @@ class ClientThread(threading.Thread):
             )
 
             self.sel.register(
-                self.sq_gui,
-                selectors.EVENT_READ | selectors.EVENT_WRITE,
-                lambda conn, mask: self._process_gui(conn, mask),
+                self.sq_client,
+                selectors.EVENT_READ,
+                lambda conn, mask: self._process(conn, mask),
             )
 
-            self.sel.register(
-                self.sq_client,
-                selectors.EVENT_READ | selectors.EVENT_WRITE,
-                lambda conn, mask: self._process_gui(conn, mask),
-            )
+            # self.sel.register(
+            #     self.sq_client,
+            #     selectors.EVENT_WRITE,
+            #     lambda conn, mask: self._process_gui(conn, mask),
+            # )
 
             self._main_loop()
-
-    def _process_gui(self, conn, mask):
-        pass
+    #
+    # def _process_gui(self, conn, mask):
+    #     logger_with_name = logger.bind(server=conn.getpeername())
+    #     if mask & selectors.EVENT_READ:
+    #         print('SelectableQueue', conn)
+    #         data = conn.get()
+    #         if data:
+    #             data = data.decode(settings.ENCODING)
+    #             print('data', data)
+    #             msg_list = settings.get_msg_list(data)
+    #             if msg_list:
+    #                 for data in msg_list:
+    #                     msg = json.loads(data)
+    #                     if "action" in msg:
+    #                         self.user.action_handler(msg["action"], msg)
+    #                     elif "response" in msg:
+    #                         self.user.response_processor(msg["response"], msg)
 
     def _process(self, conn, mask):
         logger_with_name = logger.bind(server=conn.getpeername())
         if mask & selectors.EVENT_READ:
-            data = settings.recv_all(conn)
+            if isinstance(conn, SelectableQueue):
+                data = conn.get()
+                conn.task_done()
+                data = data.decode(settings.ENCODING) if data else ''
+            else:
+                data = settings.recv_all(conn)
             msg_list = settings.get_msg_list(data)
             if msg_list:
                 for data in msg_list:
@@ -124,7 +132,7 @@ class ClientThread(threading.Thread):
         if mask & selectors.EVENT_WRITE:
             try:
                 data = self.user.data_queue.get_nowait()
-                print('data', data)
+                # print('data', data)
                 if data:
                     sent_size = conn.send(data)
                     if sent_size == 0:
@@ -133,9 +141,9 @@ class ClientThread(threading.Thread):
                         return
                     self.user.data_queue.task_done()
                 else:
-                    print('tasks=', self.user.data_queue.unfinished_tasks)
+                    # print('tasks=', self.user.data_queue.unfinished_tasks)
                     self.user.data_queue.task_done()
-                    print('2tasks=', self.user.data_queue.unfinished_tasks)
+                    # print('2tasks=', self.user.data_queue.unfinished_tasks)
                     self._close(conn)
 
             except queue.Empty as e:
@@ -154,12 +162,13 @@ class ClientThread(threading.Thread):
 
     def _close(self, conn):
         self.user.feed_data(self.user.disconnect())
+        # print(conn)
         self._process(conn, selectors.EVENT_WRITE)
         self.user.data_queue.join()
         self.sel.unregister(conn)
         self.sq_gui.close()
         self.sq_client.close()
-        conn.close()
+        self.sock.close()
         self.is_running = False
 
 
