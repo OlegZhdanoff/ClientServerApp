@@ -1,4 +1,6 @@
 import time
+from queue import Queue
+
 import structlog
 
 from log.log_config import log_config, log_default
@@ -12,6 +14,7 @@ class Client:
         self.account_name = account_name
         self.password = password
         self.status = status
+        self.data_queue = Queue()
 
     @log_default(logger)
     def __eq__(self, other):
@@ -23,6 +26,10 @@ class Client:
     @log_default(logger)
     def set_status(self, status):
         self.status = status
+
+    @log_default(logger)
+    def feed_data(self, data):
+        self.data_queue.put(data)
 
     @log_default(logger)
     @send_json

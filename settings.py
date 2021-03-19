@@ -33,6 +33,7 @@ def recv_all(conn):
             return data
         return data
 
+
 def get_msg_list(data):
     res = []
     while len(data):

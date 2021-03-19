@@ -29,14 +29,14 @@ def test_authenticate(client_create):
 
 
 def test_disconnect(client_create):
-    assert client_create.disconnect() == json.dumps({
+    assert client_create._close() == json.dumps({
                 "action": "quit"
             }).encode(settings.ENCODING)
 
 
 @freeze_time("2012-01-14")
 def presence(client_create):
-    assert client_create.disconnect() == json.dumps({
+    assert client_create._close() == json.dumps({
                 "action": "presence",
                 "time": time.time(),
                 "type": client_create.status,
