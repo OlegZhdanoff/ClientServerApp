@@ -119,12 +119,3 @@ class MessagesDeserializer:
 class MessageProcessor:
     pass
 
-
-@dataclass
-class Presence:
-    user: dict
-    action: str = 'presence'
-    time: float = time.time()
-    type: str = 'status'
-
-
