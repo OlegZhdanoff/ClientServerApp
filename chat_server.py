@@ -9,7 +9,7 @@ import selectors
 
 from server.server import Server
 from log.log_config import log_config
-import settings
+from services import MessagesDeserializer, DEFAULT_SERVER_IP, DEFAULT_SERVER_PORT
 
 logger = log_config('server', 'server.log')
 
@@ -37,11 +37,10 @@ def disconnect(sel, clients, conn):
 def process(sel, clients, conn, mask):
     logger_with_name = logger.bind(account_name=clients[conn].username, address=clients[conn].addr)
     if mask & selectors.EVENT_READ:
-        data = settings.recv_all(conn)
-        msg_list = settings.get_msg_list(data)
+        msg_list = MessagesDeserializer.get_messages(conn)
+        print(msg_list)
         if msg_list:
-            for data in msg_list:
-                msg = json.loads(data)
+            for msg in msg_list:
                 if "action" in msg:
                     if not clients[conn].action_handler(msg['action'], msg, clients):
                         disconnect(sel, clients, conn)
@@ -69,8 +68,8 @@ def main_loop(sel):
 
 
 @click.command()
-@click.argument('address', default=settings.DEFAULT_SERVER_IP)
-@click.argument('port', default=settings.DEFAULT_SERVER_PORT)
+@click.argument('address', default=DEFAULT_SERVER_IP)
+@click.argument('port', default=DEFAULT_SERVER_PORT)
 def start(address, port):
     print(address, port)
     try:

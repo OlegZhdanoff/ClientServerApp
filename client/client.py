@@ -4,7 +4,7 @@ from queue import Queue
 import structlog
 
 from log.log_config import log_config, log_default
-from settings import send_json
+from services import serializer
 
 logger = log_config('client', 'client.log')
 
@@ -32,7 +32,7 @@ class Client:
         self.data_queue.put(data)
 
     @log_default(logger)
-    @send_json
+    @serializer
     def authenticate(self):
         return {
             "action": "authenticate",
@@ -44,14 +44,14 @@ class Client:
         }
 
     @log_default(logger)
-    @send_json
+    @serializer
     def disconnect(self):
         return {
             "action": "quit"
         }
 
     @log_default(logger)
-    @send_json
+    @serializer
     def presence(self):
         return {
             "action": "presence",
@@ -64,7 +64,7 @@ class Client:
         }
 
     @log_default(logger)
-    @send_json
+    @serializer
     def send_message(self, to, text):
         return {
             "action": "msg",
@@ -88,3 +88,7 @@ class Client:
             return 'You are connected...'
         elif response == 402:
             return 'Your password is incorrect'
+
+    @log_default(logger)
+    def close(self):
+        self.feed_data(None)

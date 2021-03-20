@@ -2,10 +2,9 @@ import json
 import time
 from threading import Thread
 
-import settings
-from client.client_thread import SelectableQueue
+import services
 from log.log_config import log_config, log_default
-from settings import send_json
+from services import serializer, SelectableQueue, MessagesDeserializer
 
 logger = log_config('shadow_client', 'client.log')
 
@@ -20,20 +19,15 @@ class ShadowUser(Thread):
         self.name = 'ShadowUser'
 
     def run(self) -> None:
-        print(1)
+        print('Shadow is here')
         while True:
             try:
-                data = self.sq_gui.get()
-                self.sq_gui.task_done()
-                if not data == '':
-                    data = data.decode(settings.ENCODING)
-                    print(2, data)
-                    msg_list = settings.get_msg_list(data)
-                    if msg_list:
-                        for data in msg_list:
-                            msg = json.loads(data)
-                            if "action" in msg:
-                                self.action_handler(msg["action"], msg)
+                msg_list = MessagesDeserializer.get_messages(self.sq_gui)
+                if msg_list:
+                    for msg in msg_list:
+                        # msg = json.loads(data)
+                        if "action" in msg:
+                            self.action_handler(msg["action"], msg)
                 else:
                     return
             except Exception as e:
@@ -45,7 +39,7 @@ class ShadowUser(Thread):
             self.sq_client.put(self.send_message(msg['from'], f'hello {msg["from"]}'))
 
     @log_default(logger)
-    @send_json
+    @serializer
     def send_message(self, to, text):
         return {
             "action": "msg",

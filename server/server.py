@@ -3,7 +3,7 @@ import structlog
 
 from client.client import Client
 from log.log_config import log_config, log_default
-from settings import send_json
+from services import serializer
 
 logger = log_config('server', 'server.log')
 
@@ -30,7 +30,7 @@ class Server:
         #     return False
 
     @log_default(logger)
-    @send_json
+    @serializer
     def authenticate(self, user):
         print(f'User {user["account_name"]} is authenticating...')
         # logger.info(f'authenticate user {user["account_name"]}')
@@ -72,6 +72,7 @@ class Server:
         self.status = 'disconnected'
         logger_with_name = logger.bind(account_name=self.username, address=self.addr)
         logger_with_name.info('User was disconnected')
+        print(f'{self.username} was disconnected')
         # client.close()
         return False
 
@@ -97,7 +98,7 @@ class Server:
             return self.leave(msg)
 
     @log_default(logger)
-    @send_json
+    @serializer
     def probe(self):
         return {
             "action": "probe",
@@ -120,7 +121,7 @@ class Server:
         self.data += self.send_response(200, 'message is received')
 
     @log_default(logger)
-    @send_json
+    @serializer
     def send_message(self, msg):
         return {
             "action": "msg",
@@ -131,7 +132,7 @@ class Server:
         }
 
     @log_default(logger)
-    @send_json
+    @serializer
     def send_response(self, response, message):
         if response == 200:
             return {
