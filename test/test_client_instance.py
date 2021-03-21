@@ -31,7 +31,7 @@ def client_messages(server_create):
                 "action": "authenticate",
                 "time": time.time(),
                 "user": {
-                    "account_name": server_create.clients[ADDR].account_name,
+                    "account_name": server_create.clients[ADDR].username,
                     "password": server_create.clients[ADDR].password
                 }
             },
@@ -43,7 +43,7 @@ def client_messages(server_create):
                 "time": time.time(),
                 "type": server_create.clients[ADDR].status,
                 "user": {
-                    "account_name": server_create.clients[ADDR].account_name,
+                    "account_name": server_create.clients[ADDR].username,
                     "password": server_create.clients[ADDR].password
                 }
             }
@@ -59,7 +59,7 @@ def test_check_pwd(server_create, client_messages):
 def test_check_pwd_wrong(server_create):
     assert server_create.check_pwd(server_create.clients[ADDR],
                                    {
-                                        "account_name": server_create.clients[ADDR].account_name,
+                                        "account_name": server_create.clients[ADDR].username,
                                         "password": 'wrong password'
                                     }) == 402
 
@@ -76,7 +76,7 @@ def test_authenticate_200(server_create, client_messages):
 @freeze_time("2012-01-14")
 def test_authenticate_402_wrong_pwd(server_create):
     assert server_create.authenticate({
-        "account_name": server_create.clients[ADDR].account_name,
+        "account_name": server_create.clients[ADDR].username,
         "password": 'wrong password'
     }, ADDR) == json.dumps({
                 "response": 402,

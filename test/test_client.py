@@ -22,7 +22,7 @@ def test_authenticate(client_create):
                 "action": "authenticate",
                 "time": time.time(),
                 "user": {
-                    "account_name":  client_create.account_name,
+                    "account_name":  client_create.username,
                     "password":      client_create.password
                 }
             }).encode(services.ENCODING)
@@ -41,7 +41,7 @@ def presence(client_create):
                 "time": time.time(),
                 "type": client_create.status,
                 "user": {
-                        "account_name":  client_create.account_name,
+                        "account_name":  client_create.username,
                         "password":      client_create.password
                 }
             }).encode(services.ENCODING)
@@ -54,7 +54,7 @@ def test_action_handler_probe(client_create):
                 "time": time.time(),
                 "type": client_create.status,
                 "user": {
-                        "account_name":  client_create.account_name,
+                        "account_name":  client_create.username,
                         "password":      client_create.password
                 }
             }).encode(services.ENCODING)

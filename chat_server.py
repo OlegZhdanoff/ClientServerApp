@@ -38,7 +38,7 @@ def process(sel, clients, conn, mask):
     logger_with_name = logger.bind(account_name=clients[conn].username, address=clients[conn].addr)
     if mask & selectors.EVENT_READ:
         msg_list = MessagesDeserializer.get_messages(conn)
-        print(msg_list)
+        # print(msg_list)
         if msg_list:
             for msg in msg_list:
                 if "action" in msg:

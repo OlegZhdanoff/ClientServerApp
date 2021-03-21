@@ -1,13 +1,11 @@
-import errno
-import time
 import json
 import queue
-from dataclasses import dataclass
 from functools import wraps
 import socket
 from json import JSONDecodeError
 
 from log.log_config import log_config, log_default
+from messages import *
 
 ENCODING = 'utf-8'
 MAX_MSG_SIZE = 640
@@ -50,10 +48,22 @@ class SelectableQueue(queue.Queue):
         self._put_socket.close()
 
 
+class MessageEncoder(json.JSONEncoder):
+    """
+    JSONEncoder subclass that leverages an object's `__json__()` method,
+    if available, to obtain its default JSON representation.
+
+    """
+    def default(self, obj):
+        if hasattr(obj, '__json__'):
+            return obj.__json__()
+        return json.JSONEncoder.default(self, obj)
+
+
 def serializer(func):
     @wraps(func)
     def inner(*args, **kwargs):
-        res = json.dumps(func(*args, **kwargs))
+        res = json.dumps(func(*args, **kwargs), cls=MessageEncoder)
         return ('msg_len=' + str(len(res)) + res).encode(ENCODING)
     return inner
 
@@ -117,5 +127,54 @@ class MessagesDeserializer:
 
 
 class MessageProcessor:
-    pass
-
+    @staticmethod
+    def from_msg(msg):
+        if "action" in msg:
+            if msg['action'] == 'presence':
+                return Presence(
+                    action='presence',
+                    time=msg['time'],
+                    type=msg['type'],
+                    username=msg['user']['account_name'],
+                    status=msg['user']['status']
+                )
+            if msg['action'] == 'authenticate':
+                return Authenticate(
+                    action='authenticate',
+                    time=msg['time'],
+                    username=msg['user']['account_name'],
+                    password=msg['user']['password']
+                )
+            if msg['action'] == 'quit':
+                return Quit()
+            if msg['action'] == 'probe':
+                return Probe(
+                    action='probe',
+                    time=msg['time'],
+                )
+            if msg['action'] == 'msg':
+                return Msg(
+                    action='msg',
+                    time=msg['time'],
+                    to=msg['to'],
+                    from_=msg['from'],
+                    text=msg['message']
+                )
+            if msg['action'] == 'join':
+                return Join(
+                    action='join',
+                    time=msg['time'],
+                    room=msg['room'],
+                )
+            if msg['action'] == 'leave':
+                return Leave(
+                    action='leave',
+                    time=msg['time'],
+                    room=msg['room'],
+                )
+        elif "response" in msg:
+            return Response(
+                response=msg['response'],
+                time=msg['time'],
+                alert=msg['alert'],
+            )
