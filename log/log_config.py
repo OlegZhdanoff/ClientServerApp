@@ -8,7 +8,7 @@ import inspect
 
 def proc(logger, method_name, event_dict):
     # print("I got called with", event_dict)
-    return repr(event_dict)
+    return event_dict
 
 
 configure_logging(proc)

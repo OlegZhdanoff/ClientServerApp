@@ -1,5 +1,5 @@
 import logging.config
-
+import logging
 import structlog
 
 
@@ -23,7 +23,8 @@ def configure_logging(processor, log_level='DEBUG'):
         'handlers': {
             'default': {
                 'level': log_level,
-                'class': 'logging.StreamHandler',
+                # 'class': 'logging.StreamHandler',
+                'class': 'logging.NullHandler',
                 'formatter': 'formater',
             },
         },

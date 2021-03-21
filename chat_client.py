@@ -14,18 +14,36 @@ logger = log_config('chat_client', 'client.log')
 @click.command()
 @click.argument('address', default=settings.DEFAULT_SERVER_IP)
 @click.argument('port', default=settings.DEFAULT_SERVER_PORT)
-def start(address, port):
-    user = Client('ivanov', '123', 'online')
+@click.option('--username', default='ivanov', help='username')
+def start(address, port, username):
+    user = Client(username, '123', 'online')
     try:
         s = socket(AF_INET, SOCK_STREAM)  # Создает сокет TCP
+        s.settimeout(0.2)
         s.connect((address, port))  # Присваивает адрес и порт
         s.send(user.authenticate())
-        tm = s.recv(settings.MAX_MSG_SIZE)
-        print(json.loads(tm.decode(settings.ENCODING)))
-        # time.sleep(60)
+
+        while True:
+            tm = settings.recv_all(s)
+            # tm = s.recv(settings.MAX_MSG_SIZE).decode(settings.ENCODING)
+            msg_list = settings.get_msg_list(tm)
+            for data in msg_list:
+                msg = json.loads(data)
+                if "action" in msg:
+                    user.action_handler(msg["action"], msg)
+                elif "response" in msg:
+                    user.response_processor(msg["response"], msg)
+
+            command = input('Command list:\t'
+                            'q - exit\tm - message to all\t')
+            if command == 'q':
+                break
+            elif command == 'm':
+                message = input('Your message: ')
+                s.send(user.send_message('#main', message))
+
         s.send(user.disconnect())
-        # tm = s.recv(MAX_MSG_SIZE)
-        # print(tm.decode(ENCODING))
+
     except gaierror as e:
         logger.exception(f'Incorrect server IP-address {address}:{port}')
     except TimeoutError as e:
@@ -33,7 +51,7 @@ def start(address, port):
     except ConnectionRefusedError as e:
         logger.exception(f'Server {address}:{port} is offline')
     except Exception as e:
-        logger.exception(f'Error connection with server {address}:{port}')
+        logger.exception(f'Error connection with server {address}:{port} - {e.args}')
     finally:
         s.close()
 
