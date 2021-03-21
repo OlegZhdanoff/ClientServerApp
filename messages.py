@@ -50,7 +50,7 @@ class Response:
         return {
             "response": self.response,
             "time": self.time,
-            "error": self.alert
+            "alert": self.alert
         }
 
 

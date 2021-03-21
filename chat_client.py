@@ -1,11 +1,7 @@
-import queue
 import selectors
 
 import click
 from socket import *
-# import time
-# import json
-# import structlog
 from client.shadow_user import ShadowUser
 from client.client import Client
 from client.client_thread import ClientThread
@@ -28,8 +24,6 @@ def start(address, port, username):
         s.connect((address, port))  # Присваивает адрес и порт
 
         gui_app_socket, client_app_socket = socketpair()
-        # gui_app_socket.setblocking(False)
-        # client_app_socket.setblocking(False)
         sq_client = SelectableQueue(gui_app_socket, client_app_socket)
         sq_gui = SelectableQueue(client_app_socket, gui_app_socket)
 

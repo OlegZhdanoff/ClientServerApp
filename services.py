@@ -176,5 +176,5 @@ class MessageProcessor:
             return Response(
                 response=msg['response'],
                 time=msg['time'],
-                alert=msg['alert'],
+                alert=msg['alert']
             )

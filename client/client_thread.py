@@ -1,5 +1,3 @@
-import json
-import queue
 import selectors
 import socket
 import threading

@@ -1,6 +1,5 @@
-import queue
 import time
-from queue import Queue
+from queue import Queue, Empty
 
 import structlog
 
@@ -33,13 +32,13 @@ class Client:
     def feed_data(self, data):
         self.data_queue.put(data)
 
-    @log_default(logger)
+    # @log_default(logger)
     def get_data(self):
         try:
             data = self.data_queue.get_nowait()
             self.data_queue.task_done()
             return data
-        except queue.Empty as e:
+        except Empty as e:
             pass
 
     @log_default(logger)
@@ -75,7 +74,7 @@ class Client:
     @log_default(logger)
     def action_handler(self, msg):
         if isinstance(msg, Probe):
-            return self.presence()
+            self.feed_data(self.presence())
         elif isinstance(msg, Msg):
             self.on_msg(msg)
         elif isinstance(msg, Response):
