@@ -18,6 +18,8 @@ class ClientInstance:
         self.username = ''
         self.password = ''
         self.data_queue = Queue()
+        self.pending_status = False
+        self.client_logger = None
 
     def find_client(self, username):  # как бы ищем клиента в БД
         self.username = username
@@ -48,18 +50,18 @@ class ClientInstance:
     def authenticate(self, msg):
         print(f'User {msg.username} is authenticating...')
         # logger.info(f'authenticate user {user["account_name"]}')
-        logger_with_name = logger.bind(username=msg.username, address=self.addr)
+        self.client_logger = logger.bind(username=msg.username, address=self.addr)
         # user_on_server = self.clients.setdefault(addr, Client(*user.values()))
         result_auth = self.check_pwd(msg)
 
         if result_auth == 200:
-            logger_with_name.info('User is authenticating')
+            self.client_logger.info('User is authenticating')
             return Response(response=200, alert='добро пожаловать в чат')
         elif result_auth == 402:
-            logger_with_name.info(f'User was entered wrong password')
+            self.client_logger.info(f'User was entered wrong password')
             return Response(response=402, alert="This could be wrong password or no account with that name")
         elif result_auth == 409:
-            logger_with_name.warning(f'User was entered wrong password')
+            self.client_logger.warning(f'User was entered wrong password')
             return Response(response=409, alert="Someone is already connected with the given user name")
 
     def check_pwd(self, msg):
@@ -72,14 +74,16 @@ class ClientInstance:
     @log_default(logger)
     def client_disconnect(self):
         self.status = 'disconnected'
-        logger_with_name = logger.bind(username=self.username, address=self.addr)
-        logger_with_name.info('User was disconnected')
+        self.client_logger.info('User was disconnected')
         print(f'{self.username} was disconnected')
         # client.close()
         return False
 
     def client_presence(self, msg):
-        pass
+        self.status = msg.status
+        self.pending_status = False
+        if self.status == 'disconnected':
+            self.client_disconnect()
 
     @log_default(logger)
     def action_handler(self, msg, clients):
@@ -102,6 +106,11 @@ class ClientInstance:
     @log_default(logger)
     @serializer
     def probe(self):
+        if self.pending_status:
+            print("No presence() received from the user")
+            self.client_logger.warning("No presence() received from the user")
+            self.client_disconnect()
+        self.pending_status = True
         return Probe()
 
     @log_default(logger)

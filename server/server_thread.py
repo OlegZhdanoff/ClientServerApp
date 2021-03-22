@@ -51,7 +51,6 @@ class ServerThread(threading.Thread):
         self.clients[conn] = ClientInstance(conn, addr[0])
 
     def _disconnect(self, conn):
-        # logger.info(f"Клиент {clients[conn].username} {clients[conn].addr} отключился")
         self.clients[conn].client_disconnect()
         self.sel.unregister(conn)
         conn.close()
@@ -63,7 +62,10 @@ class ServerThread(threading.Thread):
             msg_list = MessagesDeserializer.get_messages(conn)
             if msg_list:
                 for msg in msg_list:
-                    print(msg)
+                    # debug info
+                    if not msg['action'] == 'presence':
+                        print(msg)
+
                     if not self.clients[conn].action_handler(MessageProcessor.from_msg(msg), self.clients):
                         if self.clients[conn].username == LOCAL_ADMIN:
                             self._close()
