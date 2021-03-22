@@ -13,7 +13,7 @@ ADDR = '127.0.0.1'
 def server_create():
     try:
         print("create Server Instance")
-        serv = Server()
+        serv = ClientInstance()
         serv.clients.setdefault(ADDR, Client('ivanov', '123', 'disconnected'))
         yield serv
     finally:

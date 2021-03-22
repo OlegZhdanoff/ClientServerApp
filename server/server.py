@@ -9,7 +9,7 @@ from services import serializer
 logger = log_config('server', 'server.log')
 
 
-class Server:
+class ClientInstance:
     def __init__(self, conn, addr):
         # self.clients = {}
         self.conn = conn
@@ -89,7 +89,8 @@ class Server:
         elif isinstance(msg, Quit):
             return self.client_disconnect()
         elif isinstance(msg, Presence):
-            return self.client_presence(msg)
+            self.client_presence(msg)
+            return True
         elif isinstance(msg, Msg):
             self.on_msg(msg, clients)
             return True
