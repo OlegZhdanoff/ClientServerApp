@@ -2,6 +2,7 @@
 
 lesson_1/
 lesson_2/
+homework_1/
 ### Python template
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -240,3 +241,4 @@ server.log.2021-03-05_21-19
 server.log.2021-03-05_21-20
 test.bat
 client.log.2021-03-06
+!/homework_1/
