@@ -1,6 +1,6 @@
 import pytest
 from freezegun import freeze_time
-import settings
+import services
 import json
 from client.client import *
 
@@ -22,29 +22,29 @@ def test_authenticate(client_create):
                 "action": "authenticate",
                 "time": time.time(),
                 "user": {
-                    "account_name":  client_create.account_name,
+                    "account_name":  client_create.username,
                     "password":      client_create.password
                 }
-            }).encode(settings.ENCODING)
+            }).encode(services.ENCODING)
 
 
 def test_disconnect(client_create):
-    assert client_create.disconnect() == json.dumps({
+    assert client_create._close() == json.dumps({
                 "action": "quit"
-            }).encode(settings.ENCODING)
+            }).encode(services.ENCODING)
 
 
 @freeze_time("2012-01-14")
 def presence(client_create):
-    assert client_create.disconnect() == json.dumps({
+    assert client_create._close() == json.dumps({
                 "action": "presence",
                 "time": time.time(),
                 "type": client_create.status,
                 "user": {
-                        "account_name":  client_create.account_name,
+                        "account_name":  client_create.username,
                         "password":      client_create.password
                 }
-            }).encode(settings.ENCODING)
+            }).encode(services.ENCODING)
 
 
 @freeze_time("2012-01-14")
@@ -54,7 +54,7 @@ def test_action_handler_probe(client_create):
                 "time": time.time(),
                 "type": client_create.status,
                 "user": {
-                        "account_name":  client_create.account_name,
+                        "account_name":  client_create.username,
                         "password":      client_create.password
                 }
-            }).encode(settings.ENCODING)
+            }).encode(services.ENCODING)
