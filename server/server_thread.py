@@ -11,27 +11,41 @@ logger = log_config('server_thread', 'server.log')
 
 class ServerThread(threading.Thread):
 
-    def __init__(self, conn: socket, *args, **kwargs):
+    def __init__(self, address='localhost', port=7777, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.daemon = True
         self.name = f'Server_Thread'
         self.is_running = True
         self.sel = None
-        self.conn = conn
+        self.conn = None
+        self.address = address
+        self.port = port
         self.clients = {}
         self.probe = None
 
     def run(self):
-        with selectors.DefaultSelector() as self.sel:
-            self.sel.register(
-                self.conn,
-                selectors.EVENT_READ,
-                self._accept,
-            )
-            self.probe = threading.Timer(PING_INTERVAL, self.send_probe)
-            self.probe.start()
-            self._main_loop()
+        try:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as self.conn:
+                self.conn.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+                self.conn.bind((self.address, self.port))  # Присваивает адрес и порт
+                self.conn.listen()  # Переходит в режим ожидания запросов;
+                self.conn.setblocking(False)
+                logger.info(f'Server is started on {self.address}:{self.port}')
+
+                with selectors.DefaultSelector() as self.sel:
+                    self.sel.register(
+                        self.conn,
+                        selectors.EVENT_READ,
+                        self._accept,
+                    )
+                    self.probe = threading.Timer(PING_INTERVAL, self.send_probe)
+                    self.probe.start()
+                    self._main_loop()
+        except OSError:
+            logger.exception('Server cannot create socket')
+        finally:
+            logger.info(f'Server {self.address}:{self.port} was closed ')
 
     def send_probe(self):
         for client in self.clients.values():
@@ -105,6 +119,7 @@ class ServerThread(threading.Thread):
             client.data_queue.join()
             conn.close()
         self.is_running = False
+        self.conn.close()
 
 
 
