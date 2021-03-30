@@ -4,14 +4,34 @@ import threading
 
 from log.log_config import log_config
 from server.server import ClientInstance
-from services import MessagesDeserializer, MessageProcessor, LOCAL_ADMIN, PING_INTERVAL
+from services import MessagesDeserializer, MessageProcessor, LOCAL_ADMIN, PING_INTERVAL, DEFAULT_SERVER_IP, \
+    DEFAULT_SERVER_PORT
 
 logger = log_config('server_thread', 'server.log')
 
 
-class ServerThread(threading.Thread):
+class PortProperty:
+    def __init__(self, name, default=DEFAULT_SERVER_PORT):
+        self.name = "_" + name
+        self.default = default
 
-    def __init__(self, address='localhost', port=7777, *args, **kwargs):
+    def __get__(self, instance, cls):
+        return getattr(instance, self.name, self.default)
+
+    def __set__(self, instance, value):
+        if not isinstance(value, int):
+            logger.exception(f"Port number {value} is not integer")
+            raise TypeError(f"Port number {value} is not integer")
+        if not 1023 < value < 65536:
+            logger.exception(f"Port number {value} out of range")
+            raise ValueError(f"Port number {value} out of range")
+        setattr(instance, self.name, value)
+
+
+class ServerThread(threading.Thread):
+    port = PortProperty('port')
+
+    def __init__(self, address=DEFAULT_SERVER_IP, port=DEFAULT_SERVER_PORT, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.daemon = True
