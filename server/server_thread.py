@@ -1,6 +1,7 @@
 import selectors
 import socket
 import threading
+from threading import Event
 
 from log.log_config import log_config
 from server.server import ClientInstance
@@ -8,6 +9,11 @@ from services import MessagesDeserializer, MessageProcessor, LOCAL_ADMIN, PING_I
     DEFAULT_SERVER_PORT
 
 logger = log_config('server_thread', 'server.log')
+
+
+class ServerEvents:
+    def __init__(self):
+        self.close = Event()
 
 
 class PortProperty:
@@ -31,7 +37,7 @@ class PortProperty:
 class ServerThread(threading.Thread):
     port = PortProperty('port')
 
-    def __init__(self, address=DEFAULT_SERVER_IP, port=DEFAULT_SERVER_PORT, *args, **kwargs):
+    def __init__(self, events, address=DEFAULT_SERVER_IP, port=DEFAULT_SERVER_PORT, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.daemon = True
@@ -43,6 +49,7 @@ class ServerThread(threading.Thread):
         self.port = port
         self.clients = {}
         self.probe = None
+        self.events = events
 
     def run(self):
         try:
@@ -101,9 +108,9 @@ class ServerThread(threading.Thread):
                         print(msg)
 
                     if not self.clients[conn].action_handler(MessageProcessor.from_msg(msg), self.clients):
-                        if self.clients[conn].username == LOCAL_ADMIN:
-                            self._close()
-                            break
+                        # if self.clients[conn].username == LOCAL_ADMIN:
+                        #     self._close()
+                        #     break
                         self._disconnect(conn)
             else:
                 logger_with_name.warning(f'no data in received messages')
@@ -126,11 +133,14 @@ class ServerThread(threading.Thread):
                     self._disconnect(conn)
 
     def _main_loop(self):
-        while self.is_running:
+        while True:
             events = self.sel.select()
             for key, mask in events:
                 callback = key.data
                 callback(key.fileobj, mask)
+            if self.events.close.is_set():
+                break
+        self._close()
 
     def _close(self):
         print('Server shutdown')
@@ -138,7 +148,7 @@ class ServerThread(threading.Thread):
         for conn, client in self.clients.items():
             client.data_queue.join()
             conn.close()
-        self.is_running = False
+        # self.is_running = False
         self.conn.close()
 
 
