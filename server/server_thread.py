@@ -1,37 +1,78 @@
 import selectors
 import socket
 import threading
+from threading import Event
 
 from log.log_config import log_config
 from server.server import ClientInstance
-from services import MessagesDeserializer, MessageProcessor, LOCAL_ADMIN, PING_INTERVAL
+from services import MessagesDeserializer, MessageProcessor, LOCAL_ADMIN, PING_INTERVAL, DEFAULT_SERVER_IP, \
+    DEFAULT_SERVER_PORT
 
 logger = log_config('server_thread', 'server.log')
 
 
-class ServerThread(threading.Thread):
+class ServerEvents:
+    def __init__(self):
+        self.close = Event()
 
-    def __init__(self, conn: socket, *args, **kwargs):
+
+class PortProperty:
+    def __init__(self, name, default=DEFAULT_SERVER_PORT):
+        self.name = "_" + name
+        self.default = default
+
+    def __get__(self, instance, cls):
+        return getattr(instance, self.name, self.default)
+
+    def __set__(self, instance, value):
+        if not isinstance(value, int):
+            logger.exception(f"Port number {value} is not integer")
+            raise TypeError(f"Port number {value} is not integer")
+        if not 1023 < value < 65536:
+            logger.exception(f"Port number {value} out of range")
+            raise ValueError(f"Port number {value} out of range")
+        setattr(instance, self.name, value)
+
+
+class ServerThread(threading.Thread):
+    port = PortProperty('port')
+
+    def __init__(self, events, address=DEFAULT_SERVER_IP, port=DEFAULT_SERVER_PORT, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.daemon = True
         self.name = f'Server_Thread'
         self.is_running = True
         self.sel = None
-        self.conn = conn
+        self.conn = None
+        self.address = address
+        self.port = port
         self.clients = {}
         self.probe = None
+        self.events = events
 
     def run(self):
-        with selectors.DefaultSelector() as self.sel:
-            self.sel.register(
-                self.conn,
-                selectors.EVENT_READ,
-                self._accept,
-            )
-            self.probe = threading.Timer(PING_INTERVAL, self.send_probe)
-            self.probe.start()
-            self._main_loop()
+        try:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as self.conn:
+                self.conn.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+                self.conn.bind((self.address, self.port))  # Присваивает адрес и порт
+                self.conn.listen()  # Переходит в режим ожидания запросов;
+                self.conn.setblocking(False)
+                logger.info(f'Server is started on {self.address}:{self.port}')
+
+                with selectors.DefaultSelector() as self.sel:
+                    self.sel.register(
+                        self.conn,
+                        selectors.EVENT_READ,
+                        self._accept,
+                    )
+                    self.probe = threading.Timer(PING_INTERVAL, self.send_probe)
+                    self.probe.start()
+                    self._main_loop()
+        except OSError:
+            logger.exception('Server cannot create socket')
+        finally:
+            logger.info(f'Server {self.address}:{self.port} was closed ')
 
     def send_probe(self):
         for client in self.clients.values():
@@ -67,9 +108,9 @@ class ServerThread(threading.Thread):
                         print(msg)
 
                     if not self.clients[conn].action_handler(MessageProcessor.from_msg(msg), self.clients):
-                        if self.clients[conn].username == LOCAL_ADMIN:
-                            self._close()
-                            break
+                        # if self.clients[conn].username == LOCAL_ADMIN:
+                        #     self._close()
+                        #     break
                         self._disconnect(conn)
             else:
                 logger_with_name.warning(f'no data in received messages')
@@ -92,11 +133,14 @@ class ServerThread(threading.Thread):
                     self._disconnect(conn)
 
     def _main_loop(self):
-        while self.is_running:
+        while True:
             events = self.sel.select()
             for key, mask in events:
                 callback = key.data
                 callback(key.fileobj, mask)
+            if self.events.close.is_set():
+                break
+        self._close()
 
     def _close(self):
         print('Server shutdown')
@@ -104,7 +148,8 @@ class ServerThread(threading.Thread):
         for conn, client in self.clients.items():
             client.data_queue.join()
             conn.close()
-        self.is_running = False
+        # self.is_running = False
+        self.conn.close()
 
 
 
