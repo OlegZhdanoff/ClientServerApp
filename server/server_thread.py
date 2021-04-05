@@ -17,12 +17,13 @@ class ServerEvents:
 
 
 class PortProperty:
-    def __init__(self, name, default=DEFAULT_SERVER_PORT):
-        self.name = "_" + name
+    def __init__(self, default=DEFAULT_SERVER_PORT):
+        # self.name = "_" + name
         self.default = default
+        self._name = None
 
     def __get__(self, instance, cls):
-        return getattr(instance, self.name, self.default)
+        return getattr(instance, self._name, self.default)
 
     def __set__(self, instance, value):
         if not isinstance(value, int):
@@ -31,11 +32,14 @@ class PortProperty:
         if not 1023 < value < 65536:
             logger.exception(f"Port number {value} out of range")
             raise ValueError(f"Port number {value} out of range")
-        setattr(instance, self.name, value)
+        setattr(instance, self._name, value)
+
+    def __set_name__(self, owner, name):
+        self._name = f'__{name}'
 
 
 class ServerThread(threading.Thread):
-    port = PortProperty('port')
+    port = PortProperty()
 
     def __init__(self, events, address=DEFAULT_SERVER_IP, port=DEFAULT_SERVER_PORT, *args, **kwargs):
         super().__init__(*args, **kwargs)
