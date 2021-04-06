@@ -2,6 +2,8 @@ import time
 from queue import Queue, Empty
 
 from client.client import Client
+from db.client import ClientStorage
+from db.client_history import ClientHistoryStorage
 from log.log_config import log_config, log_default
 from messages import *
 from services import serializer
@@ -10,27 +12,30 @@ logger = log_config('server', 'server.log')
 
 
 class ClientInstance:
-    def __init__(self, conn, addr):
+    def __init__(self, Session, addr):
         # self.clients = {}
-        self.conn = conn
+        # self.client_storage = ClientStorage(session)
+        # self.client_history_storage = ClientHistoryStorage(session)
+        self.Session = Session
         self.addr = addr
-        self.status = ''
+        self.client = None
         self.username = ''
         self.password = ''
         self.data_queue = Queue()
         self.pending_status = False
         self.client_logger = None
 
-    def find_client(self, username):  # как бы ищем клиента в БД
-        self.username = username
-        self.password = '123'
-        self.status = 'disconnected'
-        # try:
-        #     idx = self.clients.index(cl)
-        #     return self.clients[idx]
-        # except ValueError:
-        #     print(f'{cl} is not found')
-        #     return False
+    def find_client(self, msg):  # как бы ищем клиента в БД
+        with self.Session() as session:
+            client_storage = ClientStorage(session)
+            self.client = client_storage.auth_client(msg.username, msg.password)
+
+            if not self.client:
+                try:
+                    client_storage.add_client(msg.username, msg.password)
+                    self.client = client_storage.auth_client(msg.username, msg.password)
+                except ValueError as e:
+                    logger.exception(f'username {msg.username} already exists')
 
     @log_default(logger)
     def feed_data(self, data):
@@ -65,9 +70,9 @@ class ClientInstance:
             return Response(response=409, alert="Someone is already connected with the given user name")
 
     def check_pwd(self, msg):
-        self.find_client(msg.username)
-        if self.username == msg.username and self.password == msg.password:
-            return 200 if self.status == 'disconnected' else 409
+        self.find_client(msg)
+        if self.client:
+            return 200 if self.client.status == 'disconnected' else 409
         else:
             return 402
 
