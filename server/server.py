@@ -6,7 +6,7 @@ from db.client import ClientStorage
 from db.client_history import ClientHistoryStorage
 from log.log_config import log_config, log_default
 from messages import *
-from services import serializer
+from services import serializer, LOCAL_ADMIN
 
 logger = log_config('server', 'server.log')
 
@@ -28,14 +28,18 @@ class ClientInstance:
     def find_client(self, msg):  # как бы ищем клиента в БД
         with self.Session() as session:
             client_storage = ClientStorage(session)
-            self.client = client_storage.auth_client(msg.username, msg.password)
+            self.client = client_storage.get_client(msg.username, msg.password)
 
             if not self.client:
+                print('not client')
                 try:
                     client_storage.add_client(msg.username, msg.password)
-                    self.client = client_storage.auth_client(msg.username, msg.password)
+                    self.client = client_storage.get_client(msg.username, msg.password)
                 except ValueError as e:
+                    print(f'username {msg.username} already exists')
                     logger.exception(f'username {msg.username} already exists')
+            print(self.client)
+            print(msg.username)
 
     @log_default(logger)
     def feed_data(self, data):
@@ -66,28 +70,41 @@ class ClientInstance:
             self.client_logger.info(f'User was entered wrong password')
             return Response(response=402, alert="This could be wrong password or no account with that name")
         elif result_auth == 409:
-            self.client_logger.warning(f'User was entered wrong password')
+            self.client_logger.warning(f'Someone is already connected with the given user name')
             return Response(response=409, alert="Someone is already connected with the given user name")
 
     def check_pwd(self, msg):
         self.find_client(msg)
         if self.client:
-            return 200 if self.client.status == 'disconnected' else 409
+            if self.client.status == 'disconnected' or self.client.login == LOCAL_ADMIN:
+                with self.Session() as session:
+                    client_storage = ClientStorage(session)
+                    self.client.status = 'online'
+                    client_storage.set_status(self.client)
+                return 200
+            else:
+                return 409
         else:
             return 402
 
     @log_default(logger)
     def client_disconnect(self):
-        self.status = 'disconnected'
+        self.client.status = 'disconnected'
+        with self.Session() as session:
+            client_storage = ClientStorage(session)
+            client_storage.set_status(self.client)
         self.client_logger.info('User was disconnected')
-        print(f'{self.username} was disconnected')
+        print(f'{self.client.login} was disconnected')
         # client.close()
         return False
 
     def client_presence(self, msg):
-        self.status = msg.status
+        self.client.status = msg.status
+        with self.Session() as session:
+            client_storage = ClientStorage(session)
+            client_storage.set_status(self.client)
         self.pending_status = False
-        if self.status == 'disconnected':
+        if self.client.status == 'disconnected':
             self.client_disconnect()
 
     @log_default(logger)
@@ -136,11 +153,13 @@ class ClientInstance:
     @log_default(logger)
     @serializer
     def send_message(self, msg):
+        # print('client', self.client)
         return msg
 
     @log_default(logger)
     @serializer
     def send_response(self, response, message):
+        # print('client', self.client)
         return Response(response=response, alert=message)
 
     @log_default(logger)

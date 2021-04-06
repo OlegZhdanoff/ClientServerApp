@@ -12,7 +12,7 @@ class Client(Base):
     status = Column(String(20))
 
     def __repr__(self):
-        return f'<Client(id={self.id}, login={self.login}, password={self.password})>'
+        return f'<Client(id={self.id}, login={self.login}, password={self.password}, status={self.status})>'
 
 
 class ClientStorage:
@@ -22,12 +22,25 @@ class ClientStorage:
 
     def add_client(self, login, password):
         try:
-            with self._session.begin():
-                self._session.add(Client(login=login, password=password, status='disconnected'))
+            # with self._session.begin():
+            self._session.add(Client(login=login, password=password, status='disconnected'))
+            self._session.commit()
         except IntegrityError as e:
             raise ValueError('login must be unique') from e
 
-    def auth_client(self, login, password):
+    def get_client(self, login, password):
         stmt = exists().where(and_(Client.login == login, Client.password == password))
+        # print(stmt)
         return self._session.query(Client).filter(stmt).first()
+
+    def set_status(self, client):
+
+        try:
+            # with self._session.begin():
+            cl = self.get_client(client.login, client.password)
+            cl.status = client.status
+            self._session.commit()
+                # self._session.add(Client(login=client.login, password=client.password, status='disconnected'))
+        except IntegrityError as e:
+            raise ValueError('login must be unique') from e
 
