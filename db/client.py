@@ -22,17 +22,19 @@ class ClientStorage:
 
     def add_client(self, login, password):
         try:
-            with self._session.begin():
-                self._session.add(Client(login=login, password=password, status='disconnected'))
+            # with self._session.begin():
+            self._session.add(Client(login=login, password=password, status='disconnected'))
             # self._session.commit()
         except IntegrityError as e:
             raise ValueError('login must be unique') from e
 
     def get_client(self, login, password):
-        stmt = exists().where(and_(Client.login == login, Client.password == password))
+        # stmt = exists().where(and_(Client.login == login, Client.password == password))
         print('====== get_client===========\n', login, password)
-        print(stmt)
-        cl = self._session.query(Client).filter(stmt).first()
+        # print(stmt)
+        # cl = self._session.query(Client).filter(stmt).first()
+        cl = self._session.query(Client).filter_by(login=login).filter_by(password=password).first()
+        # q_user = session.query(User).filter_by(name="vasia").first()
         print(cl)
         print('====== get_client===========\n')
         return cl

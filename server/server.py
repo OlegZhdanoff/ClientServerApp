@@ -22,7 +22,6 @@ class ClientInstance:
         # self.client_history_storage = ClientHistoryStorage(session)
         # self.client_history_storage = client_history_storage
         self.Session = sessionmaker(bind=engine)
-        # self.Session = Session
         self.session = self.Session()
         self.client_history_storage = ClientHistoryStorage(self.session)
         self.client_storage = ClientStorage(self.session)
