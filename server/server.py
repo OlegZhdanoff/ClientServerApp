@@ -1,9 +1,6 @@
-import time
+import datetime
 from queue import Queue, Empty
 
-from sqlalchemy.orm import sessionmaker
-
-from client.client import Client
 from db.client import ClientStorage
 from db.client_history import ClientHistoryStorage
 from log.log_config import log_config, log_default
@@ -14,16 +11,9 @@ logger = log_config('server', 'server.log')
 
 
 class ClientInstance:
-    # self.clients = {}
 
-    # self.client_storage = ClientStorage(session)
-    # self.client_storage = client_storage
-    # self.client_history_storage = ClientHistoryStorage(session)
-    # self.client_history_storage = client_history_storage
-    # self.Session = sessionmaker(bind=engine)
     def __init__(self, session, addr):
 
-        # self.session = Session()
         self.session = session
         self.client_history_storage = ClientHistoryStorage(self.session)
         self.client_storage = ClientStorage(self.session)
@@ -35,9 +25,7 @@ class ClientInstance:
         self.pending_status = False
         self.client_logger = None
 
-    def find_client(self, msg):  # как бы ищем клиента в БД
-        # with self.session.begin():
-        # client_storage = ClientStorage(session)
+    def find_client(self, msg):
         self.client = self.client_storage.get_client(msg.username, msg.password)
 
         if not self.client:
@@ -47,8 +35,8 @@ class ClientInstance:
             except ValueError as e:
                 print(f'username {msg.username} already exists')
                 logger.exception(f'username {msg.username} already exists')
-        print(f'============= find_client -----> {self.client} <------')
-        # print(msg.username)
+        # print(f'============= find_client -----> {self.client} <------')
+        self.username = msg.username
 
     @log_default(logger)
     def feed_data(self, data):
@@ -72,6 +60,7 @@ class ClientInstance:
 
         if result_auth == 200:
             self.client_logger.info('User is authenticating')
+            self.client_history_storage.add_record(self.client.id, self.addr, datetime.datetime.now())
             return Response(response=200, alert='добро пожаловать в чат')
         elif result_auth == 402:
             self.client_logger.info(f'User was entered wrong password')
@@ -84,11 +73,8 @@ class ClientInstance:
         self.find_client(msg)
         if self.client:
             if self.client.status == 'disconnected' or self.client.login == LOCAL_ADMIN:
-                # with self.Session() as session:
-                #     client_storage = ClientStorage(session)
                 self.client.status = 'online'
                 self.session.commit()
-                # self.client_storage.set_status(self.client)
                 return 200
             else:
                 return 409
@@ -99,19 +85,9 @@ class ClientInstance:
     def client_disconnect(self):
         self.client.status = 'disconnected'
         self.session.commit()
-        # print(self.session)
-        # self.session.close()
-        # with self.Session() as session:
-        #     client_storage = ClientStorage(session)
-        # self.client_storage.set_status(self.client)
         self.client_logger.info('User was disconnected')
         print(f'{self.client.login} was disconnected')
-        # client.close()
         return False
-
-        # with self.Session() as session:
-        #     client_storage = ClientStorage(session)
-        #     self.client_storage.set_status(self.client)
 
     def client_presence(self, msg):
         if not self.client.status == msg.status:
@@ -151,8 +127,6 @@ class ClientInstance:
 
     @log_default(logger)
     def on_msg(self, msg, clients):
-        # for client in clients.values():
-        #     print(client.username, self.username, msg['to'][:1])
         if msg.to[:1] == '#':
             for client in clients.values():
                 if client.username != self.client.login:
@@ -167,13 +141,11 @@ class ClientInstance:
     @log_default(logger)
     @serializer
     def send_message(self, msg):
-        # print('client', self.client)
         return msg
 
     @log_default(logger)
     @serializer
     def send_response(self, response, message):
-        # print('client', self.client)
         return Response(response=response, alert=message)
 
     @log_default(logger)

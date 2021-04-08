@@ -63,19 +63,19 @@ class ServerThread(threading.Thread):
         self.events = events
         self.engine = None
         self.session = None
-        self.client_storage = None
-        self.client_history_storage = None
-        self.Session = None
+        # self.client_storage = None
+        # self.client_history_storage = None
+        # self.Session = None
 
-    def run(self):
-        self.engine = create_engine(DEFAULT_DB, echo=False, pool_recycle=7200)
+    def _connect_db(self, db_path=DEFAULT_DB):
+        self.engine = create_engine(db_path, echo=False, pool_recycle=7200)
         Base.metadata.create_all(self.engine)
         # self.Session = scoped_session(sessionmaker(bind=self.engine))
         Session = sessionmaker(bind=self.engine)
         self.session = Session()
-        # self.client_storage = ClientStorage(self.session)
-        # self.client_history_storage = ClientHistoryStorage(self.session)
 
+    def run(self):
+        self._connect_db()
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as self.conn:
                 self.conn.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
