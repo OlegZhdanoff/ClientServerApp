@@ -1,6 +1,8 @@
 import time
 from queue import Queue, Empty
 
+from sqlalchemy.orm import sessionmaker
+
 from client.client import Client
 from db.client import ClientStorage
 from db.client_history import ClientHistoryStorage
@@ -12,11 +14,18 @@ logger = log_config('server', 'server.log')
 
 
 class ClientInstance:
-    def __init__(self, Session, addr):
+    def __init__(self, engine, addr):
         # self.clients = {}
+
         # self.client_storage = ClientStorage(session)
+        # self.client_storage = client_storage
         # self.client_history_storage = ClientHistoryStorage(session)
-        self.Session = Session
+        # self.client_history_storage = client_history_storage
+        self.Session = sessionmaker(bind=engine)
+        # self.Session = Session
+        self.session = self.Session()
+        self.client_history_storage = ClientHistoryStorage(self.session)
+        self.client_storage = ClientStorage(self.session)
         self.addr = addr
         self.client = None
         self.username = ''
@@ -26,20 +35,20 @@ class ClientInstance:
         self.client_logger = None
 
     def find_client(self, msg):  # как бы ищем клиента в БД
-        with self.Session() as session:
-            client_storage = ClientStorage(session)
-            self.client = client_storage.get_client(msg.username, msg.password)
+        # with self.session.begin():
+        # client_storage = ClientStorage(session)
+        self.client = self.client_storage.get_client(msg.username, msg.password)
 
-            if not self.client:
-                print('not client')
-                try:
-                    client_storage.add_client(msg.username, msg.password)
-                    self.client = client_storage.get_client(msg.username, msg.password)
-                except ValueError as e:
-                    print(f'username {msg.username} already exists')
-                    logger.exception(f'username {msg.username} already exists')
-            print(self.client)
-            print(msg.username)
+        if not self.client:
+            print('not client')
+            try:
+                self.client_storage.add_client(msg.username, msg.password)
+                self.client = self.client_storage.get_client(msg.username, msg.password)
+            except ValueError as e:
+                print(f'username {msg.username} already exists')
+                logger.exception(f'username {msg.username} already exists')
+        print(self.client)
+        print(msg.username)
 
     @log_default(logger)
     def feed_data(self, data):
@@ -77,10 +86,11 @@ class ClientInstance:
         self.find_client(msg)
         if self.client:
             if self.client.status == 'disconnected' or self.client.login == LOCAL_ADMIN:
-                with self.Session() as session:
-                    client_storage = ClientStorage(session)
-                    self.client.status = 'online'
-                    client_storage.set_status(self.client)
+                # with self.Session() as session:
+                #     client_storage = ClientStorage(session)
+                self.client.status = 'online'
+                self.session.commit()
+                # self.client_storage.set_status(self.client)
                 return 200
             else:
                 return 409
@@ -90,22 +100,26 @@ class ClientInstance:
     @log_default(logger)
     def client_disconnect(self):
         self.client.status = 'disconnected'
-        with self.Session() as session:
-            client_storage = ClientStorage(session)
-            client_storage.set_status(self.client)
+        self.session.commit()
+        # with self.Session() as session:
+        #     client_storage = ClientStorage(session)
+        # self.client_storage.set_status(self.client)
         self.client_logger.info('User was disconnected')
         print(f'{self.client.login} was disconnected')
         # client.close()
         return False
 
     def client_presence(self, msg):
-        self.client.status = msg.status
-        with self.Session() as session:
-            client_storage = ClientStorage(session)
-            client_storage.set_status(self.client)
+        if not self.client.status == msg.status:
+            self.client.status = msg.status
+            self.session.commit()
+        # with self.Session() as session:
+        #     client_storage = ClientStorage(session)
+        #     self.client_storage.set_status(self.client)
         self.pending_status = False
         if self.client.status == 'disconnected':
-            self.client_disconnect()
+            return self.client_disconnect()
+        return True
 
     @log_default(logger)
     def action_handler(self, msg, clients):
@@ -115,8 +129,7 @@ class ClientInstance:
         elif isinstance(msg, Quit):
             return self.client_disconnect()
         elif isinstance(msg, Presence):
-            self.client_presence(msg)
-            return True
+            return self.client_presence(msg)
         elif isinstance(msg, Msg):
             self.on_msg(msg, clients)
             return True

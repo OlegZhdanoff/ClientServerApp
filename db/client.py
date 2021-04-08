@@ -1,6 +1,6 @@
 from sqlalchemy import and_, exists, Column, Integer, String
 from sqlalchemy.exc import IntegrityError
-
+import icecream
 from db.base import Base
 
 
@@ -22,24 +22,31 @@ class ClientStorage:
 
     def add_client(self, login, password):
         try:
-            # with self._session.begin():
-            self._session.add(Client(login=login, password=password, status='disconnected'))
-            self._session.commit()
+            with self._session.begin():
+                self._session.add(Client(login=login, password=password, status='disconnected'))
+            # self._session.commit()
         except IntegrityError as e:
             raise ValueError('login must be unique') from e
 
     def get_client(self, login, password):
         stmt = exists().where(and_(Client.login == login, Client.password == password))
-        # print(stmt)
-        return self._session.query(Client).filter(stmt).first()
+        print('====== get_client===========\n', login, password)
+        print(stmt)
+        cl = self._session.query(Client).filter(stmt).first()
+        print(cl)
+        print('====== get_client===========\n')
+        return cl
 
     def set_status(self, client):
 
         try:
+            print('====== set_status()===========\n', client)
             # with self._session.begin():
             cl = self.get_client(client.login, client.password)
+            print('====== set_status() before===========\n', cl)
             cl.status = client.status
-            self._session.commit()
+            print('====== set_status() result===========\n', cl)
+            # self._session.commit()
                 # self._session.add(Client(login=client.login, password=client.password, status='disconnected'))
         except IntegrityError as e:
             raise ValueError('login must be unique') from e

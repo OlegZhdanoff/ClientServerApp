@@ -61,13 +61,18 @@ class ServerThread(threading.Thread):
         self.clients = {}
         self.probe = None
         self.events = events
-        self.Session = None
+        self.engine = None
+        self.session = None
+        self.client_storage = None
+        self.client_history_storage = None
 
     def run(self):
-        engine = create_engine(DEFAULT_DB, echo=False, pool_recycle=7200)
-        Base.metadata.create_all(engine)
-        self.Session = sessionmaker(bind=engine)
+        self.engine = create_engine(DEFAULT_DB, echo=False, pool_recycle=7200)
+        Base.metadata.create_all(self.engine)
+        # Session = sessionmaker(bind=engine)
         # self.session = Session()
+        # self.client_storage = ClientStorage(self.session)
+        # self.client_history_storage = ClientHistoryStorage(self.session)
 
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as self.conn:
@@ -106,7 +111,7 @@ class ServerThread(threading.Thread):
             selectors.EVENT_READ | selectors.EVENT_WRITE,
             self._process,
         )
-        self.clients[conn] = ClientInstance(self.Session, addr[0])
+        self.clients[conn] = ClientInstance(self.engine, addr[0])
 
     def _disconnect(self, conn):
         self.clients[conn].client_disconnect()
