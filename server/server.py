@@ -23,7 +23,8 @@ class ClientInstance:
     # self.Session = sessionmaker(bind=engine)
     def __init__(self, Session, addr):
 
-        self.session = Session()
+        # self.session = Session()
+        self.session = Session
         self.client_history_storage = ClientHistoryStorage(self.session)
         self.client_storage = ClientStorage(self.session)
         self.addr = addr
@@ -98,6 +99,7 @@ class ClientInstance:
     def client_disconnect(self):
         self.client.status = 'disconnected'
         self.session.commit()
+        print(self.session)
         self.session.close()
         # with self.Session() as session:
         #     client_storage = ClientStorage(session)
