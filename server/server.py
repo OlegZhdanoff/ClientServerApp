@@ -99,8 +99,8 @@ class ClientInstance:
     def client_disconnect(self):
         self.client.status = 'disconnected'
         self.session.commit()
-        print(self.session)
-        self.session.close()
+        # print(self.session)
+        # self.session.close()
         # with self.Session() as session:
         #     client_storage = ClientStorage(session)
         # self.client_storage.set_status(self.client)
