@@ -14,15 +14,16 @@ logger = log_config('server', 'server.log')
 
 
 class ClientInstance:
-    def __init__(self, engine, addr):
-        # self.clients = {}
+    # self.clients = {}
 
-        # self.client_storage = ClientStorage(session)
-        # self.client_storage = client_storage
-        # self.client_history_storage = ClientHistoryStorage(session)
-        # self.client_history_storage = client_history_storage
-        self.Session = sessionmaker(bind=engine)
-        self.session = self.Session()
+    # self.client_storage = ClientStorage(session)
+    # self.client_storage = client_storage
+    # self.client_history_storage = ClientHistoryStorage(session)
+    # self.client_history_storage = client_history_storage
+    # self.Session = sessionmaker(bind=engine)
+    def __init__(self, Session, addr):
+
+        self.session = Session()
         self.client_history_storage = ClientHistoryStorage(self.session)
         self.client_storage = ClientStorage(self.session)
         self.addr = addr
@@ -97,6 +98,7 @@ class ClientInstance:
     def client_disconnect(self):
         self.client.status = 'disconnected'
         self.session.commit()
+        self.session.close()
         # with self.Session() as session:
         #     client_storage = ClientStorage(session)
         # self.client_storage.set_status(self.client)
@@ -105,13 +107,14 @@ class ClientInstance:
         # client.close()
         return False
 
+        # with self.Session() as session:
+        #     client_storage = ClientStorage(session)
+        #     self.client_storage.set_status(self.client)
+
     def client_presence(self, msg):
         if not self.client.status == msg.status:
             self.client.status = msg.status
             self.session.commit()
-        # with self.Session() as session:
-        #     client_storage = ClientStorage(session)
-        #     self.client_storage.set_status(self.client)
         self.pending_status = False
         if self.client.status == 'disconnected':
             return self.client_disconnect()

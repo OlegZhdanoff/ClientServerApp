@@ -3,7 +3,7 @@ import socket
 import threading
 from threading import Event
 
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy import create_engine
 
 from db.base import Base
@@ -65,10 +65,12 @@ class ServerThread(threading.Thread):
         self.session = None
         self.client_storage = None
         self.client_history_storage = None
+        self.Session = None
 
     def run(self):
         self.engine = create_engine(DEFAULT_DB, echo=False, pool_recycle=7200)
         Base.metadata.create_all(self.engine)
+        self.Session = scoped_session(sessionmaker(bind=self.engine))
         # Session = sessionmaker(bind=engine)
         # self.session = Session()
         # self.client_storage = ClientStorage(self.session)
@@ -111,10 +113,10 @@ class ServerThread(threading.Thread):
             selectors.EVENT_READ | selectors.EVENT_WRITE,
             self._process,
         )
-        self.clients[conn] = ClientInstance(self.engine, addr[0])
+        self.clients[conn] = ClientInstance(self.Session, addr[0])
 
     def _disconnect(self, conn):
-        self.clients[conn].client_disconnect()
+        # self.clients[conn].client_disconnect()
         self.sel.unregister(conn)
         conn.close()
         del self.clients[conn]
