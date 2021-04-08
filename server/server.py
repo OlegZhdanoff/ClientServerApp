@@ -28,7 +28,7 @@ class ClientInstance:
         self.addr = addr
         self.client = None
         self.username = ''
-        self.password = ''
+        # self.password = ''
         self.data_queue = Queue()
         self.pending_status = False
         self.client_logger = None
@@ -39,15 +39,14 @@ class ClientInstance:
         self.client = self.client_storage.get_client(msg.username, msg.password)
 
         if not self.client:
-            print('not client')
             try:
                 self.client_storage.add_client(msg.username, msg.password)
                 self.client = self.client_storage.get_client(msg.username, msg.password)
             except ValueError as e:
                 print(f'username {msg.username} already exists')
                 logger.exception(f'username {msg.username} already exists')
-        print(self.client)
-        print(msg.username)
+        print(f'============= find_client -----> {self.client} <------')
+        # print(msg.username)
 
     @log_default(logger)
     def feed_data(self, data):
@@ -66,9 +65,7 @@ class ClientInstance:
     @serializer
     def authenticate(self, msg):
         print(f'User {msg.username} is authenticating...')
-        # logger.info(f'authenticate user {user["account_name"]}')
         self.client_logger = logger.bind(username=msg.username, address=self.addr)
-        # user_on_server = self.clients.setdefault(addr, Client(*user.values()))
         result_auth = self.check_pwd(msg)
 
         if result_auth == 200:
@@ -153,7 +150,7 @@ class ClientInstance:
         #     print(client.username, self.username, msg['to'][:1])
         if msg.to[:1] == '#':
             for client in clients.values():
-                if client.username != self.username:
+                if client.username != self.client.login:
                     client.feed_data(self.send_message(msg))
         else:
             for client in clients.values():

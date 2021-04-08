@@ -39,17 +39,13 @@ class ClientStorage:
         print('====== get_client===========\n')
         return cl
 
-    def set_status(self, client):
-
-        try:
-            print('====== set_status()===========\n', client)
-            # with self._session.begin():
-            cl = self.get_client(client.login, client.password)
-            print('====== set_status() before===========\n', cl)
-            cl.status = client.status
-            print('====== set_status() result===========\n', cl)
-            # self._session.commit()
-                # self._session.add(Client(login=client.login, password=client.password, status='disconnected'))
-        except IntegrityError as e:
-            raise ValueError('login must be unique') from e
+    def set_status(self, client, status):
+        print('====== set_status()===========\n', client)
+        # with self._session.begin():
+        # cl = self.get_client(client.login, client.password)
+        print('====== set_status() before===========\n', cl)
+        client.status = status
+        self._session.commit()
+        print('====== set_status() result===========\n', cl)
+        # self._session.commit()
 
