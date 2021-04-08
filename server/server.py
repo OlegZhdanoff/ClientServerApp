@@ -21,10 +21,10 @@ class ClientInstance:
     # self.client_history_storage = ClientHistoryStorage(session)
     # self.client_history_storage = client_history_storage
     # self.Session = sessionmaker(bind=engine)
-    def __init__(self, Session, addr):
+    def __init__(self, session, addr):
 
         # self.session = Session()
-        self.session = Session
+        self.session = session
         self.client_history_storage = ClientHistoryStorage(self.session)
         self.client_storage = ClientStorage(self.session)
         self.addr = addr
