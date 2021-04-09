@@ -42,9 +42,56 @@ class Client:
             pass
 
     @log_default(logger)
+    def action_handler(self, msg):
+        if isinstance(msg, Probe):
+            self.feed_data(self.presence())
+        elif isinstance(msg, Msg):
+            self.on_msg(msg)
+        elif isinstance(msg, Response):
+            print(self.response_processor(msg))
+        else:
+            print('action handler', msg)
+            logger.warning(f"Unknown server's message {msg}")
+            self.close()
+
+    @log_default(logger)
+    def response_processor(self, msg: Response):
+        print(time.ctime(time.time()) + f': {msg.alert}')
+        if msg.response in (200, 409):
+            return msg.alert
+        if msg.response == 201:
+            return msg.alert
+        if msg.response == 203:
+            return msg.alert
+        elif msg.response == 202:
+            return msg.alert
+        elif msg.response == 402:
+            return 'Your password is incorrect'
+        elif msg.response == 404:
+            return "User doesn't exist"
+        else:
+            logger.warning(f'Unknown response {msg}')
+            return f'Unknown response {msg}'
+
+    @log_default(logger)
     @serializer
     def authenticate(self):
         return Authenticate(username=self.username, password=self.password)
+
+    @log_default(logger)
+    @serializer
+    def get_contacts(self):
+        return GetContacts()
+
+    @log_default(logger)
+    @serializer
+    def add_contact(self, name):
+        return AddContact(username=name)
+
+    @log_default(logger)
+    @serializer
+    def del_contact(self, name):
+        return DelContact(username=name)
 
     @log_default(logger)
     @serializer
@@ -70,29 +117,6 @@ class Client:
     @serializer
     def leave(self, room):
         return Leave(room=room)
-
-    @log_default(logger)
-    def action_handler(self, msg):
-        if isinstance(msg, Probe):
-            self.feed_data(self.presence())
-        elif isinstance(msg, Msg):
-            self.on_msg(msg)
-        elif isinstance(msg, Response):
-            self.response_processor(msg)
-        else:
-            logger.warning(f"Unknown server's message {msg}")
-            self.close()
-
-    @log_default(logger)
-    def response_processor(self, msg: Response):
-        print(time.ctime(time.time()) + f': {msg.alert}')
-        if msg.response == 200:
-            return 'You are connected...'
-        elif msg.response == 402:
-            return 'Your password is incorrect'
-        else:
-            logger.warning(f'Unknown response {msg}')
-            return f'Unknown response {msg}'
 
     @log_default(logger)
     def on_msg(self, msg):

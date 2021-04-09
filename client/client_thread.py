@@ -38,12 +38,14 @@ class ClientThread(threading.Thread):
         if mask & selectors.EVENT_READ:
             msg_list = MessagesDeserializer.get_messages(conn)
             for msg in msg_list:
+                print('===== msg ====', msg)
                 self.user.action_handler(MessageProcessor.from_msg(msg))
 
         if mask & selectors.EVENT_WRITE:
             data = self.user.get_data()
             try:
                 if data:
+                    print('===== data =====', data, type(data))
                     if data == 'close':
                         self._close(conn)
                     else:

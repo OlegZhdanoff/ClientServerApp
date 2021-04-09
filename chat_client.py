@@ -42,7 +42,9 @@ def start(address, port, username):
         while True:
 
             command = input('Command list:\t'
-                            'q - exit\tm - message to all:\t')
+                            'q - exit\tm - message to all:\n'
+                            'add user to contacts - add <user>\tdel user from contacts - del <user>\tshow contacts - '
+                            'show\n')
             if command == 'q':
                 sq_gui.put('')
                 user.close()
@@ -51,7 +53,13 @@ def start(address, port, username):
                 message = input('>> ')
                 user.feed_data(user.send_message('#main', message))
                 # дублируем мессагу для shadow client
-                sq_gui.put(user.send_message('#main', message))
+                # sq_gui.put(user.send_message('#main', message))
+            elif command[:3] == 'add':
+                user.feed_data(user.add_contact(command[4:]))
+            elif command[:3] == 'del':
+                user.feed_data(user.del_contact(command[4:]))
+            elif command == 'show':
+                user.feed_data(user.get_contacts())
 
         client_thread.join()
 

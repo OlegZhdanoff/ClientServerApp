@@ -3,6 +3,7 @@ from queue import Queue, Empty
 
 from db.client import ClientStorage
 from db.client_history import ClientHistoryStorage
+from db.contacts import ContactStorage
 from log.log_config import log_config, log_default
 from messages import *
 from services import serializer, LOCAL_ADMIN
@@ -17,6 +18,7 @@ class ClientInstance:
         self.session = session
         self.client_history_storage = ClientHistoryStorage(self.session)
         self.client_storage = ClientStorage(self.session)
+        self.contacts = None
         self.addr = addr
         self.client = None
         self.username = ''
@@ -52,6 +54,29 @@ class ClientInstance:
             pass
 
     @log_default(logger)
+    def action_handler(self, msg, clients):
+        if isinstance(msg, Authenticate):
+            self.feed_data(self.authenticate(msg))
+            return True
+        elif isinstance(msg, Quit):
+            return self.client_disconnect()
+        elif isinstance(msg, Presence):
+            return self.client_presence(msg)
+        elif isinstance(msg, Msg):
+            self.on_msg(msg, clients)
+            return True
+        elif isinstance(msg, Join):
+            return self.join(msg)
+        elif isinstance(msg, Leave):
+            return self.leave(msg)
+        elif isinstance(msg, GetContacts):
+            return self.get_contacts(msg)
+        elif isinstance(msg, AddContact):
+            return self.add_contact(msg)
+        elif isinstance(msg, DelContact):
+            return self.del_contact(msg)
+
+    @log_default(logger)
     @serializer
     def authenticate(self, msg):
         print(f'User {msg.username} is authenticating...')
@@ -61,6 +86,7 @@ class ClientInstance:
         if result_auth == 200:
             self.client_logger.info('User is authenticating')
             self.client_history_storage.add_record(self.client.id, self.addr, datetime.datetime.now())
+            self.contacts = ContactStorage(self.session, self.client)
             return Response(response=200, alert='добро пожаловать в чат')
         elif result_auth == 402:
             self.client_logger.info(f'User was entered wrong password')
@@ -99,28 +125,13 @@ class ClientInstance:
         return True
 
     @log_default(logger)
-    def action_handler(self, msg, clients):
-        if isinstance(msg, Authenticate):
-            self.feed_data(self.authenticate(msg))
-            return True
-        elif isinstance(msg, Quit):
-            return self.client_disconnect()
-        elif isinstance(msg, Presence):
-            return self.client_presence(msg)
-        elif isinstance(msg, Msg):
-            self.on_msg(msg, clients)
-            return True
-        elif isinstance(msg, Join):
-            return self.join(msg)
-        elif isinstance(msg, Leave):
-            return self.leave(msg)
-
-    @log_default(logger)
     @serializer
     def probe(self):
         if self.pending_status:
             print("No presence() received from the user")
             self.client_logger.warning("No presence() received from the user")
+            self.client.status = 'disconnected'
+            self.session.commit()
             self.client_disconnect()
         self.pending_status = True
         return Probe()
@@ -155,3 +166,28 @@ class ClientInstance:
     @log_default(logger)
     def leave(self, msg):
         self.client_logger(f'Client left <{msg.room}>')
+
+    @log_default(logger)
+    def get_contacts(self, msg):
+        print(self.client.Contacts)
+        self.feed_data(self.send_response(200, self.client.Contacts.__repr__()))
+        return True
+
+    @log_default(logger)
+    def add_contact(self, msg):
+        try:
+            print('===call to add contact === ')
+            self.contacts.add_contact(msg.username)
+            return self.feed_data(self.send_response(201, f'{msg.username} added to contacts'))
+        except ValueError:
+            self.client_logger.warning('Error')
+        return True
+
+    @log_default(logger)
+    def del_contact(self, msg):
+        try:
+            self.contacts.del_contact(msg.username)
+            return self.feed_data(self.send_response(203, f'{msg.username} deleted from contacts'))
+        except ValueError:
+            self.client_logger.warning('Error')
+        return True

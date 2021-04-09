@@ -15,7 +15,7 @@ DEFAULT_SERVER_PORT = 7777
 DEFAULT_DB = 'sqlite:///chat.db'
 LOCAL_ADMIN = 'local_admin'
 LOCAL_ADMIN_PASSWORD = '123'
-PING_INTERVAL = 10
+PING_INTERVAL = 20
 
 MSG_LEN_NAME = 'msg_len='
 
@@ -136,45 +136,62 @@ class MessageProcessor:
         if "action" in msg:
             if msg['action'] == 'presence':
                 return Presence(
-                    action='presence',
+                    action=msg['action'],
                     time=msg['time'],
                     type=msg['type'],
                     username=msg['user']['account_name'],
                     status=msg['user']['status']
                 )
-            if msg['action'] == 'authenticate':
+            elif msg['action'] == 'authenticate':
                 return Authenticate(
-                    action='authenticate',
+                    action=msg['action'],
                     time=msg['time'],
                     username=msg['user']['account_name'],
                     password=msg['user']['password']
                 )
-            if msg['action'] == 'quit':
+            elif msg['action'] == 'quit':
                 return Quit()
-            if msg['action'] == 'probe':
+            elif msg['action'] == 'probe':
                 return Probe(
-                    action='probe',
+                    action=msg['action'],
                     time=msg['time'],
                 )
-            if msg['action'] == 'msg':
+            elif msg['action'] == 'msg':
                 return Msg(
-                    action='msg',
+                    action=msg['action'],
                     time=msg['time'],
                     to=msg['to'],
                     from_=msg['from'],
                     text=msg['message']
                 )
-            if msg['action'] == 'join':
+            elif msg['action'] == 'join':
                 return Join(
-                    action='join',
+                    action=msg['action'],
                     time=msg['time'],
                     room=msg['room'],
                 )
-            if msg['action'] == 'leave':
+            elif msg['action'] == 'leave':
                 return Leave(
-                    action='leave',
+                    action=msg['action'],
                     time=msg['time'],
                     room=msg['room'],
+                )
+            elif msg['action'] == 'get_contacts':
+                return GetContacts(
+                    action=msg['action'],
+                    time=msg['time'],
+                )
+            elif msg['action'] == 'add_contact':
+                return AddContact(
+                    action=msg['action'],
+                    time=msg['time'],
+                    username=msg['username'],
+                )
+            elif msg['action'] == 'del_contact':
+                return DelContact(
+                    action=msg['action'],
+                    time=msg['time'],
+                    username=msg['username'],
                 )
         elif "response" in msg:
             return Response(

@@ -72,7 +72,7 @@ class Probe:
     def __json__(self):
         return {
             "action": self.action,
-            "time": time.time(),
+            "time": time.time()
         }
 
 
@@ -130,7 +130,7 @@ class GetContacts:
     def __json__(self):
         return {
             "action": self.action,
-            "time": self.time,
+            "time": self.time
         }
 
 
@@ -144,7 +144,7 @@ class AddContact:
         return {
             "action": self.action,
             "time": self.time,
-            "username": self.username,
+            "username": self.username
         }
 
 
@@ -158,5 +158,5 @@ class DelContact:
         return {
             "action": self.action,
             "time": self.time,
-            "username": self.username,
+            "username": self.username
         }

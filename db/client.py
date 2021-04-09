@@ -10,13 +10,13 @@ logger = log_config('ClientStorage', 'database.log')
 
 
 class Client(Base):
-    __tablename__ = 'users'
+    __tablename__ = 'Client'
     id = Column(Integer, primary_key=True)
     login = Column(String(20), unique=True)
     password = Column(String(100))
     status = Column(String(20))
 
-    contacts = relationship("Contacts", order_by="Contacts.id", back_populates="Client")
+    Contacts = relationship("Contacts", order_by="Contacts.id", back_populates="Client")
 
     def __repr__(self):
         return f'<Client(id={self.id}, login={self.login}, password={self.password}, status={self.status})>'
