@@ -4,6 +4,9 @@ import icecream
 from sqlalchemy.orm import relationship
 
 from db.base import Base
+from log.log_config import log_config
+
+logger = log_config('ClientStorage', 'database.log')
 
 
 class Client(Base):
@@ -28,7 +31,8 @@ class ClientStorage:
         try:
             # with self._session.begin():
             self._session.add(Client(login=login, password=password, status='disconnected'))
-            # self._session.commit()
+            self._session.commit()
+            logger.info(f'client {login} was added to DB')
         except IntegrityError as e:
             raise ValueError('login must be unique') from e
 

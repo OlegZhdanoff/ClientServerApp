@@ -34,7 +34,7 @@ class ClientInstance:
                 self.client = self.client_storage.get_client(msg.username, msg.password)
             except ValueError as e:
                 print(f'username {msg.username} already exists')
-                logger.exception(f'username {msg.username} already exists')
+                self.client_logger.exception(f'username {msg.username} already exists')
         # print(f'============= find_client -----> {self.client} <------')
         self.username = msg.username
 
@@ -150,8 +150,8 @@ class ClientInstance:
 
     @log_default(logger)
     def join(self, msg):
-        pass
+        self.client_logger(f'Client joined to <{msg.room}>')
 
     @log_default(logger)
     def leave(self, msg):
-        pass
+        self.client_logger(f'Client left <{msg.room}>')
