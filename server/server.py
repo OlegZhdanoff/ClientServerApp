@@ -169,8 +169,14 @@ class ClientInstance:
 
     @log_default(logger)
     def get_contacts(self, msg):
-        print(self.client.Contacts)
-        self.feed_data(self.send_response(200, self.client.Contacts.__repr__()))
+        # print(self.client.Contacts)
+        # for contact in self.client.Contacts:
+        #     print(type(contact))
+        #     print(contact)
+        # print(type(self.client.Contacts))
+        self.contacts.get_contacts()
+        # self.feed_data(self.send_response(200, self.client.Contacts.__repr__()))
+        self.feed_data(self.send_response(200, self.contacts.get_contacts()))
         return True
 
     @log_default(logger)

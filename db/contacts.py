@@ -29,7 +29,7 @@ class ContactStorage:
         self.logger = logger.bind(owner=owner.login)
 
     def add_contact(self, client_login):
-        client, contact = self.get_contact(client_login)
+        client, contact = self._get_contact(client_login)
 
         if client:
             if not contact:
@@ -43,7 +43,7 @@ class ContactStorage:
             self.logger.warning(f'client <{client_login}> not found')
             raise ValueError(f'client <{client_login}> not found')
 
-    def get_contact(self, client_login):
+    def _get_contact(self, client_login):
         client = self._session.query(Client).filter_by(login=client_login).first()
         if self.owner.Contacts and client:
             contact = self._session.query(Contacts).filter(and_(Contacts.owner_id == self.owner.id,
@@ -53,7 +53,7 @@ class ContactStorage:
         return client, contact
 
     def del_contact(self, client_login):
-        client, contact = self.get_contact(client_login)
+        client, contact = self._get_contact(client_login)
         if contact:
             self._session.delete(contact)
             self._session.commit()
@@ -61,3 +61,11 @@ class ContactStorage:
         else:
             self.logger.warning(f'contact <{self.owner.login}> - <{client_login}> not found')
             raise ValueError(f'contact <{self.owner.login}> - <{client_login}> not found')
+
+    def get_contacts(self):
+        contacts = []
+        for contact in self.owner.Contacts:
+            # print(type(contact.client_id))
+            # print(contact.client_id)
+            contacts.append(self._session.query(Client).filter_by(id=contact.client_id).first().login)
+        return contacts
