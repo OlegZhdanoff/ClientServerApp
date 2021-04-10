@@ -1,4 +1,4 @@
-from sqlalchemy import and_, exists, Column, Integer, String, ForeignKey
+from sqlalchemy import and_, Column, Integer, ForeignKey
 import icecream
 from sqlalchemy.orm import relationship
 
@@ -7,6 +7,7 @@ from db.client import Client
 from log.log_config import log_config
 
 logger = log_config('Contacts', 'database.log')
+
 
 class Contacts(Base):
     __tablename__ = 'Contacts'
@@ -28,8 +29,6 @@ class ContactStorage:
         self.logger = logger.bind(owner=owner.login)
 
     def add_contact(self, client_login):
-        # print('===add contact===')
-        # client = self._session.query(Client).filter_by(login=client_login).first()
         client, contact = self.get_contact(client_login)
 
         if client:
@@ -45,30 +44,13 @@ class ContactStorage:
             raise ValueError(f'client <{client_login}> not found')
 
     def get_contact(self, client_login):
-        # print('==== get contact ===')
         client = self._session.query(Client).filter_by(login=client_login).first()
-        # print(client)
-        # print(self.owner)
-        # print(self.owner.Contacts)
-        # print(self._session.query(self.owner.Contacts))
         if self.owner.Contacts and client:
-            # print(self._session.query(self.owner.Contacts))
-            # contact = self._session.query(self.owner.Contacts).filter(client_id=client.id).first()
             contact = self._session.query(Contacts).filter(and_(Contacts.owner_id == self.owner.id,
                                                                 Contacts.client_id == client.id)).first()
         else:
             contact = None
-        # print('contact', contact)
         return client, contact
-        # client = self._session.query(Client).filter_by(login=client_login).first()
-        # if client:
-        #     contact = self._session.query(Contacts).filter(and_(owner_id=owner.id, client_id=client.id)).first()
-        #     if contact:
-        #         return contact
-        #     else:
-        #         return False
-        # else:
-        #     raise ValueError(f'Client <{client_login}> not found')
 
     def del_contact(self, client_login):
         client, contact = self.get_contact(client_login)
