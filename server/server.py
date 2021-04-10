@@ -178,16 +178,18 @@ class ClientInstance:
         try:
             print('===call to add contact === ')
             self.contacts.add_contact(msg.username)
-            return self.feed_data(self.send_response(201, f'{msg.username} added to contacts'))
-        except ValueError:
+            self.feed_data(self.send_response(201, f'{msg.username} added to contacts'))
+        except ValueError as e:
             self.client_logger.warning('Error')
+            self.feed_data(self.send_response(405, e.__repr__()))
         return True
 
     @log_default(logger)
     def del_contact(self, msg):
         try:
             self.contacts.del_contact(msg.username)
-            return self.feed_data(self.send_response(203, f'{msg.username} deleted from contacts'))
-        except ValueError:
+            self.feed_data(self.send_response(203, f'{msg.username} deleted from contacts'))
+        except ValueError as e:
             self.client_logger.warning('Error')
+            self.feed_data(self.send_response(405, e.__repr__()))
         return True

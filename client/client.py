@@ -57,7 +57,7 @@ class Client:
     @log_default(logger)
     def response_processor(self, msg: Response):
         print(time.ctime(time.time()) + f': {msg.alert}')
-        if msg.response in (200, 409):
+        if msg.response in (200, 405, 409):
             return msg.alert
         if msg.response == 201:
             return msg.alert

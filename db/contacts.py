@@ -28,7 +28,7 @@ class ContactStorage:
         self.logger = logger.bind(owner=owner.login)
 
     def add_contact(self, client_login):
-        print('===add contact===')
+        # print('===add contact===')
         # client = self._session.query(Client).filter_by(login=client_login).first()
         client, contact = self.get_contact(client_login)
 
@@ -45,18 +45,20 @@ class ContactStorage:
             raise ValueError(f'client <{client_login}> not found')
 
     def get_contact(self, client_login):
-        print('==== get contact ===')
+        # print('==== get contact ===')
         client = self._session.query(Client).filter_by(login=client_login).first()
-        print(client)
-        print(self.owner)
-        print(self.owner.Contacts)
+        # print(client)
+        # print(self.owner)
+        # print(self.owner.Contacts)
         # print(self._session.query(self.owner.Contacts))
-        if self.owner.Contacts:
+        if self.owner.Contacts and client:
             # print(self._session.query(self.owner.Contacts))
-            contact = self._session.query(self.owner.Contacts).filter(client_id=client.id).first()
+            # contact = self._session.query(self.owner.Contacts).filter(client_id=client.id).first()
+            contact = self._session.query(Contacts).filter(and_(Contacts.owner_id == self.owner.id,
+                                                                Contacts.client_id == client.id)).first()
         else:
             contact = None
-        print(contact)
+        # print('contact', contact)
         return client, contact
         # client = self._session.query(Client).filter_by(login=client_login).first()
         # if client:
@@ -69,7 +71,7 @@ class ContactStorage:
         #     raise ValueError(f'Client <{client_login}> not found')
 
     def del_contact(self, client_login):
-        contact = self.get_contact(client_login)
+        client, contact = self.get_contact(client_login)
         if contact:
             self._session.delete(contact)
             self._session.commit()
