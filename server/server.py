@@ -16,7 +16,7 @@ class ClientInstance:
     def __init__(self, session, addr):
 
         self.session = session
-        self.client_history_storage = ClientHistoryStorage(self.session)
+        self.client_history_storage = None
         self.client_storage = ClientStorage(self.session)
         self.contacts = None
         self.addr = addr
@@ -85,7 +85,11 @@ class ClientInstance:
 
         if result_auth == 200:
             self.client_logger.info('User is authenticating')
-            self.client_history_storage.add_record(self.client.id, self.addr, datetime.datetime.now())
+            self.client_history_storage = ClientHistoryStorage(self.session, self.client)
+            self.client_history_storage.add_record(self.addr, datetime.datetime.now())
+            # self.client_history_storage.get_history()
+            # print(type(self.client_storage.get_all()))
+            # print(self.client_storage.get_all())
             self.contacts = ContactStorage(self.session, self.client)
             return Response(response=200, alert='добро пожаловать в чат')
         elif result_auth == 402:
@@ -169,13 +173,6 @@ class ClientInstance:
 
     @log_default(logger)
     def get_contacts(self, msg):
-        # print(self.client.Contacts)
-        # for contact in self.client.Contacts:
-        #     print(type(contact))
-        #     print(contact)
-        # print(type(self.client.Contacts))
-        self.contacts.get_contacts()
-        # self.feed_data(self.send_response(200, self.client.Contacts.__repr__()))
         self.feed_data(self.send_response(200, self.contacts.get_contacts()))
         return True
 

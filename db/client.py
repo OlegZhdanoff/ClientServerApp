@@ -17,6 +17,7 @@ class Client(Base):
     status = Column(String(20))
 
     Contacts = relationship("Contacts", order_by="Contacts.id", back_populates="Client")
+    # ClientHistory = relationship("ClientHistory", order_by="ClientHistory.id", back_populates="Client")
 
     def __repr__(self):
         return f'<Client(id={self.id}, login={self.login}, password={self.password}, status={self.status})>'
@@ -56,4 +57,7 @@ class ClientStorage:
         self._session.commit()
         # print('====== set_status() result===========\n', cl)
         # self._session.commit()
+
+    def get_all(self):
+        return self._session.query(Client.login, Client.password, Client.status).all()
 

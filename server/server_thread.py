@@ -13,7 +13,7 @@ from db.client_history import ClientHistoryStorage
 from log.log_config import log_config
 from server.server import ClientInstance
 from services import MessagesDeserializer, MessageProcessor, LOCAL_ADMIN, PING_INTERVAL, DEFAULT_SERVER_IP, \
-    DEFAULT_SERVER_PORT, DEFAULT_DB
+    DEFAULT_SERVER_PORT, DEFAULT_DB, SelectableQueue
 
 logger = log_config('server_thread', 'server.log')
 
@@ -124,7 +124,10 @@ class ServerThread(threading.Thread):
     def _process(self, conn, mask):
         logger_with_name = logger.bind(username=self.clients[conn].username, address=self.clients[conn].addr)
         if mask & selectors.EVENT_READ:
-            msg_list = MessagesDeserializer.get_messages(conn)
+            if isinstance(conn, SelectableQueue):
+                msg_list = MessagesDeserializer.recv_all(conn)
+            else:
+                msg_list = MessagesDeserializer.get_messages(conn)
             if msg_list:
                 for msg in msg_list:
                     # debug info

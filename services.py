@@ -86,7 +86,8 @@ class MessagesDeserializer:
         if isinstance(conn, SelectableQueue):
             data = conn.get()
             conn.task_done()
-            return data.decode(ENCODING) if data else None
+            # return data.decode(ENCODING) if data else None
+            return data
 
         try:
             while True:
