@@ -101,3 +101,4 @@ class Client:
     @log_default(logger)
     def close(self):
         self.feed_data('close')
+

@@ -1,36 +1,42 @@
-import time
+import datetime
 from queue import Queue, Empty
 
-from client.client import Client
+from db.client import ClientStorage
+from db.client_history import ClientHistoryStorage
 from log.log_config import log_config, log_default
 from messages import *
-from services import serializer
+from services import serializer, LOCAL_ADMIN
 
 logger = log_config('server', 'server.log')
 
 
 class ClientInstance:
-    def __init__(self, conn, addr):
-        # self.clients = {}
-        self.conn = conn
+
+    def __init__(self, session, addr):
+
+        self.session = session
+        self.client_history_storage = ClientHistoryStorage(self.session)
+        self.client_storage = ClientStorage(self.session)
         self.addr = addr
-        self.status = ''
+        self.client = None
         self.username = ''
-        self.password = ''
+        # self.password = ''
         self.data_queue = Queue()
         self.pending_status = False
         self.client_logger = None
 
-    def find_client(self, username):  # как бы ищем клиента в БД
-        self.username = username
-        self.password = '123'
-        self.status = 'disconnected'
-        # try:
-        #     idx = self.clients.index(cl)
-        #     return self.clients[idx]
-        # except ValueError:
-        #     print(f'{cl} is not found')
-        #     return False
+    def find_client(self, msg):
+        self.client = self.client_storage.get_client(msg.username, msg.password)
+
+        if not self.client:
+            try:
+                self.client_storage.add_client(msg.username, msg.password)
+                self.client = self.client_storage.get_client(msg.username, msg.password)
+            except ValueError as e:
+                print(f'username {msg.username} already exists')
+                self.client_logger.exception(f'username {msg.username} already exists')
+        # print(f'============= find_client -----> {self.client} <------')
+        self.username = msg.username
 
     @log_default(logger)
     def feed_data(self, data):
@@ -49,41 +55,48 @@ class ClientInstance:
     @serializer
     def authenticate(self, msg):
         print(f'User {msg.username} is authenticating...')
-        # logger.info(f'authenticate user {user["account_name"]}')
         self.client_logger = logger.bind(username=msg.username, address=self.addr)
-        # user_on_server = self.clients.setdefault(addr, Client(*user.values()))
         result_auth = self.check_pwd(msg)
 
         if result_auth == 200:
             self.client_logger.info('User is authenticating')
+            self.client_history_storage.add_record(self.client.id, self.addr, datetime.datetime.now())
             return Response(response=200, alert='добро пожаловать в чат')
         elif result_auth == 402:
             self.client_logger.info(f'User was entered wrong password')
             return Response(response=402, alert="This could be wrong password or no account with that name")
         elif result_auth == 409:
-            self.client_logger.warning(f'User was entered wrong password')
+            self.client_logger.warning(f'Someone is already connected with the given user name')
             return Response(response=409, alert="Someone is already connected with the given user name")
 
     def check_pwd(self, msg):
-        self.find_client(msg.username)
-        if self.username == msg.username and self.password == msg.password:
-            return 200 if self.status == 'disconnected' else 409
+        self.find_client(msg)
+        if self.client:
+            if self.client.status == 'disconnected' or self.client.login == LOCAL_ADMIN:
+                self.client.status = 'online'
+                self.session.commit()
+                return 200
+            else:
+                return 409
         else:
             return 402
 
     @log_default(logger)
     def client_disconnect(self):
-        self.status = 'disconnected'
+        self.client.status = 'disconnected'
+        self.session.commit()
         self.client_logger.info('User was disconnected')
-        print(f'{self.username} was disconnected')
-        # client.close()
+        print(f'{self.client.login} was disconnected')
         return False
 
     def client_presence(self, msg):
-        self.status = msg.status
+        if not self.client.status == msg.status:
+            self.client.status = msg.status
+            self.session.commit()
         self.pending_status = False
-        if self.status == 'disconnected':
-            self.client_disconnect()
+        if self.client.status == 'disconnected':
+            return self.client_disconnect()
+        return True
 
     @log_default(logger)
     def action_handler(self, msg, clients):
@@ -93,8 +106,7 @@ class ClientInstance:
         elif isinstance(msg, Quit):
             return self.client_disconnect()
         elif isinstance(msg, Presence):
-            self.client_presence(msg)
-            return True
+            return self.client_presence(msg)
         elif isinstance(msg, Msg):
             self.on_msg(msg, clients)
             return True
@@ -115,11 +127,9 @@ class ClientInstance:
 
     @log_default(logger)
     def on_msg(self, msg, clients):
-        # for client in clients.values():
-        #     print(client.username, self.username, msg['to'][:1])
         if msg.to[:1] == '#':
             for client in clients.values():
-                if client.username != self.username:
+                if client.username != self.client.login:
                     client.feed_data(self.send_message(msg))
         else:
             for client in clients.values():
@@ -140,8 +150,8 @@ class ClientInstance:
 
     @log_default(logger)
     def join(self, msg):
-        pass
+        self.client_logger(f'Client joined to <{msg.room}>')
 
     @log_default(logger)
     def leave(self, msg):
-        pass
+        self.client_logger(f'Client left <{msg.room}>')

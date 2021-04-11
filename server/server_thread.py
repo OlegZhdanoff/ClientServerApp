@@ -3,10 +3,17 @@ import socket
 import threading
 from threading import Event
 
+from sqlalchemy.orm import sessionmaker, scoped_session
+from sqlalchemy import create_engine
+
+from db.base import Base
+from db.client import ClientStorage
+from db.client_history import ClientHistoryStorage
+
 from log.log_config import log_config
 from server.server import ClientInstance
 from services import MessagesDeserializer, MessageProcessor, LOCAL_ADMIN, PING_INTERVAL, DEFAULT_SERVER_IP, \
-    DEFAULT_SERVER_PORT
+    DEFAULT_SERVER_PORT, DEFAULT_DB
 
 logger = log_config('server_thread', 'server.log')
 
@@ -17,12 +24,13 @@ class ServerEvents:
 
 
 class PortProperty:
-    def __init__(self, name, default=DEFAULT_SERVER_PORT):
-        self.name = "_" + name
+    def __init__(self, default=DEFAULT_SERVER_PORT):
+        # self.name = "_" + name
         self.default = default
+        self._name = None
 
     def __get__(self, instance, cls):
-        return getattr(instance, self.name, self.default)
+        return getattr(instance, self._name, self.default)
 
     def __set__(self, instance, value):
         if not isinstance(value, int):
@@ -31,11 +39,14 @@ class PortProperty:
         if not 1023 < value < 65536:
             logger.exception(f"Port number {value} out of range")
             raise ValueError(f"Port number {value} out of range")
-        setattr(instance, self.name, value)
+        setattr(instance, self._name, value)
+
+    def __set_name__(self, owner, name):
+        self._name = f'__{name}'
 
 
 class ServerThread(threading.Thread):
-    port = PortProperty('port')
+    port = PortProperty()
 
     def __init__(self, events, address=DEFAULT_SERVER_IP, port=DEFAULT_SERVER_PORT, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -50,8 +61,21 @@ class ServerThread(threading.Thread):
         self.clients = {}
         self.probe = None
         self.events = events
+        self.engine = None
+        self.session = None
+        # self.client_storage = None
+        # self.client_history_storage = None
+        # self.Session = None
+
+    def _connect_db(self, db_path=DEFAULT_DB):
+        self.engine = create_engine(db_path, echo=False, pool_recycle=7200)
+        Base.metadata.create_all(self.engine)
+        # self.Session = scoped_session(sessionmaker(bind=self.engine))
+        Session = sessionmaker(bind=self.engine)
+        self.session = Session()
 
     def run(self):
+        self._connect_db()
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as self.conn:
                 self.conn.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -89,10 +113,10 @@ class ServerThread(threading.Thread):
             selectors.EVENT_READ | selectors.EVENT_WRITE,
             self._process,
         )
-        self.clients[conn] = ClientInstance(conn, addr[0])
+        self.clients[conn] = ClientInstance(self.session, addr[0])
 
     def _disconnect(self, conn):
-        self.clients[conn].client_disconnect()
+        # self.clients[conn].client_disconnect()
         self.sel.unregister(conn)
         conn.close()
         del self.clients[conn]

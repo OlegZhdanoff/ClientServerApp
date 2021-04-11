@@ -32,7 +32,6 @@ def run_admin(events, address, port):
                             'q - server shutdown\tm - message to all:\t')
             if command == 'q':
                 admin.close()
-                # sleep(1)
                 events.close.set()
                 break
             elif command == 'm':

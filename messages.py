@@ -120,3 +120,43 @@ class Leave:
             "time": self.time,
             "room": self.room
         }
+
+
+@dataclass
+class GetContacts:
+    action: str = 'get_contacts'
+    time: float = time.time()
+
+    def __json__(self):
+        return {
+            "action": self.action,
+            "time": self.time,
+        }
+
+
+@dataclass
+class AddContact:
+    action: str = 'add_contact'
+    time: float = time.time()
+    username: str = 'user'
+
+    def __json__(self):
+        return {
+            "action": self.action,
+            "time": self.time,
+            "username": self.username,
+        }
+
+
+@dataclass
+class DelContact:
+    action: str = 'del_contact'
+    time: float = time.time()
+    username: str = 'user'
+
+    def __json__(self):
+        return {
+            "action": self.action,
+            "time": self.time,
+            "username": self.username,
+        }
