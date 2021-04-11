@@ -1,4 +1,4 @@
-from sqlalchemy import and_, exists, Column, Integer, String
+from sqlalchemy import and_, exists, Column, Integer, String, Boolean
 from sqlalchemy.exc import IntegrityError
 import icecream
 from sqlalchemy.orm import relationship
@@ -14,6 +14,7 @@ class Client(Base):
     id = Column(Integer, primary_key=True)
     login = Column(String(20), unique=True)
     password = Column(String(100))
+    is_admin = Column(Boolean, default=False)
     status = Column(String(20))
 
     Contacts = relationship("Contacts", order_by="Contacts.id", back_populates="Client")
@@ -28,16 +29,16 @@ class ClientStorage:
     def __init__(self, session):
         self._session = session
 
-    def add_client(self, login, password):
+    def add_client(self, login, password, is_admin=False):
         try:
             # with self._session.begin():
-            self._session.add(Client(login=login, password=password, status='disconnected'))
+            self._session.add(Client(login=login, password=password, status='disconnected', is_admin=is_admin))
             self._session.commit()
             logger.info(f'client {login} was added to DB')
         except IntegrityError as e:
             raise ValueError('login must be unique') from e
 
-    def get_client(self, login, password):
+    def auth_client(self, login, password):
         # stmt = exists().where(and_(Client.login == login, Client.password == password))
         # print('====== get_client===========\n', login, password)
         # print(stmt)
@@ -47,6 +48,9 @@ class ClientStorage:
         # print(cl)
         # print('====== get_client===========\n')
         return cl
+
+    def get_client(self, login):
+        return self._session.query(Client).filter_by(login=login).first()
 
     def set_status(self, client, status):
         # print('====== set_status()===========\n', client)

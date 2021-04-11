@@ -28,12 +28,15 @@ class ClientInstance:
         self.client_logger = None
 
     def find_client(self, msg):
-        self.client = self.client_storage.get_client(msg.username, msg.password)
+        self.client = self.client_storage.auth_client(msg.username, msg.password)
 
         if not self.client:
             try:
-                self.client_storage.add_client(msg.username, msg.password)
-                self.client = self.client_storage.get_client(msg.username, msg.password)
+                if msg.username == LOCAL_ADMIN:
+                    self.client_storage.add_client(msg.username, msg.password, is_admin=True)
+                else:
+                    self.client_storage.add_client(msg.username, msg.password)
+                self.client = self.client_storage.auth_client(msg.username, msg.password)
             except ValueError as e:
                 print(f'username {msg.username} already exists')
                 self.client_logger.exception(f'username {msg.username} already exists')

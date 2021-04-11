@@ -160,3 +160,33 @@ class DelContact:
             "time": self.time,
             "username": self.username
         }
+
+
+@dataclass
+class AdminGetUsers:
+    action: str = 'admin_get_users'
+    time: float = time.time()
+    users: tuple = ()
+
+    def __json__(self):
+        return {
+            "action": self.action,
+            "time": self.time,
+            "users": self.users
+        }
+
+
+@dataclass
+class AdminGetHistory:
+    action: str = 'admin_get_history'
+    time: float = time.time()
+    user: str = ''
+    history: tuple = ()
+
+    def __json__(self):
+        return {
+            "action": self.action,
+            "time": self.time,
+            "user": self.user,
+            "history": self.history
+        }
