@@ -20,7 +20,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QTableView" name="tableView">
+   <widget class="QTableView" name="historyTable">
     <property name="geometry">
      <rect>
       <x>290</x>
@@ -30,7 +30,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QListView" name="listView">
+   <widget class="QListView" name="userList">
     <property name="geometry">
      <rect>
       <x>9</x>
@@ -57,6 +57,10 @@
    </property>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>userList</tabstop>
+  <tabstop>historyTable</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

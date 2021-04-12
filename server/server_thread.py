@@ -97,6 +97,11 @@ class ServerThread(threading.Thread):
                         selectors.EVENT_READ,
                         self._accept,
                     )
+                    self.sel.register(
+                        self.sq_admin,
+                        selectors.EVENT_READ,
+                        self._process,
+                    )
                     self.probe = threading.Timer(PING_INTERVAL, self.send_probe)
                     self.probe.start()
                     self._main_loop()
@@ -129,10 +134,17 @@ class ServerThread(threading.Thread):
         del self.clients[conn]
 
     def _process(self, conn, mask):
-        logger_with_name = logger.bind(username=self.clients[conn].username, address=self.clients[conn].addr)
+        if isinstance(conn, SelectableQueue):
+            username = 'GUI'
+            address = ''
+        else:
+            username = self.clients[conn].username
+            address = self.clients[conn].addr
+        logger_with_name = logger.bind(username=username, address=address)
         if mask & selectors.EVENT_READ:
             if isinstance(conn, SelectableQueue):
                 msg_list = MessagesDeserializer.recv_all(conn)
+                # print('SelectableQueue ============ ', msg_list)
                 return self.server_gui_processor.action_handler(msg_list)
             else:
                 msg_list = MessagesDeserializer.get_messages(conn)

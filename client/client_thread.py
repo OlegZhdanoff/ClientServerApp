@@ -34,6 +34,9 @@ class ClientThread(threading.Thread):
             self._main_loop()
 
     def _process(self, conn, mask):
+        # print('type = ', type(conn))
+        # print('conn = ', conn)
+        # if isinstance(conn, socket.socket):
         logger_with_name = logger.bind(server=conn.getpeername())
         if mask & selectors.EVENT_READ:
             msg_list = MessagesDeserializer.get_messages(conn)

@@ -41,8 +41,8 @@ class ClientHistoryStorage:
             # .filter_by(client_id=self.owner.id).join(Client.history).all()
             # filter_by(Client=self.owner).join(Client).filter(Client == self.owner)
         for record in query_res:
-            print(type(record[-1]))
+            # print(type(record[-1]))
             # time.strptime()
-            print(record[-1].strftime("%m/%d/%Y, %H:%M:%S"))
+            # print(record[-1].strftime("%m/%d/%Y, %H:%M:%S"))
             res.append((record[0], record[1], record[-1].strftime("%m/%d/%Y, %H:%M:%S")))
-        print(res)
+        return res

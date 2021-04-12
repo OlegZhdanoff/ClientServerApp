@@ -1,5 +1,7 @@
 import selectors
 import sys
+import time
+from pathlib import Path
 from time import sleep
 
 import click
@@ -76,6 +78,7 @@ def start(address, port):
     server_thread.start()
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        time.sleep(1)
         s.settimeout(0.1)
         s.connect((address, port))
         admin = Client(LOCAL_ADMIN, LOCAL_ADMIN_PASSWORD, 'online')

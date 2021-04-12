@@ -28,4 +28,4 @@ class ServerGuiProcessor:
         client = self.client_storage.get_client(msg.user)
         if client:
             self.client_history_storage = ClientHistoryStorage(self._session, client)
-            return AdminGetHistory(history=self.client_history_storage.get_history())
+            return AdminGetHistory(user=msg.user, history=self.client_history_storage.get_history())
