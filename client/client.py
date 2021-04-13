@@ -11,11 +11,13 @@ logger = log_config('client', 'client.log')
 
 
 class Client:
-    def __init__(self, account_name, password, status='disconnected'):
+    def __init__(self, account_name, password, status='disconnected', sq_gui=None):
         self.username = account_name
         self.password = password
         self.status = status
         self.data_queue = Queue()
+        self.auth = False
+        self.sq_gui = sq_gui
 
     @log_default(logger)
     def __eq__(self, other):
@@ -49,6 +51,12 @@ class Client:
             self.on_msg(msg)
         elif isinstance(msg, Response):
             print(self.response_processor(msg))
+        elif isinstance(msg, GetContacts):
+            if self.sq_gui:
+                self.sq_gui.put(msg)
+        elif isinstance(msg, Authenticate):
+            if self.sq_gui:
+                self.sq_gui.put(msg)
         else:
             print('action handler', msg)
             logger.warning(f"Unknown server's message {msg}")
@@ -58,6 +66,10 @@ class Client:
     def response_processor(self, msg: Response):
         print(time.ctime(time.time()) + f': {msg.alert}')
         if msg.response in (200, 405, 409):
+            # if msg.alert == 'auth OK':
+            #     print('msg.alert', msg.alert)
+            #     self.status = 'online'
+            #     self.auth = True
             return msg.alert
         if msg.response == 201:
             return msg.alert
@@ -124,5 +136,9 @@ class Client:
 
     @log_default(logger)
     def close(self):
+        self.auth = False
         self.feed_data('close')
+
+    def _set_auth(self):
+        self.auth = True
 

@@ -1,7 +1,12 @@
 import selectors
+import sys
 
 import click
 from socket import *
+
+from PyQt5 import QtWidgets
+
+from client.client_gui import ClientMainWindow
 from client.shadow_user import ShadowUser
 from client.client import Client
 from client.client_thread import ClientThread
@@ -17,7 +22,7 @@ logger = log_config('chat_client', 'client.log')
 @click.argument('port', default=services.DEFAULT_SERVER_PORT)
 @click.option('--username', default='ivanov', help='username')
 def start(address, port, username):
-    user = Client(username, '123', 'online')
+
     try:
         s = socket(AF_INET, SOCK_STREAM)  # Создает сокет TCP
         s.settimeout(0.1)
@@ -31,37 +36,48 @@ def start(address, port, username):
             {'conn': s, 'events': selectors.EVENT_READ | selectors.EVENT_WRITE},
             {'conn': sq_client, 'events': selectors.EVENT_READ},
         )
+        user = Client(username, '123', sq_gui=sq_gui)
         client_thread = ClientThread(user, client_thread_connections)
         client_thread.start()
 
-        shadow_client = ShadowUser(sq_gui, sq_client)
-        shadow_client.start()
+        app = QtWidgets.QApplication(sys.argv)
+        mw = ClientMainWindow(user, sq_gui, sq_client)
+        mw.show()
+        exit_code = app.exec_()
 
-        user.feed_data(user.authenticate())
-
-        while True:
-
-            command = input('Command list:\t'
-                            'q - exit\tm - message to all:\n'
-                            'add user to contacts - add <user>\tdel user from contacts - del <user>\tshow contacts - '
-                            'show\n')
-            if command == 'q':
-                sq_gui.put('')
-                user.close()
-                break
-            elif command == 'm':
-                message = input('>> ')
-                user.feed_data(user.send_message('#main', message))
-                # дублируем мессагу для shadow client
-                # sq_gui.put(user.send_message('#main', message))
-            elif command[:3] == 'add':
-                user.feed_data(user.add_contact(command[4:]))
-            elif command[:3] == 'del':
-                user.feed_data(user.del_contact(command[4:]))
-            elif command == 'show':
-                user.feed_data(user.get_contacts())
-
+        user.close()
         client_thread.join()
+
+        sys.exit(exit_code)
+
+        # shadow_client = ShadowUser(sq_gui, sq_client)
+        # shadow_client.start()
+        #
+        #
+        #
+        # while True:
+        #
+        #     command = input('Command list:\t'
+        #                     'q - exit\tm - message to all:\n'
+        #                     'add user to contacts - add <user>\tdel user from contacts - del <user>\tshow contacts - '
+        #                     'show\n')
+        #     if command == 'q':
+        #         sq_gui.put('')
+        #         user.close()
+        #         break
+        #     elif command == 'm':
+        #         message = input('>> ')
+        #         user.feed_data(user.send_message('#main', message))
+        #         # дублируем мессагу для shadow client
+        #         # sq_gui.put(user.send_message('#main', message))
+        #     elif command[:3] == 'add':
+        #         user.feed_data(user.add_contact(command[4:]))
+        #     elif command[:3] == 'del':
+        #         user.feed_data(user.del_contact(command[4:]))
+        #     elif command == 'show':
+        #         user.feed_data(user.get_contacts())
+        #
+        # client_thread.join()
 
     except gaierror as e:
         logger.exception(f'Incorrect server IP-address {address}:{port}')

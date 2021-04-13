@@ -61,6 +61,7 @@ class MessageEncoder(json.JSONEncoder):
     def default(self, obj):
         if hasattr(obj, '__json__'):
             return obj.__json__()
+        print(obj)
         return json.JSONEncoder.default(self, obj)
 
 
@@ -148,7 +149,8 @@ class MessageProcessor:
                     action=msg['action'],
                     time=msg['time'],
                     username=msg['user']['account_name'],
-                    password=msg['user']['password']
+                    password=msg['user']['password'],
+                    result=msg['result']
                 )
             elif msg['action'] == 'quit':
                 return Quit()
@@ -181,6 +183,7 @@ class MessageProcessor:
                 return GetContacts(
                     action=msg['action'],
                     time=msg['time'],
+                    contacts=msg['contacts'],
                 )
             elif msg['action'] == 'add_contact':
                 return AddContact(

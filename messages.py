@@ -28,6 +28,7 @@ class Authenticate:
     time: float = time.time()
     username: str = 'username'
     password: str = 'password'
+    result: bool = False
 
     def __json__(self):
         return {
@@ -36,7 +37,8 @@ class Authenticate:
             "user": {
                 "account_name": self.username,
                 "password": self.password
-            }
+            },
+            "result": self.result
         }
 
 
@@ -126,11 +128,13 @@ class Leave:
 class GetContacts:
     action: str = 'get_contacts'
     time: float = time.time()
+    contacts: tuple = ()
 
     def __json__(self):
         return {
             "action": self.action,
-            "time": self.time
+            "time": self.time,
+            "contacts": self.contacts
         }
 
 

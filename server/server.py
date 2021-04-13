@@ -94,7 +94,7 @@ class ClientInstance:
             # print(type(self.client_storage.get_all()))
             # print(self.client_storage.get_all())
             self.contacts = ContactStorage(self.session, self.client)
-            return Response(response=200, alert='добро пожаловать в чат')
+            return Authenticate(result=True)
         elif result_auth == 402:
             self.client_logger.info(f'User was entered wrong password')
             return Response(response=402, alert="This could be wrong password or no account with that name")
@@ -176,7 +176,7 @@ class ClientInstance:
 
     @log_default(logger)
     def get_contacts(self, msg):
-        self.feed_data(self.send_response(200, self.contacts.get_contacts()))
+        self.feed_data(self.send_message(GetContacts(contacts=self.contacts.get_contacts())))
         return True
 
     @log_default(logger)

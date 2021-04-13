@@ -6,7 +6,6 @@ from PyQt5 import QtWidgets, uic
 from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, QThread
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from PyQt5.QtWidgets import QListView, QTableView
-from icecream import ic
 
 from messages import *
 from services import SelectableQueue
@@ -69,6 +68,7 @@ class ServerMainWindow(QtWidgets.QMainWindow):
 
     def show_users(self, data):
         # print(data.users)
+        self.users.clear()
         for user in data.users:
             item = QStandardItem(user[0])
             self.users.appendRow(item)
@@ -82,6 +82,7 @@ class ServerMainWindow(QtWidgets.QMainWindow):
 
     def show_history(self, data):
         # print(data)
+        self.history.clear()
         for row in data.history:
             items = [QStandardItem(item) for item in row]
             self.history.appendRow(items)
