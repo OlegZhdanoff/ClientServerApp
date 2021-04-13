@@ -62,5 +62,22 @@
   <tabstop>historyTable</tabstop>
  </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>userList</sender>
+   <signal>doubleClicked(QModelIndex)</signal>
+   <receiver>historyTable</receiver>
+   <slot>update(QModelIndex)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>163</x>
+     <y>183</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>377</x>
+     <y>188</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

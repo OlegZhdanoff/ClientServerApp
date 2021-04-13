@@ -74,10 +74,11 @@ class ServerMainWindow(QtWidgets.QMainWindow):
             self.users.appendRow(item)
         self.userList.setModel(self.users)
 
-    def get_history(self):
-        idx = self.userList.currentIndex()
+    def get_history(self, item):
+        # print(item.data())
+        # idx = self.userList.currentIndex()
         # print(idx.data())
-        self.feed_data(AdminGetHistory(user=idx.data()))
+        self.feed_data(AdminGetHistory(user=item.data()))
 
     def show_history(self, data):
         # print(data)
