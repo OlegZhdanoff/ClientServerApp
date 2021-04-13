@@ -46,7 +46,7 @@ class ServerMainWindow(QtWidgets.QMainWindow):
 
         self.historyTable = self.findChild(QTableView, 'historyTable')
         self.history = QStandardItemModel(parent=self)
-
+        self.history.setHorizontalHeaderLabels(('login', 'ip_address', 'time'))
         self.feed_data(AdminGetUsers())
 
         self.monitor.gotData.connect(self.data_handler)
@@ -85,3 +85,4 @@ class ServerMainWindow(QtWidgets.QMainWindow):
             items = [QStandardItem(item) for item in row]
             self.history.appendRow(items)
         self.historyTable.setModel(self.history)
+        self.historyTable.resizeColumnsToContents()
