@@ -197,6 +197,13 @@ class MessageProcessor:
                     time=msg['time'],
                     username=msg['username'],
                 )
+            elif msg['action'] == 'filter_clients':
+                return FilterClients(
+                    action=msg['action'],
+                    time=msg['time'],
+                    pattern=msg['filter'],
+                    users=msg['users'],
+                )
         elif "response" in msg:
             return Response(
                 response=msg['response'],

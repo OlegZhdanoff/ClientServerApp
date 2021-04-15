@@ -51,10 +51,9 @@ class Client:
             self.on_msg(msg)
         elif isinstance(msg, Response):
             print(self.response_processor(msg))
-        elif isinstance(msg, GetContacts):
-            if self.sq_gui:
-                self.sq_gui.put(msg)
         elif isinstance(msg, Authenticate):
+            self.authenticated(msg)
+        elif isinstance(msg, (GetContacts, FilterClients)):
             if self.sq_gui:
                 self.sq_gui.put(msg)
         else:
@@ -86,6 +85,14 @@ class Client:
             return f'Unknown response {msg}'
 
     @log_default(logger)
+    def authenticated(self, msg: Authenticate):
+        if msg.result:
+            self.auth = True
+            print('online')
+            self.status = 'online'
+            self.feed_data(self.get_contacts())
+
+    @log_default(logger)
     @serializer
     def authenticate(self):
         return Authenticate(username=self.username, password=self.password)
@@ -94,6 +101,11 @@ class Client:
     @serializer
     def get_contacts(self):
         return GetContacts()
+
+    @log_default(logger)
+    @serializer
+    def sender(self, msg):
+        return msg
 
     @log_default(logger)
     @serializer

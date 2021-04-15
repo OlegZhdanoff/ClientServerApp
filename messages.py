@@ -167,6 +167,22 @@ class DelContact:
 
 
 @dataclass
+class FilterClients:
+    action: str = 'filter_clients'
+    time: float = time.time()
+    pattern: str = ''
+    users: tuple = ()
+
+    def __json__(self):
+        return {
+            "action": self.action,
+            "time": self.time,
+            "filter": self.pattern,
+            "users": self.users
+        }
+
+
+@dataclass
 class AdminGetUsers:
     action: str = 'admin_get_users'
     time: float = time.time()

@@ -78,6 +78,8 @@ class ClientInstance:
             return self.add_contact(msg)
         elif isinstance(msg, DelContact):
             return self.del_contact(msg)
+        elif isinstance(msg, FilterClients):
+            return self.get_filtered_users(msg)
 
     @log_default(logger)
     @serializer
@@ -198,4 +200,10 @@ class ClientInstance:
         except ValueError as e:
             self.client_logger.warning('Error')
             self.feed_data(self.send_response(405, e.__repr__()))
+        return True
+
+    @log_default(logger)
+    def get_filtered_users(self, msg):
+        msg.users = self.client_storage.filter_clients(msg.pattern)
+        self.feed_data(self.send_message(msg))
         return True

@@ -52,6 +52,14 @@ class ClientStorage:
     def get_client(self, login):
         return self._session.query(Client).filter_by(login=login).first()
 
+    def filter_clients(self, pattern):
+        res = []
+        for user in self._session.query(Client.login).filter(Client.login.like(f'%{pattern}%')):
+            print(type(user[0]))
+            print(user[0])
+            res.append(user[0])
+        return res
+
     def set_status(self, client, status):
         # print('====== set_status()===========\n', client)
         # with self._session.begin():
