@@ -32,6 +32,7 @@ class ClientMainWindow(QtWidgets.QMainWindow):
 
         self.contactList = self.findChild(QListView, 'contactList')
         self.contacts = QStandardItemModel(parent=self)
+        self.contactList.clicked.connect(self.is_can_del_contact)
 
         self.filterUsersList = self.findChild(QListView, 'filterUsersList')
         self.filterUsers = QStandardItemModel(parent=self)
@@ -47,6 +48,10 @@ class ClientMainWindow(QtWidgets.QMainWindow):
         self.add_btn = self.findChild(QToolButton, 'addButton')
         self.add_btn.clicked.connect(self.add_to_contacts)
         self.add_btn.setDisabled(True)
+
+        self.del_btn = self.findChild(QPushButton, 'delButton')
+        self.del_btn.clicked.connect(self.del_contact)
+        self.del_btn.setDisabled(True)
 
         self.monitor.gotData.connect(self.data_handler)
         self.monitor_thread = QThread()
@@ -108,4 +113,19 @@ class ClientMainWindow(QtWidgets.QMainWindow):
         self.add_btn.setDisabled(True)
         for item in self.filterUsersList.selectedIndexes():
             self.client.feed_data(self.client.add_contact(item.data()))
+        self.client.feed_data(self.client.get_contacts())
 
+    def is_can_del_contact(self):
+        for item in self.contactList.selectedIndexes():
+            if not item.data():
+                self.del_btn.setDisabled(True)
+                return False
+
+        self.del_btn.setDisabled(False)
+        return True
+
+    def del_contact(self):
+        self.del_btn.setDisabled(True)
+        for item in self.contactList.selectedIndexes():
+            self.client.feed_data(self.client.del_contact(item.data()))
+        self.client.feed_data(self.client.get_contacts())
