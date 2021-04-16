@@ -167,6 +167,12 @@ class MessageProcessor:
                     from_=msg['from'],
                     text=msg['message']
                 )
+            elif msg['action'] == 'get_messages':
+                return GetMessages(
+                    action=msg['action'],
+                    time=msg['time'],
+                    from_=msg['from_'],
+                )
             elif msg['action'] == 'join':
                 return Join(
                     action=msg['action'],

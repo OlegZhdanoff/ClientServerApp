@@ -1,9 +1,12 @@
 import datetime
 from queue import Queue, Empty
 
+from icecream import ic
+
 from db.client import ClientStorage
 from db.client_history import ClientHistoryStorage
 from db.contacts import ContactStorage
+from db.messages import MessageStorage
 from log.log_config import log_config, log_default
 from messages import *
 from services import serializer, LOCAL_ADMIN
@@ -26,6 +29,7 @@ class ClientInstance:
         self.data_queue = Queue()
         self.pending_status = False
         self.client_logger = None
+        self.messages = None
 
     def find_client(self, msg):
         self.client = self.client_storage.auth_client(msg.username, msg.password)
@@ -68,6 +72,8 @@ class ClientInstance:
         elif isinstance(msg, Msg):
             self.on_msg(msg, clients)
             return True
+        elif isinstance(msg, GetMessages):
+            return self.get_messages(msg)
         elif isinstance(msg, Join):
             return self.join(msg)
         elif isinstance(msg, Leave):
@@ -92,10 +98,12 @@ class ClientInstance:
             self.client_logger.info('User is authenticating')
             self.client_history_storage = ClientHistoryStorage(self.session, self.client)
             self.client_history_storage.add_record(self.addr, datetime.datetime.now())
-            # self.client_history_storage.get_history()
-            # print(type(self.client_storage.get_all()))
-            # print(self.client_storage.get_all())
             self.contacts = ContactStorage(self.session, self.client)
+            self.messages = MessageStorage(self.session, self.client)
+            if self.messages.get_from_owner_messages():
+                print(type(self.messages.get_from_owner_messages()[0]))
+                print(self.messages.get_from_owner_messages()[0].message)
+
             return Authenticate(result=True)
         elif result_auth == 402:
             self.client_logger.info(f'User was entered wrong password')
@@ -153,9 +161,13 @@ class ClientInstance:
                     client.feed_data(self.send_message(msg))
         else:
             for client in clients.values():
-                if client.username == msg['to']:
+                if client.username == msg.to:
                     client.feed_data(self.send_message(msg))
                     break
+        client = self.client_storage.get_client(msg.to)
+        # ic(client)
+        if client:
+            self.messages.add_message(client, msg.text)
         self.feed_data(self.send_response(200, 'message is received'))
 
     @log_default(logger)
@@ -207,3 +219,27 @@ class ClientInstance:
         msg.users = self.client_storage.filter_clients(msg.pattern)
         self.feed_data(self.send_message(msg))
         return True
+
+    @log_default(logger)
+    def get_messages(self, msg):
+        client = self.client_storage.get_client(msg.from_)
+        ic(client)
+        # messages = self.messages.get_to_owner_msg_from_time(msg.from_, datetime.datetime.fromtimestamp(msg.time))
+        messages = self.messages.get_chat_msg(client)
+        ic(messages)
+        for item in messages:
+            if item[2] == self.username:
+                message = Msg(time=item[0].timestamp(), to=msg.from_, from_=item[2], text=item[1])
+            else:
+                message = Msg(time=item[0].timestamp(), to=self.username, from_=item[2], text=item[1])
+            self.feed_data(self.send_message(message))
+        return True
+        # for message in messages:
+        #     # print(type(self.messages.get_from_owner_messages()[0]))
+        #     # print(self.messages.get_from_owner_messages()[0].message)
+        #     self.feed_data(self.send_message(Msg(
+        #         time=message.when,
+        #         to=self.username,
+        #         from_=message.from_id,
+        #         text=message.message
+        #     )))

@@ -1,3 +1,4 @@
+import datetime
 import time
 from dataclasses import dataclass
 
@@ -74,7 +75,7 @@ class Probe:
     def __json__(self):
         return {
             "action": self.action,
-            "time": time.time()
+            "time": self.time
         }
 
 
@@ -93,6 +94,20 @@ class Msg:
             "to": self.to,
             "from": self.from_,
             "message": self.text
+        }
+
+
+@dataclass
+class GetMessages:
+    action: str = 'get_messages'
+    time: float = time.time()
+    from_: str = ''
+
+    def __json__(self):
+        return {
+            "action": self.action,
+            "time": self.time,
+            "from_": self.from_,
         }
 
 

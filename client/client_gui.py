@@ -6,6 +6,7 @@ from PyQt5 import QtWidgets, uic
 from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, QThread, QStringListModel, QModelIndex
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from PyQt5.QtWidgets import QListView, QTableView, QWidget, QComboBox, QPushButton, QLineEdit, QToolButton
+from icecream import ic
 
 from client.client import Client
 from messages import *
@@ -32,7 +33,10 @@ class ClientMainWindow(QtWidgets.QMainWindow):
 
         self.contactList = self.findChild(QListView, 'contactList')
         self.contacts = QStandardItemModel(parent=self)
-        self.contactList.clicked.connect(self.is_can_del_contact)
+        self.contactList.clicked.connect(self.contact_selected)
+
+        self.messagesList = self.findChild(QListView, 'messagesList')
+        self.messages = {}
 
         self.filterUsersList = self.findChild(QListView, 'filterUsersList')
         self.filterUsers = QStandardItemModel(parent=self)
@@ -44,6 +48,10 @@ class ClientMainWindow(QtWidgets.QMainWindow):
         #
         self.search_edit = self.findChild(QLineEdit, 'searchEdit')
         self.search_edit.textChanged.connect(self.change_search)
+
+        self.msg_edit = self.findChild(QLineEdit, 'msgEdit')
+        self.msg_btn = self.findChild(QPushButton, 'msgButton')
+        self.msg_btn.clicked.connect(self.send_message)
 
         self.add_btn = self.findChild(QToolButton, 'addButton')
         self.add_btn.clicked.connect(self.add_to_contacts)
@@ -66,6 +74,8 @@ class ClientMainWindow(QtWidgets.QMainWindow):
             self.show_contacts(data)
         elif isinstance(data, FilterClients):
             self.show_filter_users(data.users)
+        elif isinstance(data, Msg):
+            self.on_msg(data)
 
     def feed_data(self, data):
         self.sq_client.put(data)
@@ -115,11 +125,22 @@ class ClientMainWindow(QtWidgets.QMainWindow):
             self.client.feed_data(self.client.add_contact(item.data()))
         self.client.feed_data(self.client.get_contacts())
 
-    def is_can_del_contact(self):
-        for item in self.contactList.selectedIndexes():
-            if not item.data():
-                self.del_btn.setDisabled(True)
-                return False
+    def contact_selected(self):
+        if self.contactList.selectedIndexes():
+            contact = self.contactList.selectedIndexes()[0].data()
+            if self.is_contact(contact):
+                if not self.messages.get(contact):
+                    self.messages.setdefault(contact, QStandardItemModel(parent=self))
+                    tm = datetime.datetime(2000, 1, 1, 0, 0)
+                    self.client.feed_data(self.client.get_messages(tm.timestamp(), contact))
+                self.messagesList.setModel(self.messages[contact])
+            ic(self.messages[contact])
+
+    def is_contact(self, contact):
+        # for item in self.contactList.selectedIndexes():
+        if not contact:
+            self.del_btn.setDisabled(True)
+            return False
 
         self.del_btn.setDisabled(False)
         return True
@@ -129,3 +150,25 @@ class ClientMainWindow(QtWidgets.QMainWindow):
         for item in self.contactList.selectedIndexes():
             self.client.feed_data(self.client.del_contact(item.data()))
         self.client.feed_data(self.client.get_contacts())
+
+    def send_message(self):
+        text = self.msg_edit.text()
+        self.msg_edit.setText('')
+        recipient = self.contactList.currentIndex().data()
+        if text and recipient:
+            self.client.feed_data(self.client.send_message(recipient, text))
+            self.update_chat(recipient, self.client.username, datetime.datetime.now(), text)
+
+    def on_msg(self, msg: Msg):
+        tm = datetime.datetime.fromtimestamp(msg.time)
+        if msg.from_ == self.client.username:
+            self.update_chat(msg.to, msg.from_, tm, msg.text)
+        else:
+            self.update_chat(msg.from_, msg.from_, tm, msg.text)
+        ic(msg)
+
+    def update_chat(self, contact, sender, tm, text):
+        if not self.messages.get(contact):
+            self.messages.setdefault(contact, QStandardItemModel(parent=self))
+        item = QStandardItem(f'{tm.strftime("%Y-%m-%d %H:%M")} {sender} >> {text}')
+        self.messages[contact].appendRow(item)

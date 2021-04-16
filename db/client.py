@@ -18,6 +18,7 @@ class Client(Base):
     status = Column(String(20))
 
     Contacts = relationship("Contacts", order_by="Contacts.id", back_populates="Client")
+    Message = relationship("Message", order_by="Message.id", back_populates="Client")
     # ClientHistory = relationship("ClientHistory", order_by="ClientHistory.id", back_populates="Client")
 
     def __repr__(self):

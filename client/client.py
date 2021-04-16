@@ -47,13 +47,13 @@ class Client:
     def action_handler(self, msg):
         if isinstance(msg, Probe):
             self.feed_data(self.presence())
-        elif isinstance(msg, Msg):
-            self.on_msg(msg)
+        # elif isinstance(msg, Msg):
+        #     self.on_msg(msg)
         elif isinstance(msg, Response):
             print(self.response_processor(msg))
         elif isinstance(msg, Authenticate):
             self.authenticated(msg)
-        elif isinstance(msg, (GetContacts, FilterClients)):
+        elif isinstance(msg, (GetContacts, FilterClients, Msg)):
             if self.sq_gui:
                 self.sq_gui.put(msg)
         else:
@@ -131,6 +131,11 @@ class Client:
     @serializer
     def send_message(self, to, text):
         return Msg(to=to, from_=self.username, text=text)
+
+    @log_default(logger)
+    @serializer
+    def get_messages(self, tm, contact=''):
+        return GetMessages(time=tm, from_=contact)
 
     @log_default(logger)
     @serializer
