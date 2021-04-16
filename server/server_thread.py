@@ -12,8 +12,9 @@ from db.client_history import ClientHistoryStorage
 
 from log.log_config import log_config
 from server.server import ClientInstance
+from server.server_gui_processor import ServerGuiProcessor
 from services import MessagesDeserializer, MessageProcessor, LOCAL_ADMIN, PING_INTERVAL, DEFAULT_SERVER_IP, \
-    DEFAULT_SERVER_PORT, DEFAULT_DB
+    DEFAULT_SERVER_PORT, DEFAULT_DB, SelectableQueue
 
 logger = log_config('server_thread', 'server.log')
 
@@ -48,7 +49,8 @@ class PortProperty:
 class ServerThread(threading.Thread):
     port = PortProperty()
 
-    def __init__(self, events, address=DEFAULT_SERVER_IP, port=DEFAULT_SERVER_PORT, *args, **kwargs):
+    def __init__(self, events, sq_admin: SelectableQueue, sq_gui: SelectableQueue, address=DEFAULT_SERVER_IP,
+                 port=DEFAULT_SERVER_PORT, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.daemon = True
@@ -63,6 +65,9 @@ class ServerThread(threading.Thread):
         self.events = events
         self.engine = None
         self.session = None
+        self.sq_admin = sq_admin
+        self.sq_gui = sq_gui
+        self.server_gui_processor = None
         # self.client_storage = None
         # self.client_history_storage = None
         # self.Session = None
@@ -73,9 +78,11 @@ class ServerThread(threading.Thread):
         # self.Session = scoped_session(sessionmaker(bind=self.engine))
         Session = sessionmaker(bind=self.engine)
         self.session = Session()
+        self.server_gui_processor = ServerGuiProcessor(self.sq_gui, self.session)
 
     def run(self):
         self._connect_db()
+
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as self.conn:
                 self.conn.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -89,6 +96,11 @@ class ServerThread(threading.Thread):
                         self.conn,
                         selectors.EVENT_READ,
                         self._accept,
+                    )
+                    self.sel.register(
+                        self.sq_admin,
+                        selectors.EVENT_READ,
+                        self._process,
                     )
                     self.probe = threading.Timer(PING_INTERVAL, self.send_probe)
                     self.probe.start()
@@ -122,9 +134,20 @@ class ServerThread(threading.Thread):
         del self.clients[conn]
 
     def _process(self, conn, mask):
-        logger_with_name = logger.bind(username=self.clients[conn].username, address=self.clients[conn].addr)
+        if isinstance(conn, SelectableQueue):
+            username = 'GUI'
+            address = ''
+        else:
+            username = self.clients[conn].username
+            address = self.clients[conn].addr
+        logger_with_name = logger.bind(username=username, address=address)
         if mask & selectors.EVENT_READ:
-            msg_list = MessagesDeserializer.get_messages(conn)
+            if isinstance(conn, SelectableQueue):
+                msg_list = MessagesDeserializer.recv_all(conn)
+                # print('SelectableQueue ============ ', msg_list)
+                return self.server_gui_processor.action_handler(msg_list)
+            else:
+                msg_list = MessagesDeserializer.get_messages(conn)
             if msg_list:
                 for msg in msg_list:
                     # debug info
@@ -145,9 +168,6 @@ class ServerThread(threading.Thread):
                 data = self.clients[conn].get_data()
                 try:
                     if data:
-                        # if data == 'close' and self.clients[conn].username == DEFAULT_LOCAL_ADMIN:
-                        #     self._close()
-                        # else:
                         sent_size = conn.send(data)
                         if sent_size == 0:
                             logger_with_name.warning(f"can't send data to client {data}")

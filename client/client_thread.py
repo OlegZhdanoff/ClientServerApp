@@ -34,16 +34,21 @@ class ClientThread(threading.Thread):
             self._main_loop()
 
     def _process(self, conn, mask):
+        # print('type = ', type(conn))
+        # print('conn = ', conn)
+        # if isinstance(conn, socket.socket):
         logger_with_name = logger.bind(server=conn.getpeername())
         if mask & selectors.EVENT_READ:
             msg_list = MessagesDeserializer.get_messages(conn)
             for msg in msg_list:
+                # print('===== msg ====', msg)
                 self.user.action_handler(MessageProcessor.from_msg(msg))
 
         if mask & selectors.EVENT_WRITE:
             data = self.user.get_data()
             try:
                 if data:
+                    # print('===== data =====', data, type(data))
                     if data == 'close':
                         self._close(conn)
                     else:

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>826</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>16777215</width>
+    <height>600</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QTableView" name="historyTable">
+    <property name="geometry">
+     <rect>
+      <x>290</x>
+      <y>10</y>
+      <width>531</width>
+      <height>551</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QListView" name="userList">
+    <property name="geometry">
+     <rect>
+      <x>9</x>
+      <y>9</y>
+      <width>256</width>
+      <height>551</height>
+     </rect>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>826</width>
+     <height>21</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+  </widget>
+ </widget>
+ <tabstops>
+  <tabstop>userList</tabstop>
+  <tabstop>historyTable</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>userList</sender>
+   <signal>doubleClicked(QModelIndex)</signal>
+   <receiver>historyTable</receiver>
+   <slot>update(QModelIndex)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>163</x>
+     <y>183</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>377</x>
+     <y>188</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
