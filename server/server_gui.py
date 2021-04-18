@@ -3,9 +3,10 @@ import sys
 from pathlib import Path
 
 from PyQt5 import QtWidgets, uic
-from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, QThread, QSortFilterProxyModel, Qt, QRegExp
+from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, QThread, QSortFilterProxyModel, Qt, QRegExp, QModelIndex
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from PyQt5.QtWidgets import QListView, QTableView, QLineEdit
+from icecream import ic
 
 from messages import *
 from services import SelectableQueue
@@ -69,6 +70,8 @@ class ServerMainWindow(QtWidgets.QMainWindow):
             self.show_users(data)
         elif isinstance(data, AdminGetHistory):
             self.show_history(data)
+        elif isinstance(data, GetContacts):
+            self.on_login(data)
 
     def feed_data(self, data):
         self.sq_admin.put(data)
@@ -98,3 +101,11 @@ class ServerMainWindow(QtWidgets.QMainWindow):
 
     def set_filter(self, text):
         self.filter_users.setFilterFixedString(text)
+
+    def on_login(self, data: GetContacts):
+        users = self.users.findItems(data.login)
+        if not users:
+            return self.feed_data(AdminGetUsers())
+        if data.login == self.userList.currentIndex().data():
+            self.feed_data(AdminGetHistory(user=data.login))
+

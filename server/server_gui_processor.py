@@ -20,6 +20,8 @@ class ServerGuiProcessor:
             self.feed_data(self.get_users())
         elif isinstance(msg, AdminGetHistory):
             self.feed_data(self.get_history(msg))
+        elif isinstance(msg, GetContacts):
+            self.feed_data(msg)
 
     def get_users(self):
         return AdminGetUsers(users=self.client_storage.get_all())

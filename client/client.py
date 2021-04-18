@@ -100,7 +100,7 @@ class Client:
     @log_default(logger)
     @serializer
     def get_contacts(self):
-        return GetContacts()
+        return GetContacts(login=self.username)
 
     @log_default(logger)
     @serializer

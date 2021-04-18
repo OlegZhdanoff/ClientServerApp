@@ -100,9 +100,9 @@ class ClientInstance:
             self.client_history_storage.add_record(self.addr, datetime.datetime.now())
             self.contacts = ContactStorage(self.session, self.client)
             self.messages = MessageStorage(self.session, self.client)
-            if self.messages.get_from_owner_messages():
-                print(type(self.messages.get_from_owner_messages()[0]))
-                print(self.messages.get_from_owner_messages()[0].message)
+            # if self.messages.get_from_owner_messages():
+            #     print(type(self.messages.get_from_owner_messages()[0]))
+            #     print(self.messages.get_from_owner_messages()[0].message)
 
             return Authenticate(result=True)
         elif result_auth == 402:

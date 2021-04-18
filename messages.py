@@ -144,12 +144,14 @@ class GetContacts:
     action: str = 'get_contacts'
     time: float = time.time()
     contacts: tuple = ()
+    login: str = ''
 
     def __json__(self):
         return {
             "action": self.action,
             "time": self.time,
-            "contacts": self.contacts
+            "contacts": self.contacts,
+            "login": self.login
         }
 
 

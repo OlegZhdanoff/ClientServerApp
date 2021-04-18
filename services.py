@@ -190,6 +190,7 @@ class MessageProcessor:
                     action=msg['action'],
                     time=msg['time'],
                     contacts=msg['contacts'],
+                    login=msg['login']
                 )
             elif msg['action'] == 'add_contact':
                 return AddContact(
