@@ -3,7 +3,7 @@ import sys
 from pathlib import Path
 
 from PyQt5 import QtWidgets, uic
-from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, QThread
+from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, QThread, QSortFilterProxyModel, Qt
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from PyQt5.QtWidgets import QListView, QTableView
 
@@ -42,6 +42,9 @@ class ServerMainWindow(QtWidgets.QMainWindow):
         self.userList = self.findChild(QListView, 'userList')
         self.users = QStandardItemModel(parent=self)
         self.userList.clicked.connect(self.get_history)
+        self.filter_users = QSortFilterProxyModel(self)
+        self.filter_users.setSourceModel(self.users)
+        self.filter_users.sort(0, Qt.AscendingOrder)
 
         self.historyTable = self.findChild(QTableView, 'historyTable')
         self.history = QStandardItemModel(parent=self)
@@ -72,7 +75,7 @@ class ServerMainWindow(QtWidgets.QMainWindow):
         for user in data.users:
             item = QStandardItem(user[0])
             self.users.appendRow(item)
-        self.userList.setModel(self.users)
+        self.userList.setModel(self.filter_users)
 
     def get_history(self, item):
         # print(item.data())
