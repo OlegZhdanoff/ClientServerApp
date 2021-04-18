@@ -1,8 +1,10 @@
+import configparser
 import json
 import queue
 from functools import wraps
 import socket
 from json import JSONDecodeError
+from pathlib import Path
 
 from log.log_config import log_config, log_default
 from messages import *
@@ -20,6 +22,16 @@ PING_INTERVAL = 20
 MSG_LEN_NAME = 'msg_len='
 
 logger = log_config('services', 'services.log')
+
+
+def load_config(path):
+    if path.exists():
+        config = configparser.ConfigParser()
+        config.read(path)
+        return config
+    else:
+        logger.warning(f"config file {path} does't exists")
+        raise OSError(f"config file {path} does't exists")
 
 
 class SelectableQueue(queue.Queue):

@@ -1,5 +1,6 @@
 import os
 import sys
+from configparser import ConfigParser
 from pathlib import Path
 
 from PyQt5 import QtWidgets, uic
@@ -15,11 +16,12 @@ from services import SelectableQueue
 
 
 class ClientMainWindow(QtWidgets.QMainWindow):
-    def __init__(self, client: Client, sq_gui: SelectableQueue, sq_client: SelectableQueue):
+    def __init__(self, client: Client, sq_gui: SelectableQueue, sq_client: SelectableQueue, cfg: ConfigParser):
         super().__init__()
         self.client = client
         self.sq_client = sq_client
         self.monitor = DataMonitor(self, sq_gui)
+        self.config = cfg
 
         self.client.feed_data(client.authenticate())
 

@@ -1,10 +1,12 @@
 import selectors
 import sys
+from pathlib import Path
 
 import click
 from socket import *
 
 from PyQt5 import QtWidgets
+from icecream import ic
 
 from client.client_gui import ClientMainWindow
 from client.shadow_user import ShadowUser
@@ -14,6 +16,8 @@ from services import SelectableQueue
 from log.log_config import log_config
 import services
 
+import configparser
+
 logger = log_config('chat_client', 'client.log')
 
 
@@ -21,11 +25,21 @@ logger = log_config('chat_client', 'client.log')
 @click.argument('address', default=services.DEFAULT_SERVER_IP)
 @click.argument('port', default=services.DEFAULT_SERVER_PORT)
 @click.option('--username', default='ivanov', help='username')
-def start(address, port, username):
-
+@click.option('--password', default='123', help='password')
+def start(address, port, username, password):
+    config_path = Path(__file__).parent.absolute() / 'client' / 'client.ini'
     try:
+        config = services.load_config(config_path)
+        if address == services.DEFAULT_SERVER_IP:
+            address = config['server']['address']
+        if port == services.DEFAULT_SERVER_PORT:
+            port = int(config['server']['port'])
+        if username == 'ivanov':
+            username = config['user']['login']
+            password = config['user']['password']
         s = socket(AF_INET, SOCK_STREAM)  # Создает сокет TCP
         s.settimeout(0.1)
+
         s.connect((address, port))  # Присваивает адрес и порт
 
         gui_app_socket, client_app_socket = socketpair()
@@ -36,12 +50,12 @@ def start(address, port, username):
             {'conn': s, 'events': selectors.EVENT_READ | selectors.EVENT_WRITE},
             {'conn': sq_client, 'events': selectors.EVENT_READ},
         )
-        user = Client(username, '123', sq_gui=sq_gui)
+        user = Client(username, password, sq_gui=sq_gui)
         client_thread = ClientThread(user, client_thread_connections)
         client_thread.start()
 
         app = QtWidgets.QApplication(sys.argv)
-        mw = ClientMainWindow(user, sq_gui, sq_client)
+        mw = ClientMainWindow(user, sq_gui, sq_client, config)
         mw.show()
         exit_code = app.exec_()
 
@@ -85,6 +99,8 @@ def start(address, port, username):
         logger.exception(f'Wrong answer from server {address}:{port}')
     except ConnectionRefusedError as e:
         logger.exception(f'Server {address}:{port} is offline')
+    except OSError as e:
+        logger.exception(f'OS error')
     except Exception as e:
         logger.exception(f'Error connection with server {address}:{port} - {e.args}')
     finally:
