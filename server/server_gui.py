@@ -3,9 +3,9 @@ import sys
 from pathlib import Path
 
 from PyQt5 import QtWidgets, uic
-from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, QThread, QSortFilterProxyModel, Qt
+from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, QThread, QSortFilterProxyModel, Qt, QRegExp
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
-from PyQt5.QtWidgets import QListView, QTableView
+from PyQt5.QtWidgets import QListView, QTableView, QLineEdit
 
 from messages import *
 from services import SelectableQueue
@@ -45,6 +45,10 @@ class ServerMainWindow(QtWidgets.QMainWindow):
         self.filter_users = QSortFilterProxyModel(self)
         self.filter_users.setSourceModel(self.users)
         self.filter_users.sort(0, Qt.AscendingOrder)
+        self.filter_users.setFilterKeyColumn(0)
+
+        self.filterEdit = self.findChild(QLineEdit, 'filterEdit')
+        self.filterEdit.textChanged.connect(self.set_filter)
 
         self.historyTable = self.findChild(QTableView, 'historyTable')
         self.history = QStandardItemModel(parent=self)
@@ -91,3 +95,6 @@ class ServerMainWindow(QtWidgets.QMainWindow):
             self.history.appendRow(items)
         self.historyTable.setModel(self.history)
         self.historyTable.resizeColumnsToContents()
+
+    def set_filter(self, text):
+        self.filter_users.setFilterFixedString(text)
