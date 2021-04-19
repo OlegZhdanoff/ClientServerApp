@@ -34,7 +34,7 @@ class ClientInstance:
     def find_client(self, msg):
         self.client = self.client_storage.auth_client(msg.username, msg.password)
 
-        if not self.client:
+        if self.client == -1:
             try:
                 if msg.username == LOCAL_ADMIN:
                     self.client_storage.add_client(msg.username, msg.password, is_admin=True)
@@ -42,8 +42,11 @@ class ClientInstance:
                     self.client_storage.add_client(msg.username, msg.password)
                 self.client = self.client_storage.auth_client(msg.username, msg.password)
             except ValueError as e:
-                print(f'username {msg.username} already exists')
-                self.client_logger.exception(f'username {msg.username} already exists')
+                print(f'username {msg.username} already exists or wrong password')
+                self.client_logger.exception(f'username {msg.username} already exists or wrong password')
+        else:
+            print(f'username {msg.username} - wrong password')
+            self.client_logger.exception(f'username {msg.username} - wrong password')
         # print(f'============= find_client -----> {self.client} <------')
         self.username = msg.username
 
@@ -126,20 +129,25 @@ class ClientInstance:
 
     @log_default(logger)
     def client_disconnect(self):
-        self.client.status = 'disconnected'
-        self.session.commit()
+        if self.client:
+            self.client.status = 'disconnected'
+            self.session.commit()
         self.client_logger.info('User was disconnected')
-        print(f'{self.client.login} was disconnected')
+        print(f'{self.username} was disconnected')
         return False
 
     def client_presence(self, msg):
-        if not self.client.status == msg.status:
-            self.client.status = msg.status
-            self.session.commit()
-        self.pending_status = False
-        if self.client.status == 'disconnected':
+        if not self.client:
             return self.client_disconnect()
-        return True
+        else:
+            print(self.client)
+            if not self.client.status == msg.status:
+                self.client.status = msg.status
+                self.session.commit()
+            self.pending_status = False
+            if self.client.status == 'disconnected':
+                return self.client_disconnect()
+            return True
 
     @log_default(logger)
     @serializer
