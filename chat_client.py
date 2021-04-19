@@ -12,7 +12,7 @@ from client.client_gui import ClientMainWindow
 from client.shadow_user import ShadowUser
 from client.client import Client
 from client.client_thread import ClientThread
-from services import SelectableQueue
+from services import SelectableQueue, Config
 from log.log_config import log_config
 import services
 
@@ -29,14 +29,14 @@ logger = log_config('chat_client', 'client.log')
 def start(address, port, username, password):
     config_path = Path(__file__).parent.absolute() / 'client' / 'client.ini'
     try:
-        config = services.load_config(config_path)
+        config = Config(config_path)
         if address == services.DEFAULT_SERVER_IP:
-            address = config['server']['address']
+            address = config.data['server']['address']
         if port == services.DEFAULT_SERVER_PORT:
-            port = int(config['server']['port'])
+            port = int(config.data['server']['port'])
         if username == 'ivanov':
-            username = config['user']['login']
-            password = config['user']['password']
+            username = config.data['user']['login']
+            password = config.data['user']['password']
         s = socket(AF_INET, SOCK_STREAM)  # Создает сокет TCP
         s.settimeout(0.1)
 

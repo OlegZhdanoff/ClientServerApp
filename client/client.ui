@@ -130,6 +130,9 @@
       <height>521</height>
      </rect>
     </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
     <widget class="QLineEdit" name="loginEdit">
      <property name="geometry">
       <rect>

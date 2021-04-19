@@ -10,18 +10,22 @@ from PyQt5.QtWidgets import QListView, QTableView, QWidget, QComboBox, QPushButt
 from icecream import ic
 
 from client.client import Client
+from log.log_config import log_config
 from messages import *
 from server.server_gui import DataMonitor
-from services import SelectableQueue
+from services import SelectableQueue, Config, STATUS
+
+logger = log_config('client_gui', 'client.log')
 
 
 class ClientMainWindow(QtWidgets.QMainWindow):
-    def __init__(self, client: Client, sq_gui: SelectableQueue, sq_client: SelectableQueue, cfg: ConfigParser):
+    def __init__(self, client: Client, sq_gui: SelectableQueue, sq_client: SelectableQueue, cfg: Config):
         super().__init__()
         self.client = client
         self.sq_client = sq_client
         self.monitor = DataMonitor(self, sq_gui)
         self.config = cfg
+        self.logger = logger.bind(username=client.username)
 
         self.client.feed_data(client.authenticate())
 
@@ -32,6 +36,8 @@ class ClientMainWindow(QtWidgets.QMainWindow):
         self.profileWidget.hide()
 
         self.statusComboBox = self.profileWidget.findChild(QComboBox, 'statusComboBox')
+        self.statusComboBox.addItems(STATUS)
+        self.statusComboBox.setEditable(False)
 
         self.contactList = self.findChild(QListView, 'contactList')
         self.contacts = QStandardItemModel(parent=self)
@@ -63,11 +69,23 @@ class ClientMainWindow(QtWidgets.QMainWindow):
         self.del_btn.clicked.connect(self.del_contact)
         self.del_btn.setDisabled(True)
 
+        self.profile_btn = self.findChild(QToolButton, 'profileButton')
+        self.profile_btn.clicked.connect(self.toggle_profile)
+
+        self.login_edit = self.profileWidget.findChild(QLineEdit, 'loginEdit')
+        self.password_edit = self.profileWidget.findChild(QLineEdit, 'passwordEdit')
+        self.save_btn = self.profileWidget.findChild(QPushButton, 'saveButton')
+        self.save_btn.clicked.connect(self.save_profile)
+        self.cancel_btn = self.profileWidget.findChild(QPushButton, 'cancelButton')
+        self.cancel_btn.clicked.connect(self.cancel_profile)
+
         self.monitor.gotData.connect(self.data_handler)
         self.monitor_thread = QThread()
         self.monitor.moveToThread(self.monitor_thread)
         self.monitor_thread.started.connect(self.monitor.get_data)
         self.monitor_thread.start()
+
+        self.load_config()
 
     @pyqtSlot(tuple)
     def data_handler(self, data):
@@ -174,3 +192,29 @@ class ClientMainWindow(QtWidgets.QMainWindow):
             self.messages.setdefault(contact, QStandardItemModel(parent=self))
         item = QStandardItem(f'{tm.strftime("%Y-%m-%d %H:%M")} {sender} >> {text}')
         self.messages[contact].appendRow(item)
+
+    def load_config(self):
+        self.login_edit.setText(self.config.data['user']['login'])
+        self.password_edit.setText(self.config.data['user']['password'])
+        status_idx = self.statusComboBox.findText(self.config.data['user']['status'])
+        if status_idx > -1:
+            self.statusComboBox.setCurrentIndex(status_idx)
+        else:
+            self.logger.warning(f"wrong status in config - {self.config.data['user']['status']}")
+
+    def cancel_profile(self):
+        self.load_config()
+        self.toggle_profile()
+
+    def toggle_profile(self):
+        if self.profileWidget.isHidden():
+            self.profileWidget.show()
+        else:
+            self.profileWidget.hide()
+
+    def save_profile(self):
+        self.config.data['user']['login'] = self.login_edit.text()
+        self.config.data['user']['password'] = self.password_edit.text()
+        self.config.data['user']['status'] = self.statusComboBox.currentText()
+        self.config.save_config()
+        self.toggle_profile()

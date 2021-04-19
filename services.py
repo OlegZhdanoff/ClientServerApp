@@ -24,14 +24,24 @@ MSG_LEN_NAME = 'msg_len='
 logger = log_config('services', 'services.log')
 
 
-def load_config(path):
-    if path.exists():
-        config = configparser.ConfigParser()
-        config.read(path)
-        return config
-    else:
-        logger.warning(f"config file {path} does't exists")
-        raise OSError(f"config file {path} does't exists")
+STATUS = ('online', 'disconnected', 'afk', 'busy')
+
+
+class Config:
+    def __init__(self, path: Path):
+        if not path.exists():
+            logger.warning(f"config file {path} does't exists")
+            raise OSError(f"config file {path} does't exists")
+        self.path = path
+        self.data = configparser.ConfigParser()
+        self.load_config()
+
+    def load_config(self):
+        self.data.read(self.path)
+
+    def save_config(self):
+        with open(self.path, 'w', encoding='utf-8') as f:
+            self.data.write(f)
 
 
 class SelectableQueue(queue.Queue):
