@@ -40,7 +40,7 @@ class Config:
         self.data.read(self.path)
 
     def save_config(self):
-        with open(self.path, 'w', encoding='utf-8') as f:
+        with open(self.path, 'w', encoding=ENCODING) as f:
             self.data.write(f)
 
 
