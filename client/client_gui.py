@@ -27,7 +27,7 @@ class ClientMainWindow(QtWidgets.QMainWindow):
         self.config = cfg
         self.logger = logger.bind(username=client.username)
 
-        self.client.feed_data(client.authenticate())
+        self.client.feed_data(client.send_key())
 
         ui_file_path = Path(__file__).parent.absolute() / "client.ui"
         uic.loadUi(ui_file_path, self)

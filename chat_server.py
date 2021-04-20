@@ -88,7 +88,7 @@ def start(address, port):
         )
         admin_thread = ClientThread(admin, client_thread_connections)
         admin_thread.start()
-        admin.feed_data(admin.authenticate())
+        admin.feed_data(admin.send_key())
 
         app = QtWidgets.QApplication(sys.argv)
         mw = ServerMainWindow(sq_gui, sq_admin)

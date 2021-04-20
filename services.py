@@ -1,16 +1,20 @@
 import configparser
 import json
+import pickle
 import queue
 from functools import wraps
 import socket
 from json import JSONDecodeError
 from pathlib import Path
 
+from Crypto.Cipher import AES
+from icecream import ic
+
 from log.log_config import log_config, log_default
 from messages import *
 
 ENCODING = 'utf-8'
-MAX_MSG_SIZE = 640
+MAX_MSG_SIZE = 1024
 
 DEFAULT_SERVER_IP = 'localhost'
 DEFAULT_SERVER_PORT = 7777
@@ -82,16 +86,24 @@ class MessageEncoder(json.JSONEncoder):
     """
     def default(self, obj):
         if hasattr(obj, '__json__'):
+            # ic(obj)
             return obj.__json__()
-        print(obj)
+        # if isinstance(obj, bytes):
+        #     return {"key": obj}
+        print('class MessageEncoder: obj -> ', obj)
         return json.JSONEncoder.default(self, obj)
 
 
 def serializer(func):
     @wraps(func)
     def inner(*args, **kwargs):
-        res = json.dumps(func(*args, **kwargs), cls=MessageEncoder)
-        return ('msg_len=' + str(len(res)) + res).encode(ENCODING)
+        # ic(*args)
+        # ic(**kwargs)
+        # ic(func)
+        # res = json.dumps(func(*args, **kwargs), cls=MessageEncoder)
+        res = pickle.dumps(func(*args, **kwargs))
+        # length = pickle.dumps('msg_len=' + str(len(res)))
+        return res
     return inner
 
 
@@ -99,9 +111,22 @@ class MessagesDeserializer:
 
     @classmethod
     @log_default(logger)
-    def get_messages(cls, conn):
+    def get_messages(cls, conn, session_key=None):
         data = cls.recv_all(conn)
-        return cls.get_msg_list(data)
+        if data:
+            print('======== get messages =========')
+            ic(data)
+            ic(session_key)
+            # ic(pickle.loads(data))
+            if session_key:
+                data = cls.decrypt(data, session_key)
+            # ic(data)
+            # res = cls.get_msg_list(data)
+            # ic(res)
+            if data:
+                res = pickle.loads(data)
+                ic(res)
+                return res
 
     @staticmethod
     def recv_all(conn):
@@ -117,16 +142,39 @@ class MessagesDeserializer:
                 old_data = data
                 data += conn.recv(MAX_MSG_SIZE)
                 if data == old_data:
-                    return data.decode(ENCODING)
+                    return data
         except socket.error as exc:
-            return data.decode(ENCODING)
+            print('socket.error', exc)
+            return data
         except Exception as e:
-            return data.decode(ENCODING)
+            print('Exception', e)
+            return data
+
+    @classmethod
+    def decrypt(cls, data, session_key):
+        # enc_session_key, nonce, tag, ciphertext = \
+        #     [file_in.read(x) for x in (private_key.size_in_bytes(), 16, 16, -1)]
+
+        # Decrypt the data with the AES session key
+
+        # print(data.decode("utf-8"))
+        nonce = data[:16]
+        tag = data[16:32]
+        ciphertext = data[32:]
+        cipher_aes = AES.new(session_key, AES.MODE_EAX, nonce)
+        data = cipher_aes.decrypt_and_verify(ciphertext, tag)
+        print('========= decrypt ================')
+        ic(nonce)
+        ic(tag)
+        ic(ciphertext)
+        ic(data)
+        return data
 
     @classmethod
     def get_msg_list(cls, data):
         res = []
         while data:
+            # ic(data)
             length, end_length = cls.get_msg_lengths(data)
             if length and len(data) >= (end_length + length):
                 res.append(
@@ -137,17 +185,19 @@ class MessagesDeserializer:
 
     @staticmethod
     def get_msg_lengths(data):
-        start_length = data.find(MSG_LEN_NAME) + len(MSG_LEN_NAME)
-        end_length = data.find('{', start_length)
+        start_length = data.find(MSG_LEN_NAME.encode()) + len(MSG_LEN_NAME)
+        end_length = data.find('{'.encode(), start_length)
         length = data[start_length:end_length]
         return (int(length), end_length) if length.isdigit() else (False, False)
 
     @staticmethod
     def deserialize(data):
         try:
-            return json.loads(data)
-        except JSONDecodeError as e:
-            logger.exception(f'Disconnect! JSONDecodeError for data: {data}')
+            return pickle.loads(data)
+        except pickle.UnpicklingError as e:
+        # except JSONDecodeError as e:
+        #     logger.exception(f'Disconnect! JSONDecodeError for data: {data}')
+            logger.exception(f'Disconnect! UnpicklingError for data: {data}')
             return ''
         except TypeError as e:
             logger.exception(f'Disconnect! Wrong type of data: {data}')
@@ -232,6 +282,11 @@ class MessageProcessor:
                     time=msg['time'],
                     pattern=msg['filter'],
                     users=msg['users'],
+                )
+            elif msg['action'] == 'public_key':
+                return SendKey(
+                    action=msg['action'],
+                    key=msg['key'],
                 )
         elif "response" in msg:
             return Response(

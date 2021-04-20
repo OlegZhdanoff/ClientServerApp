@@ -227,3 +227,15 @@ class AdminGetHistory:
             "user": self.user,
             "history": self.history
         }
+
+
+@dataclass
+class SendKey:
+    action: str = 'public_key'
+    key: bytes = b''
+
+    def __json__(self):
+        return {
+            "action": self.action,
+            "key": self.key
+        }

@@ -2,6 +2,8 @@ import selectors
 import socket
 import threading
 
+from icecream import ic
+
 from client.client import Client
 from log.log_config import log_config
 from services import SelectableQueue, MessagesDeserializer, MessageProcessor
@@ -43,11 +45,18 @@ class ClientThread(threading.Thread):
                 msg_list = MessagesDeserializer.recv_all(conn)
                 # print('SelectableQueue ============ ', msg_list)
                 return self.user.action_handler(msg_list)
+            elif self.user.session_key:
+                print('======= client_thread _process user.session_key ======')
+                msg_list = MessagesDeserializer.get_messages(conn, self.user.session_key)
+                ic(msg_list)
             else:
+                # print('======= client_thread _process plain data ======')
                 msg_list = MessagesDeserializer.get_messages(conn)
-            for msg in msg_list:
+            # for msg in msg_list:
                 # print('===== msg ====', msg)
-                self.user.action_handler(MessageProcessor.from_msg(msg))
+                # self.user.action_handler(MessageProcessor.from_msg(msg))
+            if msg_list:
+                self.user.action_handler(msg_list)
 
         if mask & selectors.EVENT_WRITE:
             data = self.user.get_data()

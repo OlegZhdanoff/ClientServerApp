@@ -1,4 +1,8 @@
 import datetime
+from Crypto.PublicKey import RSA
+from Crypto.Random import get_random_bytes
+from Crypto.Cipher import AES, PKCS1_OAEP
+
 from queue import Queue, Empty
 
 from icecream import ic
@@ -25,11 +29,18 @@ class ClientInstance:
         self.addr = addr
         self.client = None
         self.username = ''
-        # self.password = ''
         self.data_queue = Queue()
         self.pending_status = False
         self.client_logger = None
         self.messages = None
+
+        key = RSA.generate(2048)
+        self.public_key = key.publickey().export_key()
+        self.private_key = key.export_key()
+        # self.client_public_key = None
+        self.session_key = get_random_bytes(16)
+        self.cipher_client_pk = None
+        self.cipher_aes = AES.new(self.session_key, AES.MODE_EAX)
 
     def find_client(self, msg):
         self.client = self.client_storage.auth_client(msg.username, msg.password)
@@ -52,6 +63,13 @@ class ClientInstance:
 
     @log_default(logger)
     def feed_data(self, data):
+        if self.username:
+            print('========== server feed encrypted data ===========')
+            ic(data)
+            data = self.encrypt_data(data)
+        else:
+            print('========== server feed plain data ===========')
+            ic(data)
         self.data_queue.put(data)
 
     # @log_default(logger)
@@ -89,6 +107,27 @@ class ClientInstance:
             return self.del_contact(msg)
         elif isinstance(msg, FilterClients):
             return self.get_filtered_users(msg)
+        elif isinstance(msg, SendKey):
+            return self.send_secret_key(msg)
+
+    @log_default(logger)
+    def send_secret_key(self, msg: SendKey):
+        client_public_key = RSA.import_key(msg.key)
+        self.cipher_client_pk = PKCS1_OAEP.new(client_public_key)
+        enc_session_key = self.cipher_client_pk.encrypt(self.session_key)
+        print('======= server send_secret_key ==========')
+        ic(msg.key)
+        # ic(client_public_key)
+        ic(self.cipher_client_pk)
+        ic(enc_session_key)
+        self.feed_data(self.send_message(SendKey(key=enc_session_key)))
+
+    @log_default(logger)
+    def encrypt_data(self, data):
+        # Encrypt the data with the AES session key
+        ciphertext, tag = self.cipher_aes.encrypt_and_digest(data)
+        data = self.cipher_aes.nonce + tag + ciphertext
+        return data
 
     @log_default(logger)
     @serializer
