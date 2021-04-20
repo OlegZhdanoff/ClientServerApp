@@ -11,11 +11,13 @@ logger = log_config('client', 'client.log')
 
 
 class Client:
-    def __init__(self, account_name, password, status='disconnected'):
+    def __init__(self, account_name, password, status='disconnected', sq_gui=None):
         self.username = account_name
         self.password = password
         self.status = status
         self.data_queue = Queue()
+        self.auth = False
+        self.sq_gui = sq_gui
 
     @log_default(logger)
     def __eq__(self, other):
@@ -45,10 +47,15 @@ class Client:
     def action_handler(self, msg):
         if isinstance(msg, Probe):
             self.feed_data(self.presence())
-        elif isinstance(msg, Msg):
-            self.on_msg(msg)
+        # elif isinstance(msg, Msg):
+        #     self.on_msg(msg)
         elif isinstance(msg, Response):
             print(self.response_processor(msg))
+        elif isinstance(msg, Authenticate):
+            self.authenticated(msg)
+        elif isinstance(msg, (GetContacts, FilterClients, Msg)):
+            if self.sq_gui:
+                self.sq_gui.put(msg)
         else:
             print('action handler', msg)
             logger.warning(f"Unknown server's message {msg}")
@@ -58,6 +65,10 @@ class Client:
     def response_processor(self, msg: Response):
         print(time.ctime(time.time()) + f': {msg.alert}')
         if msg.response in (200, 405, 409):
+            # if msg.alert == 'auth OK':
+            #     print('msg.alert', msg.alert)
+            #     self.status = 'online'
+            #     self.auth = True
             return msg.alert
         if msg.response == 201:
             return msg.alert
@@ -74,6 +85,14 @@ class Client:
             return f'Unknown response {msg}'
 
     @log_default(logger)
+    def authenticated(self, msg: Authenticate):
+        if msg.result:
+            self.auth = True
+            print('online')
+            self.status = 'online'
+            self.feed_data(self.get_contacts())
+
+    @log_default(logger)
     @serializer
     def authenticate(self):
         return Authenticate(username=self.username, password=self.password)
@@ -81,7 +100,12 @@ class Client:
     @log_default(logger)
     @serializer
     def get_contacts(self):
-        return GetContacts()
+        return GetContacts(login=self.username)
+
+    @log_default(logger)
+    @serializer
+    def sender(self, msg):
+        return msg
 
     @log_default(logger)
     @serializer
@@ -110,6 +134,11 @@ class Client:
 
     @log_default(logger)
     @serializer
+    def get_messages(self, tm, contact=''):
+        return GetMessages(time=tm, from_=contact)
+
+    @log_default(logger)
+    @serializer
     def join(self, room):
         return Join(room=room)
 
@@ -124,5 +153,9 @@ class Client:
 
     @log_default(logger)
     def close(self):
+        self.auth = False
         self.feed_data('close')
+
+    def _set_auth(self):
+        self.auth = True
 

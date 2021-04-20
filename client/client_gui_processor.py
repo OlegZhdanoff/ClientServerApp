@@ -4,7 +4,7 @@ from messages import *
 from services import SelectableQueue
 
 
-class ServerGuiProcessor:
+class ClientGuiProcessor:
     def __init__(self, sq_gui: SelectableQueue, session=None):
         self._session = session
         self.sq_gui = sq_gui
@@ -20,8 +20,6 @@ class ServerGuiProcessor:
             self.feed_data(self.get_users())
         elif isinstance(msg, AdminGetHistory):
             self.feed_data(self.get_history(msg))
-        elif isinstance(msg, GetContacts):
-            self.feed_data(msg)
 
     def get_users(self):
         return AdminGetUsers(users=self.client_storage.get_all())

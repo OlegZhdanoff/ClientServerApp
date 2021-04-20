@@ -39,7 +39,12 @@ class ClientThread(threading.Thread):
         # if isinstance(conn, socket.socket):
         logger_with_name = logger.bind(server=conn.getpeername())
         if mask & selectors.EVENT_READ:
-            msg_list = MessagesDeserializer.get_messages(conn)
+            if isinstance(conn, SelectableQueue):
+                msg_list = MessagesDeserializer.recv_all(conn)
+                # print('SelectableQueue ============ ', msg_list)
+                return self.user.action_handler(msg_list)
+            else:
+                msg_list = MessagesDeserializer.get_messages(conn)
             for msg in msg_list:
                 # print('===== msg ====', msg)
                 self.user.action_handler(MessageProcessor.from_msg(msg))

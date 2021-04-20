@@ -1,8 +1,10 @@
+import configparser
 import json
 import queue
 from functools import wraps
 import socket
 from json import JSONDecodeError
+from pathlib import Path
 
 from log.log_config import log_config, log_default
 from messages import *
@@ -20,6 +22,26 @@ PING_INTERVAL = 20
 MSG_LEN_NAME = 'msg_len='
 
 logger = log_config('services', 'services.log')
+
+
+STATUS = ('online', 'disconnected', 'afk', 'busy')
+
+
+class Config:
+    def __init__(self, path: Path):
+        if not path.exists():
+            logger.warning(f"config file {path} does't exists")
+            raise OSError(f"config file {path} does't exists")
+        self.path = path
+        self.data = configparser.ConfigParser()
+        self.load_config()
+
+    def load_config(self):
+        self.data.read(self.path)
+
+    def save_config(self):
+        with open(self.path, 'w', encoding='utf-8') as f:
+            self.data.write(f)
 
 
 class SelectableQueue(queue.Queue):
@@ -61,6 +83,7 @@ class MessageEncoder(json.JSONEncoder):
     def default(self, obj):
         if hasattr(obj, '__json__'):
             return obj.__json__()
+        print(obj)
         return json.JSONEncoder.default(self, obj)
 
 
@@ -148,7 +171,8 @@ class MessageProcessor:
                     action=msg['action'],
                     time=msg['time'],
                     username=msg['user']['account_name'],
-                    password=msg['user']['password']
+                    password=msg['user']['password'],
+                    result=msg['result']
                 )
             elif msg['action'] == 'quit':
                 return Quit()
@@ -164,6 +188,12 @@ class MessageProcessor:
                     to=msg['to'],
                     from_=msg['from'],
                     text=msg['message']
+                )
+            elif msg['action'] == 'get_messages':
+                return GetMessages(
+                    action=msg['action'],
+                    time=msg['time'],
+                    from_=msg['from_'],
                 )
             elif msg['action'] == 'join':
                 return Join(
@@ -181,6 +211,8 @@ class MessageProcessor:
                 return GetContacts(
                     action=msg['action'],
                     time=msg['time'],
+                    contacts=msg['contacts'],
+                    login=msg['login']
                 )
             elif msg['action'] == 'add_contact':
                 return AddContact(
@@ -193,6 +225,13 @@ class MessageProcessor:
                     action=msg['action'],
                     time=msg['time'],
                     username=msg['username'],
+                )
+            elif msg['action'] == 'filter_clients':
+                return FilterClients(
+                    action=msg['action'],
+                    time=msg['time'],
+                    pattern=msg['filter'],
+                    users=msg['users'],
                 )
         elif "response" in msg:
             return Response(

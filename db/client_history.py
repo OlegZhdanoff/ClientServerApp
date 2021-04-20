@@ -36,8 +36,10 @@ class ClientHistoryStorage:
 
     def get_history(self):
         res = []
-        query_res = self._session.query(Client.login, ClientHistory.ip_address, ClientHistory.when)\
-            .filter(ClientHistory.client_id == self.owner.id).join(Client.history).all()
+        # query_res = self._session.query(Client.login, ClientHistory.ip_address, ClientHistory.when)\
+        #     .filter(ClientHistory.client_id == self.owner.id).join(Client.history).all()
+        query_res = self._session.query(Client.login, ClientHistory.ip_address, ClientHistory.when) \
+            .join(Client.history).filter(ClientHistory.client_id == self.owner.id).all()
             # .filter_by(client_id=self.owner.id).join(Client.history).all()
             # filter_by(Client=self.owner).join(Client).filter(Client == self.owner)
         for record in query_res:

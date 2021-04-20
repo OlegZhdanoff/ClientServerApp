@@ -3,9 +3,9 @@ import sys
 from pathlib import Path
 
 from PyQt5 import QtWidgets, uic
-from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, QThread
+from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, QThread, QSortFilterProxyModel, Qt, QRegExp, QModelIndex
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
-from PyQt5.QtWidgets import QListView, QTableView
+from PyQt5.QtWidgets import QListView, QTableView, QLineEdit
 from icecream import ic
 
 from messages import *
@@ -43,6 +43,13 @@ class ServerMainWindow(QtWidgets.QMainWindow):
         self.userList = self.findChild(QListView, 'userList')
         self.users = QStandardItemModel(parent=self)
         self.userList.clicked.connect(self.get_history)
+        self.filter_users = QSortFilterProxyModel(self)
+        self.filter_users.setSourceModel(self.users)
+        self.filter_users.sort(0, Qt.AscendingOrder)
+        self.filter_users.setFilterKeyColumn(0)
+
+        self.filterEdit = self.findChild(QLineEdit, 'filterEdit')
+        self.filterEdit.textChanged.connect(self.set_filter)
 
         self.historyTable = self.findChild(QTableView, 'historyTable')
         self.history = QStandardItemModel(parent=self)
@@ -63,16 +70,19 @@ class ServerMainWindow(QtWidgets.QMainWindow):
             self.show_users(data)
         elif isinstance(data, AdminGetHistory):
             self.show_history(data)
+        elif isinstance(data, GetContacts):
+            self.on_login(data)
 
     def feed_data(self, data):
         self.sq_admin.put(data)
 
     def show_users(self, data):
         # print(data.users)
+        self.users.clear()
         for user in data.users:
             item = QStandardItem(user[0])
             self.users.appendRow(item)
-        self.userList.setModel(self.users)
+        self.userList.setModel(self.filter_users)
 
     def get_history(self, item):
         # print(item.data())
@@ -82,8 +92,20 @@ class ServerMainWindow(QtWidgets.QMainWindow):
 
     def show_history(self, data):
         # print(data)
+        self.history.clear()
         for row in data.history:
             items = [QStandardItem(item) for item in row]
             self.history.appendRow(items)
         self.historyTable.setModel(self.history)
         self.historyTable.resizeColumnsToContents()
+
+    def set_filter(self, text):
+        self.filter_users.setFilterFixedString(text)
+
+    def on_login(self, data: GetContacts):
+        users = self.users.findItems(data.login)
+        if not users:
+            return self.feed_data(AdminGetUsers())
+        if data.login == self.userList.currentIndex().data():
+            self.feed_data(AdminGetHistory(user=data.login))
+

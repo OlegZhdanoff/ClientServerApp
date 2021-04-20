@@ -3,6 +3,7 @@ import socket
 import threading
 from threading import Event
 
+from icecream import ic
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy import create_engine
 
@@ -11,6 +12,7 @@ from db.client import ClientStorage
 from db.client_history import ClientHistoryStorage
 
 from log.log_config import log_config
+from messages import GetContacts
 from server.server import ClientInstance
 from server.server_gui_processor import ServerGuiProcessor
 from services import MessagesDeserializer, MessageProcessor, LOCAL_ADMIN, PING_INTERVAL, DEFAULT_SERVER_IP, \
@@ -153,8 +155,10 @@ class ServerThread(threading.Thread):
                     # debug info
                     if not msg['action'] == 'presence':
                         print(msg)
-
-                    if not self.clients[conn].action_handler(MessageProcessor.from_msg(msg), self.clients):
+                    msg = MessageProcessor.from_msg(msg)
+                    if isinstance(msg, GetContacts):
+                        self.server_gui_processor.action_handler(msg)
+                    if not self.clients[conn].action_handler(msg, self.clients):
                         # if self.clients[conn].username == LOCAL_ADMIN:
                         #     self._close()
                         #     break

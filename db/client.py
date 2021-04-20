@@ -18,6 +18,7 @@ class Client(Base):
     status = Column(String(20))
 
     Contacts = relationship("Contacts", order_by="Contacts.id", back_populates="Client")
+    Message = relationship("Message", order_by="Message.id", back_populates="Client")
     # ClientHistory = relationship("ClientHistory", order_by="ClientHistory.id", back_populates="Client")
 
     def __repr__(self):
@@ -51,6 +52,14 @@ class ClientStorage:
 
     def get_client(self, login):
         return self._session.query(Client).filter_by(login=login).first()
+
+    def filter_clients(self, pattern):
+        res = []
+        for user in self._session.query(Client.login).filter(Client.login.like(f'%{pattern}%')):
+            print(type(user[0]))
+            print(user[0])
+            res.append(user[0])
+        return res
 
     def set_status(self, client, status):
         # print('====== set_status()===========\n', client)

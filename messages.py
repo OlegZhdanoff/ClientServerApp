@@ -1,3 +1,4 @@
+import datetime
 import time
 from dataclasses import dataclass
 
@@ -28,6 +29,7 @@ class Authenticate:
     time: float = time.time()
     username: str = 'username'
     password: str = 'password'
+    result: bool = False
 
     def __json__(self):
         return {
@@ -36,7 +38,8 @@ class Authenticate:
             "user": {
                 "account_name": self.username,
                 "password": self.password
-            }
+            },
+            "result": self.result
         }
 
 
@@ -72,7 +75,7 @@ class Probe:
     def __json__(self):
         return {
             "action": self.action,
-            "time": time.time()
+            "time": self.time
         }
 
 
@@ -91,6 +94,20 @@ class Msg:
             "to": self.to,
             "from": self.from_,
             "message": self.text
+        }
+
+
+@dataclass
+class GetMessages:
+    action: str = 'get_messages'
+    time: float = time.time()
+    from_: str = ''
+
+    def __json__(self):
+        return {
+            "action": self.action,
+            "time": self.time,
+            "from_": self.from_,
         }
 
 
@@ -126,11 +143,15 @@ class Leave:
 class GetContacts:
     action: str = 'get_contacts'
     time: float = time.time()
+    contacts: tuple = ()
+    login: str = ''
 
     def __json__(self):
         return {
             "action": self.action,
-            "time": self.time
+            "time": self.time,
+            "contacts": self.contacts,
+            "login": self.login
         }
 
 
@@ -159,6 +180,22 @@ class DelContact:
             "action": self.action,
             "time": self.time,
             "username": self.username
+        }
+
+
+@dataclass
+class FilterClients:
+    action: str = 'filter_clients'
+    time: float = time.time()
+    pattern: str = ''
+    users: tuple = ()
+
+    def __json__(self):
+        return {
+            "action": self.action,
+            "time": self.time,
+            "filter": self.pattern,
+            "users": self.users
         }
 
 
