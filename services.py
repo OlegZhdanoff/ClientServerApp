@@ -114,23 +114,23 @@ class MessagesDeserializer:
     def get_messages(cls, conn, session_key=None):
         data = cls.recv_all(conn)
         if data:
-            print('======== get messages =========')
-            ic(data)
-            ic(session_key)
+            # print('======== get messages =========')
+            # ic(data)
+            # ic(session_key)
             # ic(pickle.loads(data))
             if session_key:
                 data = cls.decrypt(data, session_key)
             # ic(data)
             # res = cls.get_msg_list(data)
             # ic(res)
-            if data:
-                res = pickle.loads(data)
-                ic(res)
-                return res
+            res = pickle.loads(data)
+            # ic(res)
+            return res
 
     @staticmethod
     def recv_all(conn):
         data = b''
+        # ic(conn)
         if isinstance(conn, SelectableQueue):
             data = conn.get()
             conn.task_done()

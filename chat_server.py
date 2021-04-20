@@ -79,7 +79,7 @@ def start(address, port):
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         time.sleep(1)
-        s.settimeout(0.1)
+        s.settimeout(0.2)
         s.connect((address, port))
         admin = Client(LOCAL_ADMIN, LOCAL_ADMIN_PASSWORD, 'online')
 

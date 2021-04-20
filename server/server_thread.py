@@ -131,6 +131,7 @@ class ServerThread(threading.Thread):
 
     def _disconnect(self, conn):
         # self.clients[conn].client_disconnect()
+        ic('======= server_thread _disconnect ======', conn)
         self.sel.unregister(conn)
         conn.close()
         del self.clients[conn]
@@ -173,8 +174,11 @@ class ServerThread(threading.Thread):
                 self._disconnect(conn)
 
         if mask & selectors.EVENT_WRITE:
+            # ic(self.clients.keys())
+            # ic(conn)
             if conn in self.clients.keys():
                 data = self.clients[conn].get_data()
+                # ic(data)
                 try:
                     if data:
                         sent_size = conn.send(data)

@@ -121,6 +121,7 @@ class ClientInstance:
         ic(self.cipher_client_pk)
         ic(enc_session_key)
         self.feed_data(self.send_message(SendKey(key=enc_session_key)))
+        return True
 
     @log_default(logger)
     def encrypt_data(self, data):
