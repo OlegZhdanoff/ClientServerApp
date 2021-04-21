@@ -124,7 +124,7 @@ class MessagesDeserializer:
             # res = cls.get_msg_list(data)
             # ic(res)
             res = pickle.loads(data)
-            # ic(res)
+            ic('MessagesDeserializer get_messages ', res)
             return res
 
     @staticmethod
