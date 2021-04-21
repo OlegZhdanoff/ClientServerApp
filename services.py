@@ -1,3 +1,4 @@
+import base64
 import configparser
 import json
 import pickle
@@ -24,6 +25,7 @@ LOCAL_ADMIN_PASSWORD = '123'
 PING_INTERVAL = 200
 
 MSG_LEN_NAME = 'msg_len='
+MSG_END_LEN_NAME = 'length_end'
 
 logger = log_config('services', 'services.log')
 
@@ -88,7 +90,8 @@ class MessageEncoder(json.JSONEncoder):
         if hasattr(obj, '__json__'):
             # ic(obj)
             return obj.__json__()
-        # if isinstance(obj, bytes):
+        if isinstance(obj, bytes):
+            return base64.b64encode(obj, altchars=None).decode()
         #     return {"key": obj}
         print('class MessageEncoder: obj -> ', obj)
         return json.JSONEncoder.default(self, obj)
@@ -108,22 +111,24 @@ def serializer(func):
 
 
 class MessagesDeserializer:
+    session_key = None
 
     @classmethod
     @log_default(logger)
     def get_messages(cls, conn, session_key=None):
         data = cls.recv_all(conn)
+        cls.session_key = session_key
         if data:
             # print('======== get messages =========')
             # ic(data)
             # ic(session_key)
             # ic(pickle.loads(data))
-            if session_key:
-                data = cls.decrypt(data, session_key)
+            # if session_key:
+            #     data = cls.decrypt(data)
             # ic(data)
-            # res = cls.get_msg_list(data)
+            res = cls.get_msg_list(data)
             # ic(res)
-            res = pickle.loads(data)
+            # res = pickle.loads(data)
             # ic('MessagesDeserializer get_messages ', res)
             return res
 
@@ -151,7 +156,7 @@ class MessagesDeserializer:
             return data
 
     @classmethod
-    def decrypt(cls, data, session_key):
+    def decrypt(cls, data):
         # enc_session_key, nonce, tag, ciphertext = \
         #     [file_in.read(x) for x in (private_key.size_in_bytes(), 16, 16, -1)]
 
@@ -165,8 +170,8 @@ class MessagesDeserializer:
         ic(nonce)
         ic(tag)
         ic(ciphertext)
-        ic(session_key)
-        cipher_aes = AES.new(session_key, AES.MODE_EAX, nonce)
+        ic(cls.session_key)
+        cipher_aes = AES.new(cls.session_key, AES.MODE_EAX, nonce)
         data = cipher_aes.decrypt_and_verify(ciphertext, tag)
         ic(data)
         return data
@@ -178,8 +183,13 @@ class MessagesDeserializer:
             # ic(data)
             length, end_length = cls.get_msg_lengths(data)
             if length and len(data) >= (end_length + length):
+                current_data = data[end_length:end_length + length]
+
+                if cls.session_key:
+                    current_data = cls.decrypt(current_data)
+
                 res.append(
-                    cls.deserialize(data[end_length:end_length + length])
+                    cls.deserialize(current_data)
                 )
                 data = data[end_length + length:]
         return res
@@ -187,8 +197,9 @@ class MessagesDeserializer:
     @staticmethod
     def get_msg_lengths(data):
         start_length = data.find(MSG_LEN_NAME.encode()) + len(MSG_LEN_NAME)
-        end_length = data.find('{'.encode(), start_length)
+        end_length = data.find(MSG_END_LEN_NAME.encode(), start_length)
         length = data[start_length:end_length]
+        end_length += len(MSG_END_LEN_NAME)
         return (int(length), end_length) if length.isdigit() else (False, False)
 
     @staticmethod
@@ -198,10 +209,10 @@ class MessagesDeserializer:
         except pickle.UnpicklingError as e:
         # except JSONDecodeError as e:
         #     logger.exception(f'Disconnect! JSONDecodeError for data: {data}')
-            logger.exception(f'Disconnect! UnpicklingError for data: {data}')
+            logger.exception(f'UnpicklingError for data: {data}')
             return ''
         except TypeError as e:
-            logger.exception(f'Disconnect! Wrong type of data: {data}')
+            logger.exception(f'Wrong type of data: {data}')
             return ''
 
 

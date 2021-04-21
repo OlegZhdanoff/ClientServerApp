@@ -155,20 +155,21 @@ class ServerThread(threading.Thread):
             else:
                 msg_list = MessagesDeserializer.get_messages(conn)
             if msg_list:
-                msg = msg_list
-                if isinstance(msg, GetContacts):
-                    self.server_gui_processor.action_handler(msg)
-                if not self.clients[conn].action_handler(msg, self.clients):
-                    self._disconnect(conn)
-                # for msg in msg_list:
+                # msg = msg_list
+                # if isinstance(msg, GetContacts):
+                #     self.server_gui_processor.action_handler(msg)
+                # if not self.clients[conn].action_handler(msg, self.clients):
+                #     self._disconnect(conn)
+                for msg in msg_list:
                     # debug info
+                    ic('===========server_thread _process======', msg)
                     # if not msg['action'] == 'presence':
                     #     print(msg)
                     # msg = MessageProcessor.from_msg(msg)
                     # if isinstance(msg, GetContacts):
                     #     self.server_gui_processor.action_handler(msg)
-                    # if not self.clients[conn].action_handler(msg, self.clients):
-                    #     self._disconnect(conn)
+                    if not self.clients[conn].action_handler(msg, self.clients):
+                        self._disconnect(conn)
             else:
                 logger_with_name.warning(f'no data in received messages')
                 self._disconnect(conn)

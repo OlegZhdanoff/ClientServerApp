@@ -13,7 +13,7 @@ from db.contacts import ContactStorage
 from db.messages import MessageStorage
 from log.log_config import log_config, log_default
 from messages import *
-from services import serializer, LOCAL_ADMIN
+from services import serializer, LOCAL_ADMIN, MSG_LEN_NAME, MSG_END_LEN_NAME
 
 logger = log_config('server', 'server.log')
 
@@ -72,6 +72,8 @@ class ClientInstance:
         # else:
             # print('========== server feed plain data ===========')
             # ic(data)
+        length = MSG_LEN_NAME + str(len(data)) + MSG_END_LEN_NAME
+        data = length.encode() + data
         self.data_queue.put(data)
 
     # @log_default(logger)

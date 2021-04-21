@@ -9,7 +9,7 @@ import structlog
 from icecream import ic
 
 from log.log_config import log_config, log_default
-from services import serializer
+from services import serializer, MSG_LEN_NAME, MSG_END_LEN_NAME
 from messages import *
 
 logger = log_config('client', 'client.log')
@@ -44,9 +44,10 @@ class Client:
     @log_default(logger)
     def feed_data(self, data):
         if self.cipher_aes:
-            self.data_queue.put(self.encrypt_data(data))
-        else:
-            self.data_queue.put(data)
+            data = self.encrypt_data(data)
+        length = MSG_LEN_NAME + str(len(data)) + MSG_END_LEN_NAME
+        data = length.encode() + data
+        self.data_queue.put(data)
 
     # @log_default(logger)
     def get_data(self):
