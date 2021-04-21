@@ -7,7 +7,7 @@ from queue import Queue, Empty
 
 from icecream import ic
 
-from db.client import ClientStorage
+from db.client import ClientStorage, Client
 from db.client_history import ClientHistoryStorage
 from db.contacts import ContactStorage
 from db.messages import MessageStorage
@@ -44,6 +44,7 @@ class ClientInstance:
 
     def find_client(self, msg):
         self.client = self.client_storage.auth_client(msg.username, msg.password)
+        ic(' ========== find client', msg.username, msg.password)
 
         if self.client == -1:
             try:
@@ -53,23 +54,24 @@ class ClientInstance:
                     self.client_storage.add_client(msg.username, msg.password)
                 self.client = self.client_storage.auth_client(msg.username, msg.password)
             except ValueError as e:
-                print(f'username {msg.username} already exists or wrong password')
-                self.client_logger.exception(f'username {msg.username} already exists or wrong password')
-        else:
+                print(f"can't create new user, username {msg.username} already exists")
+                self.client_logger.exception(f"can't create new user, username {msg.username} already exists")
+        elif not self.client:
             print(f'username {msg.username} - wrong password')
             self.client_logger.exception(f'username {msg.username} - wrong password')
-        # print(f'============= find_client -----> {self.client} <------')
+        print(f'============= find_client -----> {self.client} <------')
+        ic(self.client.login)
         self.username = msg.username
 
     @log_default(logger)
     def feed_data(self, data):
-        if self.username:
-            print('========== server feed encrypted data ===========')
-            ic(data)
+        if isinstance(self.client, Client):
+            # print('========== server feed encrypted data ===========')
+            # ic(data)
             data = self.encrypt_data(data)
-        else:
-            print('========== server feed plain data ===========')
-            ic(data)
+        # else:
+            # print('========== server feed plain data ===========')
+            # ic(data)
         self.data_queue.put(data)
 
     # @log_default(logger)
@@ -115,19 +117,26 @@ class ClientInstance:
         client_public_key = RSA.import_key(msg.key)
         self.cipher_client_pk = PKCS1_OAEP.new(client_public_key)
         enc_session_key = self.cipher_client_pk.encrypt(self.session_key)
-        print('======= server send_secret_key ==========')
-        ic(msg.key)
+        # print('======= server send_secret_key ==========')
+        # ic(msg.key)
         # ic(client_public_key)
-        ic(self.cipher_client_pk)
-        ic(enc_session_key)
+        # ic(self.cipher_client_pk)
+        # ic(enc_session_key)
         self.feed_data(self.send_message(SendKey(key=enc_session_key)))
         return True
 
     @log_default(logger)
     def encrypt_data(self, data):
+        print('======== encrypt Server data ===============')
+        ic(data)
+        ic(self.session_key)
         # Encrypt the data with the AES session key
+        self.cipher_aes = AES.new(self.session_key, AES.MODE_EAX)
         ciphertext, tag = self.cipher_aes.encrypt_and_digest(data)
         data = self.cipher_aes.nonce + tag + ciphertext
+        ic(self.cipher_aes.nonce)
+        ic(tag)
+        ic(ciphertext)
         return data
 
     @log_default(logger)
@@ -135,10 +144,12 @@ class ClientInstance:
     def authenticate(self, msg):
         print(f'User {msg.username} is authenticating...')
         self.client_logger = logger.bind(username=msg.username, address=self.addr)
+        self.client_logger.info('User is authenticating...')
         result_auth = self.check_pwd(msg)
 
         if result_auth == 200:
-            self.client_logger.info('User is authenticating')
+            print(f'User {msg.username} is authenticated')
+            self.client_logger.info('User is authenticated')
             self.client_history_storage = ClientHistoryStorage(self.session, self.client)
             self.client_history_storage.add_record(self.addr, datetime.datetime.now())
             self.contacts = ContactStorage(self.session, self.client)
@@ -147,7 +158,7 @@ class ClientInstance:
             #     print(type(self.messages.get_from_owner_messages()[0]))
             #     print(self.messages.get_from_owner_messages()[0].message)
 
-            return Authenticate(result=True)
+            return Authenticate(username=msg.username, result=True)
         elif result_auth == 402:
             self.client_logger.info(f'User was entered wrong password')
             return Response(response=402, alert="This could be wrong password or no account with that name")
@@ -158,12 +169,15 @@ class ClientInstance:
     def check_pwd(self, msg):
         self.find_client(msg)
         if self.client:
-            if self.client.status == 'disconnected' or self.client.login == LOCAL_ADMIN:
+            # if self.client.status == 'disconnected' or self.client.login == LOCAL_ADMIN:
+            if self.client == -1:
+                return 409
+            else:
                 self.client.status = 'online'
                 self.session.commit()
                 return 200
-            else:
-                return 409
+            # elif self.client == -1:
+            #     return 409
         else:
             return 402
 
@@ -217,6 +231,7 @@ class ClientInstance:
         if client:
             self.messages.add_message(client, msg.text)
         self.feed_data(self.send_response(200, 'message is received'))
+        return True
 
     @log_default(logger)
     @serializer
@@ -244,12 +259,14 @@ class ClientInstance:
     @log_default(logger)
     def add_contact(self, msg):
         try:
-            print('===call to add contact === ')
+            print(f'===call to add contact {msg.username} === ')
             self.contacts.add_contact(msg.username)
             self.feed_data(self.send_response(201, f'{msg.username} added to contacts'))
+            print(f'{msg.username} added to contacts')
         except ValueError as e:
             self.client_logger.warning('Error')
             self.feed_data(self.send_response(405, e.__repr__()))
+            return True
         return True
 
     @log_default(logger)
@@ -260,6 +277,7 @@ class ClientInstance:
         except ValueError as e:
             self.client_logger.warning('Error')
             self.feed_data(self.send_response(405, e.__repr__()))
+            return True
         return True
 
     @log_default(logger)
@@ -271,7 +289,7 @@ class ClientInstance:
     @log_default(logger)
     def get_messages(self, msg):
         client = self.client_storage.get_client(msg.from_)
-        ic(client)
+        ic('server get_messages', client)
         # messages = self.messages.get_to_owner_msg_from_time(msg.from_, datetime.datetime.fromtimestamp(msg.time))
         messages = self.messages.get_chat_msg(client)
         ic(messages)

@@ -106,14 +106,19 @@ class Client:
 
     @log_default(logger)
     def encrypt_data(self, data):
+        print('======== encrypt Client data ===============')
+        ic(data)
+        ic(self.session_key)
         # Encrypt the data with the AES session key
+        self.cipher_aes = AES.new(self.session_key, AES.MODE_EAX)
+        # self.cipher_aes.update(self.session_key)
         ciphertext, tag = self.cipher_aes.encrypt_and_digest(data)
         data = self.cipher_aes.nonce + tag + ciphertext
-        print('======== encrypt Client data ===============')
+
         ic(self.cipher_aes.nonce)
         ic(tag)
         ic(ciphertext)
-        ic(data)
+        # ic(data)
         return data
 
     @log_default(logger)

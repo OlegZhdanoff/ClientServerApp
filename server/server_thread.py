@@ -131,7 +131,7 @@ class ServerThread(threading.Thread):
 
     def _disconnect(self, conn):
         # self.clients[conn].client_disconnect()
-        ic('======= server_thread _disconnect ======', conn)
+        ic('======= server_thread _disconnect ======', conn, self.clients[conn])
         self.sel.unregister(conn)
         conn.close()
         del self.clients[conn]

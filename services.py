@@ -21,7 +21,7 @@ DEFAULT_SERVER_PORT = 7777
 DEFAULT_DB = 'sqlite:///chat.db'
 LOCAL_ADMIN = 'local_admin'
 LOCAL_ADMIN_PASSWORD = '123'
-PING_INTERVAL = 20
+PING_INTERVAL = 200
 
 MSG_LEN_NAME = 'msg_len='
 
@@ -124,7 +124,7 @@ class MessagesDeserializer:
             # res = cls.get_msg_list(data)
             # ic(res)
             res = pickle.loads(data)
-            ic('MessagesDeserializer get_messages ', res)
+            # ic('MessagesDeserializer get_messages ', res)
             return res
 
     @staticmethod
@@ -161,12 +161,13 @@ class MessagesDeserializer:
         nonce = data[:16]
         tag = data[16:32]
         ciphertext = data[32:]
-        cipher_aes = AES.new(session_key, AES.MODE_EAX, nonce)
-        data = cipher_aes.decrypt_and_verify(ciphertext, tag)
         print('========= decrypt ================')
         ic(nonce)
         ic(tag)
         ic(ciphertext)
+        ic(session_key)
+        cipher_aes = AES.new(session_key, AES.MODE_EAX, nonce)
+        data = cipher_aes.decrypt_and_verify(ciphertext, tag)
         ic(data)
         return data
 
