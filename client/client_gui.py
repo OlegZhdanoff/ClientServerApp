@@ -6,7 +6,7 @@ from pathlib import Path
 from PyQt5 import QtWidgets, uic
 from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, QThread, QStringListModel, QModelIndex
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
-from PyQt5.QtWidgets import QListView, QTableView, QWidget, QComboBox, QPushButton, QLineEdit, QToolButton
+from PyQt5.QtWidgets import QListView, QTableView, QWidget, QComboBox, QPushButton, QLineEdit, QToolButton, QStatusBar
 from icecream import ic
 
 from client.client import Client
@@ -27,7 +27,7 @@ class ClientMainWindow(QtWidgets.QMainWindow):
         self.config = cfg
         self.logger = logger.bind(username=client.username)
 
-        self.client.feed_data(client.send_key())
+        # self.client.feed_data(client.send_key())
 
         ui_file_path = Path(__file__).parent.absolute() / "client.ui"
         uic.loadUi(ui_file_path, self)
@@ -71,13 +71,21 @@ class ClientMainWindow(QtWidgets.QMainWindow):
 
         self.profile_btn = self.findChild(QToolButton, 'profileButton')
         self.profile_btn.clicked.connect(self.toggle_profile)
-
         self.login_edit = self.profileWidget.findChild(QLineEdit, 'loginEdit')
         self.password_edit = self.profileWidget.findChild(QLineEdit, 'passwordEdit')
         self.save_btn = self.profileWidget.findChild(QPushButton, 'saveButton')
         self.save_btn.clicked.connect(self.save_profile)
         self.cancel_btn = self.profileWidget.findChild(QPushButton, 'cancelButton')
         self.cancel_btn.clicked.connect(self.cancel_profile)
+
+        self.loginWidget = self.findChild(QWidget, 'loginWidget')
+        self.connectButton = self.loginWidget.findChild(QPushButton, 'connectButton')
+        self.connectButton.clicked.connect(self.connecting)
+        self.serverMessagesList = self.loginWidget.findChild(QListView, 'serverMessagesList')
+        self.serverMessages = QStandardItemModel(parent=self)
+        self.serverMessagesList.setModel(self.serverMessages)
+
+        self.statusbar = self.findChild(QStatusBar, 'statusbar')
 
         self.monitor.gotData.connect(self.data_handler)
         self.monitor_thread = QThread()
@@ -96,9 +104,35 @@ class ClientMainWindow(QtWidgets.QMainWindow):
             self.show_filter_users(data.users)
         elif isinstance(data, Msg):
             self.on_msg(data)
+        elif isinstance(data, Authenticate):
+            self.on_auth(data)
+        elif isinstance(data, Response):
+            self.add_log(data.time, data.alert)
 
     def feed_data(self, data):
         self.sq_client.put(data)
+
+    def connecting(self):
+        if not self.client.auth:
+            self.client.feed_data(self.client.send_key())
+            self.add_log(time.time(), f'connecting to server {self.config.data["server"]["address"]}')
+
+    def add_log(self, tm: float, msg: str):
+        tm = datetime.datetime.fromtimestamp(tm)
+        item = QStandardItem(f'{tm.strftime("%Y-%m-%d %H:%M")} >> {msg}')
+        self.serverMessages.appendRow(item)
+        self.statusbar.showMessage(item.text())
+
+    def on_auth(self, msg: Authenticate):
+        if not msg.result:
+            self.loginWidget.show()
+            self.profileWidget.show()
+            self.connectButton.setDisabled(False)
+        else:
+            self.loginWidget.hide()
+            self.profileWidget.hide()
+            self.connectButton.setDisabled(True)
+        self.add_log(msg.time, msg.alert)
 
     def show_contacts(self, data):
         self.contacts.clear()
@@ -106,6 +140,7 @@ class ClientMainWindow(QtWidgets.QMainWindow):
             item = QStandardItem(contact)
             self.contacts.appendRow(item)
         self.contactList.setModel(self.contacts)
+        self.add_log(data.time, data.action)
 
     def show_filter_users(self, users):
         self.filterUsers.clear()
@@ -116,6 +151,7 @@ class ClientMainWindow(QtWidgets.QMainWindow):
             self.filterUsers.appendRow(QStandardItem('Not found'))
         self.filterUsersList.setModel(self.filterUsers)
         self.filterUsersList.show()
+        self.add_log(time.time(), 'show filtered users')
 
     def get_filter_users(self):
         if self.search_btn.text() == 'Close':
@@ -143,6 +179,7 @@ class ClientMainWindow(QtWidgets.QMainWindow):
         self.add_btn.setDisabled(True)
         for item in self.filterUsersList.selectedIndexes():
             self.client.feed_data(self.client.add_contact(item.data()))
+            self.add_log(time.time(), f'try to add contact {item.data()}')
         self.client.feed_data(self.client.get_contacts())
 
     def contact_selected(self):
@@ -169,6 +206,7 @@ class ClientMainWindow(QtWidgets.QMainWindow):
         self.del_btn.setDisabled(True)
         for item in self.contactList.selectedIndexes():
             self.client.feed_data(self.client.del_contact(item.data()))
+            self.add_log(time.time(), f'try to delete contact {item.data()}')
         self.client.feed_data(self.client.get_contacts())
 
     def send_message(self):
@@ -200,6 +238,7 @@ class ClientMainWindow(QtWidgets.QMainWindow):
         if status_idx > -1:
             self.statusComboBox.setCurrentIndex(status_idx)
         else:
+            self.add_log(time.time(), f"wrong status in config - {self.config.data['user']['status']}")
             self.logger.warning(f"wrong status in config - {self.config.data['user']['status']}")
 
     def cancel_profile(self):
@@ -217,4 +256,5 @@ class ClientMainWindow(QtWidgets.QMainWindow):
         self.config.data['user']['password'] = self.password_edit.text()
         self.config.data['user']['status'] = self.statusComboBox.currentText()
         self.config.save_config()
+        self.add_log(time.time(), 'config file saved')
         self.toggle_profile()

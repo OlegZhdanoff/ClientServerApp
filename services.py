@@ -163,17 +163,21 @@ class MessagesDeserializer:
         # Decrypt the data with the AES session key
 
         # print(data.decode("utf-8"))
-        nonce = data[:16]
-        tag = data[16:32]
-        ciphertext = data[32:]
-        print('========= decrypt ================')
-        ic(nonce)
-        ic(tag)
-        ic(ciphertext)
-        ic(cls.session_key)
-        cipher_aes = AES.new(cls.session_key, AES.MODE_EAX, nonce)
-        data = cipher_aes.decrypt_and_verify(ciphertext, tag)
-        ic(data)
+        try:
+            nonce = data[:16]
+            tag = data[16:32]
+            ciphertext = data[32:]
+            # print('========= decrypt ================')
+            # ic(nonce)
+            # ic(tag)
+            # ic(ciphertext)
+            # ic(cls.session_key)
+            cipher_aes = AES.new(cls.session_key, AES.MODE_EAX, nonce)
+            data = cipher_aes.decrypt_and_verify(ciphertext, tag)
+            # ic(data)
+        except Exception as e:
+            ic(f"decrypt error  {e}")
+            logger.exception(f"decrypt error  {e}")
         return data
 
     @classmethod
@@ -234,7 +238,8 @@ class MessageProcessor:
                     time=msg['time'],
                     username=msg['user']['account_name'],
                     password=msg['user']['password'],
-                    result=msg['result']
+                    result=msg['result'],
+                    alert=msg['alert']
                 )
             elif msg['action'] == 'quit':
                 return Quit()

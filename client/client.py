@@ -64,13 +64,13 @@ class Client:
             self.feed_data(self.presence())
         # elif isinstance(msg, Msg):
         #     self.on_msg(msg)
-        elif isinstance(msg, Response):
-            print(self.response_processor(msg))
+        # elif isinstance(msg, Response):
+        #     print(self.response_processor(msg))
         elif isinstance(msg, Authenticate):
             self.authenticated(msg)
         elif isinstance(msg, SendKey):
             self.set_session_key(msg)
-        elif isinstance(msg, (GetContacts, FilterClients, Msg)):
+        elif isinstance(msg, (GetContacts, FilterClients, Msg, Response)):
             if self.sq_gui:
                 self.sq_gui.put(msg)
         else:
@@ -107,18 +107,18 @@ class Client:
 
     @log_default(logger)
     def encrypt_data(self, data):
-        print('======== encrypt Client data ===============')
-        ic(data)
-        ic(self.session_key)
+        # print('======== encrypt Client data ===============')
+        # ic(data)
+        # ic(self.session_key)
         # Encrypt the data with the AES session key
         self.cipher_aes = AES.new(self.session_key, AES.MODE_EAX)
         # self.cipher_aes.update(self.session_key)
         ciphertext, tag = self.cipher_aes.encrypt_and_digest(data)
         data = self.cipher_aes.nonce + tag + ciphertext
 
-        ic(self.cipher_aes.nonce)
-        ic(tag)
-        ic(ciphertext)
+        # ic(self.cipher_aes.nonce)
+        # ic(tag)
+        # ic(ciphertext)
         # ic(data)
         return data
 
@@ -138,8 +138,10 @@ class Client:
         if msg.result:
             self.auth = True
             print('online')
-            self.status = 'online'
+            # self.status = 'online'
             self.feed_data(self.get_contacts())
+        if self.sq_gui:
+            self.sq_gui.put(msg)
 
     @log_default(logger)
     @serializer

@@ -44,7 +44,7 @@ class ClientInstance:
 
     def find_client(self, msg):
         self.client = self.client_storage.auth_client(msg.username, msg.password)
-        ic(' ========== find client', msg.username, msg.password)
+        ic(' ========== try to find client', msg.username, msg.password)
 
         if self.client == -1:
             try:
@@ -59,8 +59,8 @@ class ClientInstance:
         elif not self.client:
             print(f'username {msg.username} - wrong password')
             self.client_logger.exception(f'username {msg.username} - wrong password')
-        print(f'============= find_client -----> {self.client} <------')
-        ic(self.client.login)
+        print(f'============= found_client -----> {self.client} <------')
+        ic(self.client)
         self.username = msg.username
 
     @log_default(logger)
@@ -129,16 +129,16 @@ class ClientInstance:
 
     @log_default(logger)
     def encrypt_data(self, data):
-        print('======== encrypt Server data ===============')
-        ic(data)
-        ic(self.session_key)
+        # print('======== encrypt Server data ===============')
+        # ic(data)
+        # ic(self.session_key)
         # Encrypt the data with the AES session key
         self.cipher_aes = AES.new(self.session_key, AES.MODE_EAX)
         ciphertext, tag = self.cipher_aes.encrypt_and_digest(data)
         data = self.cipher_aes.nonce + tag + ciphertext
-        ic(self.cipher_aes.nonce)
-        ic(tag)
-        ic(ciphertext)
+        # ic(self.cipher_aes.nonce)
+        # ic(tag)
+        # ic(ciphertext)
         return data
 
     @log_default(logger)
@@ -160,13 +160,19 @@ class ClientInstance:
             #     print(type(self.messages.get_from_owner_messages()[0]))
             #     print(self.messages.get_from_owner_messages()[0].message)
 
-            return Authenticate(username=msg.username, result=True)
+            return Authenticate(username=msg.username, result=True, alert='welcome to server')
         elif result_auth == 402:
             self.client_logger.info(f'User was entered wrong password')
-            return Response(response=402, alert="This could be wrong password or no account with that name")
+            return Authenticate(username=msg.username,
+                                result=False,
+                                alert="This could be wrong password or no account with that name")
+            # return Response(response=402, alert="This could be wrong password or no account with that name")
         elif result_auth == 409:
             self.client_logger.warning(f'Someone is already connected with the given user name')
-            return Response(response=409, alert="Someone is already connected with the given user name")
+            return Authenticate(username=msg.username,
+                                result=False,
+                                alert="Someone is already connected with the given user name")
+            # return Response(response=409, alert="Someone is already connected with the given user name")
 
     def check_pwd(self, msg):
         self.find_client(msg)
@@ -193,9 +199,9 @@ class ClientInstance:
         return False
 
     def client_presence(self, msg):
-        if not self.client:
-            return self.client_disconnect()
-        else:
+        # if not self.client:
+        #     return self.client_disconnect()
+        if isinstance(self.client, Client):
             print(self.client)
             if not self.client.status == msg.status:
                 self.client.status = msg.status
@@ -208,14 +214,16 @@ class ClientInstance:
     @log_default(logger)
     @serializer
     def probe(self):
-        if self.pending_status:
-            print("No presence() received from the user")
-            self.client_logger.warning("No presence() received from the user")
-            self.client.status = 'disconnected'
-            self.session.commit()
-            self.client_disconnect()
-        self.pending_status = True
-        return Probe()
+        if isinstance(self.client, Client):
+            if self.pending_status:
+                print("No presence() received from the user")
+                self.client_logger.warning("No presence() received from the user")
+                self.client.status = 'disconnected'
+                self.session.commit()
+                self.client_disconnect()
+                self.pending_status = True
+            return Probe()
+        return Response(response=200, alert='server is waiting...')
 
     @log_default(logger)
     def on_msg(self, msg, clients):
@@ -248,10 +256,12 @@ class ClientInstance:
     @log_default(logger)
     def join(self, msg):
         self.client_logger(f'Client joined to <{msg.room}>')
+        return True
 
     @log_default(logger)
     def leave(self, msg):
         self.client_logger(f'Client left <{msg.room}>')
+        return True
 
     @log_default(logger)
     def get_contacts(self, msg):

@@ -45,10 +45,11 @@ class ClientThread(threading.Thread):
                 msg_list = MessagesDeserializer.get_messages(conn, self.user.session_key)
             else:
                 msg_list = MessagesDeserializer.get_messages(conn)
-            for msg in msg_list:
-                ic('===== msg ====', msg)
-                # self.user.action_handler(MessageProcessor.from_msg(msg))
-                self.user.action_handler(msg)
+            if msg_list:
+                for msg in msg_list:
+                    ic('===== msg ====', msg)
+                    # self.user.action_handler(MessageProcessor.from_msg(msg))
+                    self.user.action_handler(msg)
             # if msg_list:
             #     self.user.action_handler(msg_list)
 

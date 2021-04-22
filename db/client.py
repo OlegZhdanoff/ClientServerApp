@@ -48,6 +48,8 @@ class ClientStorage:
             if cl:
                 if bcrypt.checkpw(password.encode(), cl.password):
                     return cl
+                else:
+                    return False
             else:
                 return -1
         except Exception as e:
