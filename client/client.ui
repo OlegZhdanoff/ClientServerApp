@@ -256,6 +256,24 @@
       <string>Cancel</string>
      </property>
     </widget>
+    <widget class="QPushButton" name="showInfoButton">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>200</y>
+       <width>191</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>11</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Show connection info</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QPushButton" name="searchButton">
     <property name="geometry">
@@ -339,6 +357,19 @@
      </property>
     </widget>
    </widget>
+   <zorder>filterUsersList</zorder>
+   <zorder>contactList</zorder>
+   <zorder>messagesList</zorder>
+   <zorder>msgButton</zorder>
+   <zorder>msgEdit</zorder>
+   <zorder>chatInfoLabel</zorder>
+   <zorder>profileButton</zorder>
+   <zorder>searchEdit</zorder>
+   <zorder>addButton</zorder>
+   <zorder>profileWidget</zorder>
+   <zorder>searchButton</zorder>
+   <zorder>delButton</zorder>
+   <zorder>loginWidget</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

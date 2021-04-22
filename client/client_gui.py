@@ -74,7 +74,9 @@ class ClientMainWindow(QtWidgets.QMainWindow):
         self.login_edit = self.profileWidget.findChild(QLineEdit, 'loginEdit')
         self.password_edit = self.profileWidget.findChild(QLineEdit, 'passwordEdit')
         self.save_btn = self.profileWidget.findChild(QPushButton, 'saveButton')
+        self.showInfoButton = self.profileWidget.findChild(QPushButton, 'showInfoButton')
         self.save_btn.clicked.connect(self.save_profile)
+        self.showInfoButton.clicked.connect(self.toggle_login_widget)
         self.cancel_btn = self.profileWidget.findChild(QPushButton, 'cancelButton')
         self.cancel_btn.clicked.connect(self.cancel_profile)
 
@@ -113,6 +115,7 @@ class ClientMainWindow(QtWidgets.QMainWindow):
         self.sq_client.put(data)
 
     def connecting(self):
+        self.connectButton.setDisabled(True)
         if not self.client.auth:
             self.client.feed_data(self.client.send_key())
             self.add_log(time.time(), f'connecting to server {self.config.data["server"]["address"]}')
@@ -122,6 +125,12 @@ class ClientMainWindow(QtWidgets.QMainWindow):
         item = QStandardItem(f'{tm.strftime("%Y-%m-%d %H:%M")} >> {msg}')
         self.serverMessages.appendRow(item)
         self.statusbar.showMessage(item.text())
+
+    def toggle_login_widget(self):
+        if self.loginWidget.isHidden():
+            self.loginWidget.show()
+        else:
+            self.loginWidget.hide()
 
     def on_auth(self, msg: Authenticate):
         if not msg.result:
@@ -258,3 +267,10 @@ class ClientMainWindow(QtWidgets.QMainWindow):
         self.config.save_config()
         self.add_log(time.time(), 'config file saved')
         self.toggle_profile()
+
+    def closeEvent(self, *args, **kwargs):
+        ic('========== closing ==================')
+        self.monitor_thread.quit()
+        self.monitor_thread.disconnect()
+        self.monitor_thread.exit(0)
+        self.monitor.disconnect()

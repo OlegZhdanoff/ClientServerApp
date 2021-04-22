@@ -8,6 +8,7 @@ import click
 import socket
 
 from PyQt5 import QtWidgets
+from icecream import ic
 
 from client.client import Client
 from client.client_thread import ClientThread
@@ -99,7 +100,7 @@ def start(address, port):
         admin_thread.join()
 
         server_events.close.set()
-
+        ic('=============server closing =====================')
         server_thread.join()
         sys.exit(exit_code)
 

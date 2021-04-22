@@ -1,3 +1,4 @@
+import os
 import selectors
 import sys
 from pathlib import Path
@@ -61,7 +62,6 @@ def start(address, port, username, password):
 
         user.close()
         client_thread.join()
-
         sys.exit(exit_code)
 
         # shadow_client = ShadowUser(sq_gui, sq_client)

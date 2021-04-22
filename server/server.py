@@ -191,7 +191,7 @@ class ClientInstance:
 
     @log_default(logger)
     def client_disconnect(self):
-        if self.client:
+        if isinstance(self.client, Client):
             self.client.status = 'disconnected'
             self.session.commit()
         self.client_logger.info('User was disconnected')
@@ -209,7 +209,7 @@ class ClientInstance:
             self.pending_status = False
             if self.client.status == 'disconnected':
                 return self.client_disconnect()
-            return True
+        return True
 
     @log_default(logger)
     @serializer
@@ -236,11 +236,12 @@ class ClientInstance:
                 if client.username == msg.to:
                     client.feed_data(self.send_message(msg))
                     break
-        client = self.client_storage.get_client(msg.to)
-        # ic(client)
-        if client:
-            self.messages.add_message(client, msg.text)
-        self.feed_data(self.send_response(200, 'message is received'))
+        if isinstance(self.client, Client):
+            client = self.client_storage.get_client(msg.to)
+            # ic(client)
+            if client:
+                self.messages.add_message(client, msg.text)
+            self.feed_data(self.send_response(200, 'message is received'))
         return True
 
     @log_default(logger)
@@ -265,7 +266,8 @@ class ClientInstance:
 
     @log_default(logger)
     def get_contacts(self, msg):
-        self.feed_data(self.send_message(GetContacts(contacts=self.contacts.get_contacts())))
+        if self.contacts:
+            self.feed_data(self.send_message(GetContacts(contacts=self.contacts.get_contacts())))
         return True
 
     @log_default(logger)

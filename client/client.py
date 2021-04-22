@@ -43,10 +43,11 @@ class Client:
 
     @log_default(logger)
     def feed_data(self, data):
-        if self.cipher_aes:
-            data = self.encrypt_data(data)
-        length = MSG_LEN_NAME + str(len(data)) + MSG_END_LEN_NAME
-        data = length.encode() + data
+        if not data == 'close':
+            if self.cipher_aes:
+                data = self.encrypt_data(data)
+            length = MSG_LEN_NAME + str(len(data)) + MSG_END_LEN_NAME
+            data = length.encode() + data
         self.data_queue.put(data)
 
     # @log_default(logger)
@@ -204,7 +205,10 @@ class Client:
 
     @log_default(logger)
     def close(self):
-        self.auth = False
+        if self.auth:
+            self.auth = False
+            self.feed_data(self.disconnect())
+            time.sleep(0.5)
         self.feed_data('close')
 
     def _set_auth(self):
