@@ -262,8 +262,11 @@ class ClientMainWindow(QtWidgets.QMainWindow):
 
     def save_profile(self):
         self.config.data['user']['login'] = self.login_edit.text()
+        self.client.username = self.login_edit.text()
         self.config.data['user']['password'] = self.password_edit.text()
+        self.client.password = self.password_edit.text()
         self.config.data['user']['status'] = self.statusComboBox.currentText()
+        self.client.status = self.statusComboBox.currentText()
         self.config.save_config()
         self.add_log(time.time(), 'config file saved')
         self.toggle_profile()
