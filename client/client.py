@@ -1,10 +1,15 @@
+import pickle
 import time
 from queue import Queue, Empty
 
+from Crypto.Cipher import PKCS1_OAEP, AES
+from Crypto.PublicKey import RSA
+
 import structlog
+from icecream import ic
 
 from log.log_config import log_config, log_default
-from services import serializer
+from services import serializer, MSG_LEN_NAME, MSG_END_LEN_NAME
 from messages import *
 
 logger = log_config('client', 'client.log')
@@ -19,6 +24,12 @@ class Client:
         self.auth = False
         self.sq_gui = sq_gui
 
+        key = RSA.generate(2048)
+        self.public_key = key.publickey().export_key()
+        self.private_key = key.export_key()
+        self.session_key = None
+        self.cipher_aes = None
+
     @log_default(logger)
     def __eq__(self, other):
         return self.username == other.username
@@ -32,6 +43,11 @@ class Client:
 
     @log_default(logger)
     def feed_data(self, data):
+        if not data == 'close':
+            if self.cipher_aes:
+                data = self.encrypt_data(data)
+            length = MSG_LEN_NAME + str(len(data)) + MSG_END_LEN_NAME
+            data = length.encode() + data
         self.data_queue.put(data)
 
     # @log_default(logger)
@@ -49,11 +65,13 @@ class Client:
             self.feed_data(self.presence())
         # elif isinstance(msg, Msg):
         #     self.on_msg(msg)
-        elif isinstance(msg, Response):
-            print(self.response_processor(msg))
+        # elif isinstance(msg, Response):
+        #     print(self.response_processor(msg))
         elif isinstance(msg, Authenticate):
             self.authenticated(msg)
-        elif isinstance(msg, (GetContacts, FilterClients, Msg)):
+        elif isinstance(msg, SendKey):
+            self.set_session_key(msg)
+        elif isinstance(msg, (GetContacts, FilterClients, Msg, Response)):
             if self.sq_gui:
                 self.sq_gui.put(msg)
         else:
@@ -65,10 +83,6 @@ class Client:
     def response_processor(self, msg: Response):
         print(time.ctime(time.time()) + f': {msg.alert}')
         if msg.response in (200, 405, 409):
-            # if msg.alert == 'auth OK':
-            #     print('msg.alert', msg.alert)
-            #     self.status = 'online'
-            #     self.auth = True
             return msg.alert
         if msg.response == 201:
             return msg.alert
@@ -85,12 +99,50 @@ class Client:
             return f'Unknown response {msg}'
 
     @log_default(logger)
+    def set_session_key(self, msg: SendKey):
+        cipher_rsa = PKCS1_OAEP.new(RSA.import_key(self.private_key))
+        self.session_key = cipher_rsa.decrypt(msg.key)
+        self.cipher_aes = AES.new(self.session_key, AES.MODE_EAX)
+
+        self.feed_data(self.authenticate())
+
+    @log_default(logger)
+    def encrypt_data(self, data):
+        # print('======== encrypt Client data ===============')
+        # ic(data)
+        # ic(self.session_key)
+        # Encrypt the data with the AES session key
+        self.cipher_aes = AES.new(self.session_key, AES.MODE_EAX)
+        # self.cipher_aes.update(self.session_key)
+        ciphertext, tag = self.cipher_aes.encrypt_and_digest(data)
+        data = self.cipher_aes.nonce + tag + ciphertext
+
+        # ic(self.cipher_aes.nonce)
+        # ic(tag)
+        # ic(ciphertext)
+        # ic(data)
+        return data
+
+    @log_default(logger)
+    @serializer
+    def send_key(self):
+        # ic(self.public_key)
+        # a = pickle.dumps(SendKey(key=self.public_key))
+        # ic(a)
+        # res = pickle.loads(a)
+        # ic(res)
+        # ic(res.action)
+        return SendKey(key=self.public_key)
+
+    @log_default(logger)
     def authenticated(self, msg: Authenticate):
         if msg.result:
             self.auth = True
             print('online')
-            self.status = 'online'
+            # self.status = 'online'
             self.feed_data(self.get_contacts())
+        if self.sq_gui:
+            self.sq_gui.put(msg)
 
     @log_default(logger)
     @serializer
@@ -153,7 +205,10 @@ class Client:
 
     @log_default(logger)
     def close(self):
-        self.auth = False
+        if self.auth:
+            self.auth = False
+            self.feed_data(self.disconnect())
+            time.sleep(0.5)
         self.feed_data('close')
 
     def _set_auth(self):

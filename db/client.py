@@ -1,3 +1,5 @@
+import bcrypt as bcrypt
+from icecream import ic
 from sqlalchemy import and_, exists, Column, Integer, String, Boolean
 from sqlalchemy.exc import IntegrityError
 import icecream
@@ -33,22 +35,26 @@ class ClientStorage:
     def add_client(self, login, password, is_admin=False):
         try:
             # with self._session.begin():
-            self._session.add(Client(login=login, password=password, status='disconnected', is_admin=is_admin))
+            hashAndSalt = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
+            self._session.add(Client(login=login, password=hashAndSalt, status='disconnected', is_admin=is_admin))
             self._session.commit()
             logger.info(f'client {login} was added to DB')
         except IntegrityError as e:
             raise ValueError('login must be unique') from e
 
     def auth_client(self, login, password):
-        # stmt = exists().where(and_(Client.login == login, Client.password == password))
-        # print('====== get_client===========\n', login, password)
-        # print(stmt)
-        # cl = self._session.query(Client).filter(stmt).first()
-        cl = self._session.query(Client).filter_by(login=login).filter_by(password=password).first()
-        # q_user = session.query(User).filter_by(name="vasia").first()
-        # print(cl)
-        # print('====== get_client===========\n')
-        return cl
+        cl = self.get_client(login)
+        try:
+            if cl:
+                if bcrypt.checkpw(password.encode(), cl.password):
+                    return cl
+                else:
+                    return False
+            else:
+                return -1
+        except Exception as e:
+            ic(e)
+            return False
 
     def get_client(self, login):
         return self._session.query(Client).filter_by(login=login).first()

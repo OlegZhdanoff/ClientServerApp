@@ -2,6 +2,8 @@ import selectors
 import socket
 import threading
 
+from icecream import ic
+
 from client.client import Client
 from log.log_config import log_config
 from services import SelectableQueue, MessagesDeserializer, MessageProcessor
@@ -34,20 +36,22 @@ class ClientThread(threading.Thread):
             self._main_loop()
 
     def _process(self, conn, mask):
-        # print('type = ', type(conn))
-        # print('conn = ', conn)
-        # if isinstance(conn, socket.socket):
         logger_with_name = logger.bind(server=conn.getpeername())
         if mask & selectors.EVENT_READ:
             if isinstance(conn, SelectableQueue):
                 msg_list = MessagesDeserializer.recv_all(conn)
-                # print('SelectableQueue ============ ', msg_list)
                 return self.user.action_handler(msg_list)
+            elif self.user.session_key:
+                msg_list = MessagesDeserializer.get_messages(conn, self.user.session_key)
             else:
                 msg_list = MessagesDeserializer.get_messages(conn)
-            for msg in msg_list:
-                # print('===== msg ====', msg)
-                self.user.action_handler(MessageProcessor.from_msg(msg))
+            if msg_list:
+                for msg in msg_list:
+                    ic('===== msg ====', msg)
+                    # self.user.action_handler(MessageProcessor.from_msg(msg))
+                    self.user.action_handler(msg)
+            # if msg_list:
+            #     self.user.action_handler(msg_list)
 
         if mask & selectors.EVENT_WRITE:
             data = self.user.get_data()
@@ -73,6 +77,8 @@ class ClientThread(threading.Thread):
                 callback(key.fileobj, mask)
 
     def _close(self, conn):
+        print('=========== client_thread close======')
+        ic(self.user)
         self.user.feed_data(self.user.disconnect())
         self._process(conn, selectors.EVENT_WRITE)
         self.user.data_queue.join()

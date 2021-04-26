@@ -8,6 +8,7 @@ import click
 import socket
 
 from PyQt5 import QtWidgets
+from icecream import ic
 
 from client.client import Client
 from client.client_thread import ClientThread
@@ -79,7 +80,7 @@ def start(address, port):
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         time.sleep(1)
-        s.settimeout(0.1)
+        s.settimeout(0.2)
         s.connect((address, port))
         admin = Client(LOCAL_ADMIN, LOCAL_ADMIN_PASSWORD, 'online')
 
@@ -88,7 +89,7 @@ def start(address, port):
         )
         admin_thread = ClientThread(admin, client_thread_connections)
         admin_thread.start()
-        admin.feed_data(admin.authenticate())
+        admin.feed_data(admin.send_key())
 
         app = QtWidgets.QApplication(sys.argv)
         mw = ServerMainWindow(sq_gui, sq_admin)
@@ -99,7 +100,7 @@ def start(address, port):
         admin_thread.join()
 
         server_events.close.set()
-
+        ic('=============server closing =====================')
         server_thread.join()
         sys.exit(exit_code)
 

@@ -6,9 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>711</width>
-    <height>611</height>
+    <width>716</width>
+    <height>614</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>716</width>
+    <height>614</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>716</width>
+    <height>614</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Geek Chat</string>
@@ -30,9 +42,9 @@
    <widget class="QListView" name="messagesList">
     <property name="geometry">
      <rect>
-      <x>260</x>
+      <x>280</x>
       <y>40</y>
-      <width>441</width>
+      <width>421</width>
       <height>481</height>
      </rect>
     </property>
@@ -53,9 +65,9 @@
    <widget class="QLineEdit" name="msgEdit">
     <property name="geometry">
      <rect>
-      <x>260</x>
+      <x>280</x>
       <y>530</y>
-      <width>371</width>
+      <width>351</width>
       <height>31</height>
      </rect>
     </property>
@@ -76,7 +88,7 @@
      </font>
     </property>
     <property name="text">
-     <string>0</string>
+     <string>Chat</string>
     </property>
     <property name="textFormat">
      <enum>Qt::AutoText</enum>
@@ -87,7 +99,7 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>51</width>
+      <width>61</width>
       <height>31</height>
      </rect>
     </property>
@@ -244,6 +256,24 @@
       <string>Cancel</string>
      </property>
     </widget>
+    <widget class="QPushButton" name="showInfoButton">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>200</y>
+       <width>191</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>11</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Show connection info</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QPushButton" name="searchButton">
     <property name="geometry">
@@ -281,13 +311,72 @@
      <string>Del contact</string>
     </property>
    </widget>
+   <widget class="QWidget" name="loginWidget" native="true">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>40</y>
+      <width>431</width>
+      <height>521</height>
+     </rect>
+    </property>
+    <property name="toolTipDuration">
+     <number>-9</number>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
+    <widget class="QPushButton" name="connectButton">
+     <property name="geometry">
+      <rect>
+       <x>130</x>
+       <y>420</y>
+       <width>181</width>
+       <height>81</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>14</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>CONNECT</string>
+     </property>
+    </widget>
+    <widget class="QListView" name="serverMessagesList">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>431</width>
+       <height>361</height>
+      </rect>
+     </property>
+    </widget>
+   </widget>
+   <zorder>filterUsersList</zorder>
+   <zorder>contactList</zorder>
+   <zorder>messagesList</zorder>
+   <zorder>msgButton</zorder>
+   <zorder>msgEdit</zorder>
+   <zorder>chatInfoLabel</zorder>
+   <zorder>profileButton</zorder>
+   <zorder>searchEdit</zorder>
+   <zorder>addButton</zorder>
+   <zorder>profileWidget</zorder>
+   <zorder>searchButton</zorder>
+   <zorder>delButton</zorder>
+   <zorder>loginWidget</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>711</width>
+     <width>716</width>
      <height>21</height>
     </rect>
    </property>
@@ -295,5 +384,22 @@
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>loginEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>statusbar</receiver>
+   <slot>showMessage(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>105</x>
+     <y>100</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>357</x>
+     <y>603</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

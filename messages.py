@@ -30,6 +30,7 @@ class Authenticate:
     username: str = 'username'
     password: str = 'password'
     result: bool = False
+    alert: str = ''
 
     def __json__(self):
         return {
@@ -39,7 +40,8 @@ class Authenticate:
                 "account_name": self.username,
                 "password": self.password
             },
-            "result": self.result
+            "result": self.result,
+            "alert": self.alert
         }
 
 
@@ -226,4 +228,16 @@ class AdminGetHistory:
             "time": self.time,
             "user": self.user,
             "history": self.history
+        }
+
+
+@dataclass
+class SendKey:
+    action: str = 'public_key'
+    key: bytes = b''
+
+    def __json__(self):
+        return {
+            "action": self.action,
+            "key": self.key
         }

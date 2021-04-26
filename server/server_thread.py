@@ -131,6 +131,7 @@ class ServerThread(threading.Thread):
 
     def _disconnect(self, conn):
         # self.clients[conn].client_disconnect()
+        ic('======= server_thread _disconnect ======', conn, self.clients[conn])
         self.sel.unregister(conn)
         conn.close()
         del self.clients[conn]
@@ -142,34 +143,43 @@ class ServerThread(threading.Thread):
         else:
             username = self.clients[conn].username
             address = self.clients[conn].addr
+
         logger_with_name = logger.bind(username=username, address=address)
+
         if mask & selectors.EVENT_READ:
             if isinstance(conn, SelectableQueue):
                 msg_list = MessagesDeserializer.recv_all(conn)
-                # print('SelectableQueue ============ ', msg_list)
                 return self.server_gui_processor.action_handler(msg_list)
+            elif self.clients[conn].cipher_client_pk:
+                msg_list = MessagesDeserializer.get_messages(conn, self.clients[conn].session_key)
             else:
                 msg_list = MessagesDeserializer.get_messages(conn)
             if msg_list:
+                # msg = msg_list
+                # if isinstance(msg, GetContacts):
+                #     self.server_gui_processor.action_handler(msg)
+                # if not self.clients[conn].action_handler(msg, self.clients):
+                #     self._disconnect(conn)
                 for msg in msg_list:
                     # debug info
-                    if not msg['action'] == 'presence':
-                        print(msg)
-                    msg = MessageProcessor.from_msg(msg)
-                    if isinstance(msg, GetContacts):
-                        self.server_gui_processor.action_handler(msg)
+                    ic('===========server_thread _process======', msg)
+                    # if not msg['action'] == 'presence':
+                    #     print(msg)
+                    # msg = MessageProcessor.from_msg(msg)
+                    # if isinstance(msg, GetContacts):
+                    #     self.server_gui_processor.action_handler(msg)
                     if not self.clients[conn].action_handler(msg, self.clients):
-                        # if self.clients[conn].username == LOCAL_ADMIN:
-                        #     self._close()
-                        #     break
                         self._disconnect(conn)
             else:
                 logger_with_name.warning(f'no data in received messages')
                 self._disconnect(conn)
 
         if mask & selectors.EVENT_WRITE:
+            # ic(self.clients.keys())
+            # ic(conn)
             if conn in self.clients.keys():
                 data = self.clients[conn].get_data()
+                # ic(data)
                 try:
                     if data:
                         sent_size = conn.send(data)
