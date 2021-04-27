@@ -1,12 +1,9 @@
-import os
-import sys
-from configparser import ConfigParser
 from pathlib import Path
 
 from PyQt5 import QtWidgets, uic
-from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, QThread, QStringListModel, QModelIndex
+from PyQt5.QtCore import pyqtSlot, QThread
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
-from PyQt5.QtWidgets import QListView, QTableView, QWidget, QComboBox, QPushButton, QLineEdit, QToolButton, QStatusBar
+from PyQt5.QtWidgets import QListView, QWidget, QComboBox, QPushButton, QLineEdit, QToolButton, QStatusBar
 from icecream import ic
 
 from client.client import Client
@@ -26,8 +23,6 @@ class ClientMainWindow(QtWidgets.QMainWindow):
         self.monitor = DataMonitor(self, sq_gui)
         self.config = cfg
         self.logger = logger.bind(username=client.username)
-
-        # self.client.feed_data(client.send_key())
 
         ui_file_path = Path(__file__).parent.absolute() / "client.ui"
         uic.loadUi(ui_file_path, self)

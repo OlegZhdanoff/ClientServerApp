@@ -1,12 +1,11 @@
 import selectors
-import socket
 import threading
 
 from icecream import ic
 
 from client.client import Client
 from log.log_config import log_config
-from services import SelectableQueue, MessagesDeserializer, MessageProcessor
+from services import SelectableQueue, MessagesDeserializer
 
 logger = log_config('client_thread', 'client.log')
 
@@ -50,23 +49,20 @@ class ClientThread(threading.Thread):
                     ic('===== msg ====', msg)
                     # self.user.action_handler(MessageProcessor.from_msg(msg))
                     self.user.action_handler(msg)
-            # if msg_list:
-            #     self.user.action_handler(msg_list)
 
         if mask & selectors.EVENT_WRITE:
             data = self.user.get_data()
             try:
                 if data:
-                    # print('===== data =====', data, type(data))
                     if data == 'close':
                         self._close(conn)
                     else:
                         sent_size = conn.send(data)
                         if sent_size == 0:
-                            logger_with_name.warning(f"can't send data to server")
+                            logger_with_name.warning("can't send data to server")
                             self._close(conn)
-            except Exception as e:
-                logger.exception(f'Error')
+            except Exception:
+                logger.exception('Error')
                 self._close(conn)
 
     def _main_loop(self):
@@ -85,9 +81,3 @@ class ClientThread(threading.Thread):
         for conn in self.connections:
             conn['conn'].close()
         self.is_running = False
-
-
-
-
-
-

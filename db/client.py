@@ -1,8 +1,7 @@
 import bcrypt as bcrypt
 from icecream import ic
-from sqlalchemy import and_, exists, Column, Integer, String, Boolean
+from sqlalchemy import Column, Integer, String, Boolean
 from sqlalchemy.exc import IntegrityError
-import icecream
 from sqlalchemy.orm import relationship
 
 from db.base import Base
@@ -21,7 +20,6 @@ class Client(Base):
 
     Contacts = relationship("Contacts", order_by="Contacts.id", back_populates="Client")
     Message = relationship("Message", order_by="Message.id", back_populates="Client")
-    # ClientHistory = relationship("ClientHistory", order_by="ClientHistory.id", back_populates="Client")
 
     def __repr__(self):
         return f'<Client(id={self.id}, login={self.login}, password={self.password}, status={self.status})>'
@@ -34,9 +32,8 @@ class ClientStorage:
 
     def add_client(self, login, password, is_admin=False):
         try:
-            # with self._session.begin():
-            hashAndSalt = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
-            self._session.add(Client(login=login, password=hashAndSalt, status='disconnected', is_admin=is_admin))
+            hash_and_salt = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
+            self._session.add(Client(login=login, password=hash_and_salt, status='disconnected', is_admin=is_admin))
             self._session.commit()
             logger.info(f'client {login} was added to DB')
         except IntegrityError as e:
@@ -79,4 +76,3 @@ class ClientStorage:
 
     def get_all(self):
         return self._session.query(Client.login, Client.password, Client.status).all()
-

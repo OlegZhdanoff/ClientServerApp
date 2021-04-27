@@ -1,8 +1,4 @@
-import datetime
-import time
-
-from sqlalchemy import and_, exists, Column, Integer, String, DateTime, ForeignKey
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 
 from db.base import Base
@@ -30,21 +26,13 @@ class ClientHistoryStorage:
         self.owner = owner
 
     def add_record(self, address, tm):
-        # with self._session.begin():
         self._session.add(ClientHistory(client_id=self.owner.id, ip_address=address, when=tm))
         self._session.commit()
 
     def get_history(self):
         res = []
-        # query_res = self._session.query(Client.login, ClientHistory.ip_address, ClientHistory.when)\
-        #     .filter(ClientHistory.client_id == self.owner.id).join(Client.history).all()
         query_res = self._session.query(Client.login, ClientHistory.ip_address, ClientHistory.when) \
             .join(Client.history).filter(ClientHistory.client_id == self.owner.id).all()
-            # .filter_by(client_id=self.owner.id).join(Client.history).all()
-            # filter_by(Client=self.owner).join(Client).filter(Client == self.owner)
         for record in query_res:
-            # print(type(record[-1]))
-            # time.strptime()
-            # print(record[-1].strftime("%m/%d/%Y, %H:%M:%S"))
             res.append((record[0], record[1], record[-1].strftime("%m/%d/%Y, %H:%M:%S")))
         return res

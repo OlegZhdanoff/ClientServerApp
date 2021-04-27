@@ -26,6 +26,7 @@ def start(n):
     for proc in processes:
         proc.wait()
 
+
 if __name__ == '__main__':
 
     start()

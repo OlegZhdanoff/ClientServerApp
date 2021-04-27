@@ -1,23 +1,17 @@
-import os
 import selectors
 import sys
 from pathlib import Path
 
 import click
 from socket import *
-
 from PyQt5 import QtWidgets
-from icecream import ic
 
 from client.client_gui import ClientMainWindow
-from client.shadow_user import ShadowUser
 from client.client import Client
 from client.client_thread import ClientThread
 from services import SelectableQueue, Config
 from log.log_config import log_config
 import services
-
-import configparser
 
 logger = log_config('chat_client', 'client.log')
 
@@ -38,7 +32,7 @@ def start(address, port, username, password):
         if username == 'ivanov':
             username = config.data['user']['login']
             password = config.data['user']['password']
-        s = socket(AF_INET, SOCK_STREAM)  # Создает сокет TCP
+        s = socket(AF_INET, SOCK_STREAM)
         s.settimeout(0.1)
 
         s.connect((address, port))  # Присваивает адрес и порт
@@ -64,43 +58,14 @@ def start(address, port, username, password):
         client_thread.join()
         sys.exit(exit_code)
 
-        # shadow_client = ShadowUser(sq_gui, sq_client)
-        # shadow_client.start()
-        #
-        #
-        #
-        # while True:
-        #
-        #     command = input('Command list:\t'
-        #                     'q - exit\tm - message to all:\n'
-        #                     'add user to contacts - add <user>\tdel user from contacts - del <user>\tshow contacts - '
-        #                     'show\n')
-        #     if command == 'q':
-        #         sq_gui.put('')
-        #         user.close()
-        #         break
-        #     elif command == 'm':
-        #         message = input('>> ')
-        #         user.feed_data(user.send_message('#main', message))
-        #         # дублируем мессагу для shadow client
-        #         # sq_gui.put(user.send_message('#main', message))
-        #     elif command[:3] == 'add':
-        #         user.feed_data(user.add_contact(command[4:]))
-        #     elif command[:3] == 'del':
-        #         user.feed_data(user.del_contact(command[4:]))
-        #     elif command == 'show':
-        #         user.feed_data(user.get_contacts())
-        #
-        # client_thread.join()
-
-    except gaierror as e:
+    except gaierror:
         logger.exception(f'Incorrect server IP-address {address}:{port}')
-    except TimeoutError as e:
+    except TimeoutError:
         logger.exception(f'Wrong answer from server {address}:{port}')
-    except ConnectionRefusedError as e:
+    except ConnectionRefusedError:
         logger.exception(f'Server {address}:{port} is offline')
-    except OSError as e:
-        logger.exception(f'OS error')
+    except OSError:
+        logger.exception('OS error')
     except Exception as e:
         logger.exception(f'Error connection with server {address}:{port} - {e.args}')
     finally:

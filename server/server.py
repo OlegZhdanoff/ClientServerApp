@@ -37,7 +37,6 @@ class ClientInstance:
         key = RSA.generate(2048)
         self.public_key = key.publickey().export_key()
         self.private_key = key.export_key()
-        # self.client_public_key = None
         self.session_key = get_random_bytes(16)
         self.cipher_client_pk = None
         self.cipher_aes = AES.new(self.session_key, AES.MODE_EAX)
@@ -53,7 +52,7 @@ class ClientInstance:
                 else:
                     self.client_storage.add_client(msg.username, msg.password)
                 self.client = self.client_storage.auth_client(msg.username, msg.password)
-            except ValueError as e:
+            except ValueError:
                 print(f"can't create new user, username {msg.username} already exists")
                 self.client_logger.exception(f"can't create new user, username {msg.username} already exists")
         elif not self.client:
@@ -66,23 +65,17 @@ class ClientInstance:
     @log_default(logger)
     def feed_data(self, data):
         if isinstance(self.client, Client):
-            # print('========== server feed encrypted data ===========')
-            # ic(data)
             data = self.encrypt_data(data)
-        # else:
-            # print('========== server feed plain data ===========')
-            # ic(data)
         length = MSG_LEN_NAME + str(len(data)) + MSG_END_LEN_NAME
         data = length.encode() + data
         self.data_queue.put(data)
 
-    # @log_default(logger)
     def get_data(self):
         try:
             data = self.data_queue.get_nowait()
             self.data_queue.task_done()
             return data
-        except Empty as e:
+        except Empty:
             pass
 
     @log_default(logger)
@@ -119,26 +112,15 @@ class ClientInstance:
         client_public_key = RSA.import_key(msg.key)
         self.cipher_client_pk = PKCS1_OAEP.new(client_public_key)
         enc_session_key = self.cipher_client_pk.encrypt(self.session_key)
-        # print('======= server send_secret_key ==========')
-        # ic(msg.key)
-        # ic(client_public_key)
-        # ic(self.cipher_client_pk)
-        # ic(enc_session_key)
         self.feed_data(self.send_message(SendKey(key=enc_session_key)))
         return True
 
     @log_default(logger)
     def encrypt_data(self, data):
-        # print('======== encrypt Server data ===============')
-        # ic(data)
-        # ic(self.session_key)
         # Encrypt the data with the AES session key
         self.cipher_aes = AES.new(self.session_key, AES.MODE_EAX)
         ciphertext, tag = self.cipher_aes.encrypt_and_digest(data)
         data = self.cipher_aes.nonce + tag + ciphertext
-        # ic(self.cipher_aes.nonce)
-        # ic(tag)
-        # ic(ciphertext)
         return data
 
     @log_default(logger)
@@ -156,36 +138,28 @@ class ClientInstance:
             self.client_history_storage.add_record(self.addr, datetime.datetime.now())
             self.contacts = ContactStorage(self.session, self.client)
             self.messages = MessageStorage(self.session, self.client)
-            # if self.messages.get_from_owner_messages():
-            #     print(type(self.messages.get_from_owner_messages()[0]))
-            #     print(self.messages.get_from_owner_messages()[0].message)
 
             return Authenticate(username=msg.username, result=True, alert='welcome to server')
         elif result_auth == 402:
-            self.client_logger.info(f'User was entered wrong password')
+            self.client_logger.info('User was entered wrong password')
             return Authenticate(username=msg.username,
                                 result=False,
                                 alert="This could be wrong password or no account with that name")
-            # return Response(response=402, alert="This could be wrong password or no account with that name")
         elif result_auth == 409:
-            self.client_logger.warning(f'Someone is already connected with the given user name')
+            self.client_logger.warning('Someone is already connected with the given user name')
             return Authenticate(username=msg.username,
                                 result=False,
                                 alert="Someone is already connected with the given user name")
-            # return Response(response=409, alert="Someone is already connected with the given user name")
 
     def check_pwd(self, msg):
         self.find_client(msg)
         if self.client:
-            # if self.client.status == 'disconnected' or self.client.login == LOCAL_ADMIN:
             if self.client == -1:
                 return 409
             else:
                 self.client.status = 'online'
                 self.session.commit()
                 return 200
-            # elif self.client == -1:
-            #     return 409
         else:
             return 402
 
@@ -199,8 +173,6 @@ class ClientInstance:
         return False
 
     def client_presence(self, msg):
-        # if not self.client:
-        #     return self.client_disconnect()
         if isinstance(self.client, Client):
             print(self.client)
             if not self.client.status == msg.status:
@@ -238,7 +210,6 @@ class ClientInstance:
                     break
         if isinstance(self.client, Client):
             client = self.client_storage.get_client(msg.to)
-            # ic(client)
             if client:
                 self.messages.add_message(client, msg.text)
             self.feed_data(self.send_response(200, 'message is received'))
@@ -304,7 +275,6 @@ class ClientInstance:
     def get_messages(self, msg):
         client = self.client_storage.get_client(msg.from_)
         ic('server get_messages', client)
-        # messages = self.messages.get_to_owner_msg_from_time(msg.from_, datetime.datetime.fromtimestamp(msg.time))
         messages = self.messages.get_chat_msg(client)
         ic(messages)
         for item in messages:
@@ -314,12 +284,3 @@ class ClientInstance:
                 message = Msg(time=item[0].timestamp(), to=self.username, from_=item[2], text=item[1])
             self.feed_data(self.send_message(message))
         return True
-        # for message in messages:
-        #     # print(type(self.messages.get_from_owner_messages()[0]))
-        #     # print(self.messages.get_from_owner_messages()[0].message)
-        #     self.feed_data(self.send_message(Msg(
-        #         time=message.when,
-        #         to=self.username,
-        #         from_=message.from_id,
-        #         text=message.message
-        #     )))

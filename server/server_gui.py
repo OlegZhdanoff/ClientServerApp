@@ -1,12 +1,9 @@
-import os
-import sys
 from pathlib import Path
 
 from PyQt5 import QtWidgets, uic
-from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, QThread, QSortFilterProxyModel, Qt, QRegExp, QModelIndex
+from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, QThread, QSortFilterProxyModel, Qt
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from PyQt5.QtWidgets import QListView, QTableView, QLineEdit
-from icecream import ic
 
 from messages import *
 from services import SelectableQueue
@@ -23,7 +20,6 @@ class DataMonitor(QObject):
     def get_data(self):
         while True:
             data = self.sq_gui.get()
-            # print('DataMonitor ========== ',data)
             self.gotData.emit((data,))
             self.sq_gui.task_done()
 
@@ -77,7 +73,6 @@ class ServerMainWindow(QtWidgets.QMainWindow):
         self.sq_admin.put(data)
 
     def show_users(self, data):
-        # print(data.users)
         self.users.clear()
         for user in data.users:
             item = QStandardItem(user[0])
@@ -85,13 +80,9 @@ class ServerMainWindow(QtWidgets.QMainWindow):
         self.userList.setModel(self.filter_users)
 
     def get_history(self, item):
-        # print(item.data())
-        # idx = self.userList.currentIndex()
-        # print(idx.data())
         self.feed_data(AdminGetHistory(user=item.data()))
 
     def show_history(self, data):
-        # print(data)
         self.history.clear()
         for row in data.history:
             items = [QStandardItem(item) for item in row]
@@ -108,4 +99,3 @@ class ServerMainWindow(QtWidgets.QMainWindow):
             return self.feed_data(AdminGetUsers())
         if data.login == self.userList.currentIndex().data():
             self.feed_data(AdminGetHistory(user=data.login))
-

@@ -1,13 +1,11 @@
 from .log import configure_logging
 from functools import wraps
-import logging
 import structlog
 from logging.handlers import TimedRotatingFileHandler
 import inspect
 
 
 def proc(logger, method_name, event_dict):
-    # print("I got called with", event_dict)
     return event_dict
 
 
@@ -19,7 +17,6 @@ def log_config(logger_name, filename):
 
     file_handler = TimedRotatingFileHandler(filename, when='D', interval=1, encoding='utf-8')
     logger.addHandler(file_handler)
-    # logger.info('Тестовый запуск логгирования')
     return logger
 
 

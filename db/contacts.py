@@ -1,5 +1,4 @@
 from sqlalchemy import and_, Column, Integer, ForeignKey
-import icecream
 from sqlalchemy.orm import relationship
 
 from db.base import Base

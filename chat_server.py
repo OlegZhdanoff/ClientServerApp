@@ -1,9 +1,6 @@
 import selectors
 import sys
 import time
-from pathlib import Path
-from time import sleep
-
 import click
 import socket
 
@@ -25,10 +22,6 @@ def run_admin(events, address, port):
         s.settimeout(0.1)
         s.connect((address, port))
         admin = Client(LOCAL_ADMIN, LOCAL_ADMIN_PASSWORD, 'online')
-        # gui_app_socket, client_app_socket = socket.socketpair()
-        # sq_admin = SelectableQueue(gui_app_socket, client_app_socket)
-        # sq_gui = SelectableQueue(client_app_socket, gui_app_socket)
-
         client_thread_connections = (
             {'conn': s, 'events': selectors.EVENT_READ | selectors.EVENT_WRITE},
             # {'conn': sq_admin, 'events': selectors.EVENT_READ},
@@ -40,28 +33,6 @@ def run_admin(events, address, port):
         admin.close()
         admin_thread.join()
         return admin
-
-        # while True:
-        #
-        #     command = input('Command list:\t'
-        #                     'q - server shutdown\tm - message to all:\t')
-        #     if command == 'q':
-        #         admin.close()
-        #         events.close.set()
-        #         break
-        #     elif command == 'm':
-        #         message = input('>> ')
-        #         admin.feed_data(admin.send_message('#main', message))
-
-
-
-
-def run_gui():
-    app = QtWidgets.QApplication(sys.argv)
-
-    mw = ServerMainWindow()
-    mw.show()
-    return app.exec_()
 
 
 @click.command()
@@ -103,6 +74,7 @@ def start(address, port):
         ic('=============server closing =====================')
         server_thread.join()
         sys.exit(exit_code)
+
 
 if __name__ == '__main__':
 

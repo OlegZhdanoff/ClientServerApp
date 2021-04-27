@@ -1,11 +1,10 @@
 import datetime
 
 from sqlalchemy import and_, Column, Integer, ForeignKey, DateTime, String, or_
-import icecream
 from sqlalchemy.orm import relationship
 
 from db.base import Base
-from db.client import Client, ClientStorage
+from db.client import Client
 from log.log_config import log_config
 
 logger = log_config('Messages', 'database.log')
@@ -63,6 +62,6 @@ class MessageStorage:
                 .filter(Client.id == Message.from_id)\
                 .filter(and_(Message.when > tm, Message.to_id == self.owner.id))\
                 .all()
-        except Exception as e:
+        except Exception:
             logger.exception('get_to_owner_msg_from_time ERROR')
         return res

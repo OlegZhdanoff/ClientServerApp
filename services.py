@@ -29,7 +29,6 @@ MSG_END_LEN_NAME = 'length_end'
 
 logger = log_config('services', 'services.log')
 
-
 STATUS = ('online', 'disconnected', 'afk', 'busy')
 
 
@@ -86,13 +85,13 @@ class MessageEncoder(json.JSONEncoder):
     if available, to obtain its default JSON representation.
 
     """
+
     def default(self, obj):
         if hasattr(obj, '__json__'):
             # ic(obj)
             return obj.__json__()
         if isinstance(obj, bytes):
             return base64.b64encode(obj, altchars=None).decode()
-        #     return {"key": obj}
         print('class MessageEncoder: obj -> ', obj)
         return json.JSONEncoder.default(self, obj)
 
@@ -100,13 +99,9 @@ class MessageEncoder(json.JSONEncoder):
 def serializer(func):
     @wraps(func)
     def inner(*args, **kwargs):
-        # ic(*args)
-        # ic(**kwargs)
-        # ic(func)
-        # res = json.dumps(func(*args, **kwargs), cls=MessageEncoder)
         res = pickle.dumps(func(*args, **kwargs))
-        # length = pickle.dumps('msg_len=' + str(len(res)))
         return res
+
     return inner
 
 
@@ -119,27 +114,15 @@ class MessagesDeserializer:
         data = cls.recv_all(conn)
         cls.session_key = session_key
         if data:
-            # print('======== get messages =========')
-            # ic(data)
-            # ic(session_key)
-            # ic(pickle.loads(data))
-            # if session_key:
-            #     data = cls.decrypt(data)
-            # ic(data)
             res = cls.get_msg_list(data)
-            # ic(res)
-            # res = pickle.loads(data)
-            # ic('MessagesDeserializer get_messages ', res)
             return res
 
     @staticmethod
     def recv_all(conn):
         data = b''
-        # ic(conn)
         if isinstance(conn, SelectableQueue):
             data = conn.get()
             conn.task_done()
-            # return data.decode(ENCODING) if data else None
             return data
 
         try:
@@ -157,24 +140,13 @@ class MessagesDeserializer:
 
     @classmethod
     def decrypt(cls, data):
-        # enc_session_key, nonce, tag, ciphertext = \
-        #     [file_in.read(x) for x in (private_key.size_in_bytes(), 16, 16, -1)]
-
         # Decrypt the data with the AES session key
-
-        # print(data.decode("utf-8"))
         try:
             nonce = data[:16]
             tag = data[16:32]
             ciphertext = data[32:]
-            # print('========= decrypt ================')
-            # ic(nonce)
-            # ic(tag)
-            # ic(ciphertext)
-            # ic(cls.session_key)
             cipher_aes = AES.new(cls.session_key, AES.MODE_EAX, nonce)
             data = cipher_aes.decrypt_and_verify(ciphertext, tag)
-            # ic(data)
         except Exception as e:
             ic(f"decrypt error  {e}")
             logger.exception(f"decrypt error  {e}")
@@ -184,7 +156,6 @@ class MessagesDeserializer:
     def get_msg_list(cls, data):
         res = []
         while data:
-            # ic(data)
             length, end_length = cls.get_msg_lengths(data)
             if length and len(data) >= (end_length + length):
                 current_data = data[end_length:end_length + length]
@@ -210,12 +181,12 @@ class MessagesDeserializer:
     def deserialize(data):
         try:
             return pickle.loads(data)
-        except pickle.UnpicklingError as e:
-        # except JSONDecodeError as e:
-        #     logger.exception(f'Disconnect! JSONDecodeError for data: {data}')
+        except pickle.UnpicklingError:
+            # except JSONDecodeError as e:
+            #     logger.exception(f'Disconnect! JSONDecodeError for data: {data}')
             logger.exception(f'UnpicklingError for data: {data}')
             return ''
-        except TypeError as e:
+        except TypeError:
             logger.exception(f'Wrong type of data: {data}')
             return ''
 

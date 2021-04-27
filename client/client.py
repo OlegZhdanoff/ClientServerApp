@@ -1,12 +1,8 @@
-import pickle
 import time
 from queue import Queue, Empty
 
 from Crypto.Cipher import PKCS1_OAEP, AES
 from Crypto.PublicKey import RSA
-
-import structlog
-from icecream import ic
 
 from log.log_config import log_config, log_default
 from services import serializer, MSG_LEN_NAME, MSG_END_LEN_NAME
@@ -56,7 +52,7 @@ class Client:
             data = self.data_queue.get_nowait()
             self.data_queue.task_done()
             return data
-        except Empty as e:
+        except Empty:
             pass
 
     @log_default(logger)
@@ -213,4 +209,3 @@ class Client:
 
     def _set_auth(self):
         self.auth = True
-
