@@ -75,7 +75,8 @@ class ClientThread(threading.Thread):
     def _close(self, conn):
         print('=========== client_thread close======')
         ic(self.user)
-        self.user.feed_data(self.user.disconnect())
+        # self.user.feed_data(self.user.disconnect())
+        self.user.feed_data(self.user.close())
         self._process(conn, selectors.EVENT_WRITE)
         self.user.data_queue.join()
         for conn in self.connections:

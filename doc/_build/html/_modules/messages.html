@@ -1,0 +1,347 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>messages &#8212; ClientServerApps  documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for messages</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+
+
+<div class="viewcode-block" id="Presence"><a class="viewcode-back" href="../messages.html#messages.Presence">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Presence</span><span class="p">:</span>
+    <span class="n">action</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;presence&#39;</span>
+    <span class="n">time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;status&#39;</span>
+    <span class="n">username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;username&#39;</span>
+    <span class="n">status</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;offline&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__json__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">action</span><span class="p">,</span>
+            <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
+            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span>
+            <span class="s2">&quot;user&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;account_name&quot;</span><span class="p">:</span>  <span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="p">,</span>
+                    <span class="s2">&quot;status&quot;</span><span class="p">:</span>      <span class="bp">self</span><span class="o">.</span><span class="n">status</span>
+            <span class="p">}</span>
+        <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="Authenticate"><a class="viewcode-back" href="../messages.html#messages.Authenticate">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Authenticate</span><span class="p">:</span>
+    <span class="n">action</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;authenticate&#39;</span>
+    <span class="n">time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;username&#39;</span>
+    <span class="n">password</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;password&#39;</span>
+    <span class="n">result</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">alert</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__json__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">action</span><span class="p">,</span>
+            <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
+            <span class="s2">&quot;user&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;account_name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="p">,</span>
+                <span class="s2">&quot;password&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">password</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="p">,</span>
+            <span class="s2">&quot;alert&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">alert</span>
+        <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="Response"><a class="viewcode-back" href="../messages.html#messages.Response">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Response</span><span class="p">:</span>
+    <span class="n">response</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">200</span>
+    <span class="n">time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">alert</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;alert&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__json__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;response&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">response</span><span class="p">,</span>
+            <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
+            <span class="s2">&quot;alert&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">alert</span>
+        <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="Quit"><a class="viewcode-back" href="../messages.html#messages.Quit">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Quit</span><span class="p">:</span>
+    <span class="n">action</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;quit&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__json__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">action</span>
+        <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="Probe"><a class="viewcode-back" href="../messages.html#messages.Probe">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Probe</span><span class="p">:</span>
+    <span class="n">action</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;probe&#39;</span>
+    <span class="n">time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__json__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">action</span><span class="p">,</span>
+            <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span>
+        <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="Msg"><a class="viewcode-back" href="../messages.html#messages.Msg">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Msg</span><span class="p">:</span>
+    <span class="n">action</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;msg&#39;</span>
+    <span class="n">time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">to</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;user&#39;</span>
+    <span class="n">from_</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;user&#39;</span>
+    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;message&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__json__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">action</span><span class="p">,</span>
+            <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
+            <span class="s2">&quot;to&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">to</span><span class="p">,</span>
+            <span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">from_</span><span class="p">,</span>
+            <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span>
+        <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="GetMessages"><a class="viewcode-back" href="../messages.html#messages.GetMessages">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">GetMessages</span><span class="p">:</span>
+    <span class="n">action</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;get_messages&#39;</span>
+    <span class="n">time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">from_</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__json__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">action</span><span class="p">,</span>
+            <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
+            <span class="s2">&quot;from_&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">from_</span><span class="p">,</span>
+        <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="Join"><a class="viewcode-back" href="../messages.html#messages.Join">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Join</span><span class="p">:</span>
+    <span class="n">action</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;join&#39;</span>
+    <span class="n">time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">room</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;#room_name&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__json__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">action</span><span class="p">,</span>
+            <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
+            <span class="s2">&quot;room&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">room</span>
+        <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="Leave"><a class="viewcode-back" href="../messages.html#messages.Leave">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Leave</span><span class="p">:</span>
+    <span class="n">action</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;leave&#39;</span>
+    <span class="n">time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">room</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;#room_name&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__json__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">action</span><span class="p">,</span>
+            <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
+            <span class="s2">&quot;room&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">room</span>
+        <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="GetContacts"><a class="viewcode-back" href="../messages.html#messages.GetContacts">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">GetContacts</span><span class="p">:</span>
+    <span class="n">action</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;get_contacts&#39;</span>
+    <span class="n">time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">contacts</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="n">login</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__json__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">action</span><span class="p">,</span>
+            <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
+            <span class="s2">&quot;contacts&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">contacts</span><span class="p">,</span>
+            <span class="s2">&quot;login&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">login</span>
+        <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="AddContact"><a class="viewcode-back" href="../messages.html#messages.AddContact">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">AddContact</span><span class="p">:</span>
+    <span class="n">action</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;add_contact&#39;</span>
+    <span class="n">time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;user&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__json__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">action</span><span class="p">,</span>
+            <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
+            <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">username</span>
+        <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="DelContact"><a class="viewcode-back" href="../messages.html#messages.DelContact">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">DelContact</span><span class="p">:</span>
+    <span class="n">action</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;del_contact&#39;</span>
+    <span class="n">time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;user&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__json__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">action</span><span class="p">,</span>
+            <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
+            <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">username</span>
+        <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="FilterClients"><a class="viewcode-back" href="../messages.html#messages.FilterClients">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">FilterClients</span><span class="p">:</span>
+    <span class="n">action</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;filter_clients&#39;</span>
+    <span class="n">time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">users</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__json__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">action</span><span class="p">,</span>
+            <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
+            <span class="s2">&quot;filter&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="p">,</span>
+            <span class="s2">&quot;users&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">users</span>
+        <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="AdminGetUsers"><a class="viewcode-back" href="../messages.html#messages.AdminGetUsers">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">AdminGetUsers</span><span class="p">:</span>
+    <span class="n">action</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;admin_get_users&#39;</span>
+    <span class="n">time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">users</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__json__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">action</span><span class="p">,</span>
+            <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
+            <span class="s2">&quot;users&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">users</span>
+        <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="AdminGetHistory"><a class="viewcode-back" href="../messages.html#messages.AdminGetHistory">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">AdminGetHistory</span><span class="p">:</span>
+    <span class="n">action</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;admin_get_history&#39;</span>
+    <span class="n">time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">user</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">history</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__json__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">action</span><span class="p">,</span>
+            <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
+            <span class="s2">&quot;user&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="p">,</span>
+            <span class="s2">&quot;history&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">history</span>
+        <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="SendKey"><a class="viewcode-back" href="../messages.html#messages.SendKey">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">SendKey</span><span class="p">:</span>
+    <span class="n">action</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;public_key&#39;</span>
+    <span class="n">key</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__json__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">action</span><span class="p">,</span>
+            <span class="s2">&quot;key&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">key</span>
+        <span class="p">}</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">ClientServerApps</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chat_client.html">chat_client module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chat_server.html">chat_server module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../messages.html">messages module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../run_clients.html">run_clients module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../services.html">services module</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Author.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

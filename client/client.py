@@ -12,7 +12,17 @@ logger = log_config('client', 'client.log')
 
 
 class Client:
+    """
+    class for process communication between client and server
+    """
     def __init__(self, account_name, password, status='disconnected', sq_gui=None):
+        """
+        Constructor method
+        :param account_name: user name
+        :param password: plain user password
+        :param status: user status
+        :param sq_gui: Queue for communication with GUI
+        """
         self.username = account_name
         self.password = password
         self.status = status
@@ -34,20 +44,28 @@ class Client:
         return self.username
 
     @log_default(logger)
-    def set_status(self, status):
+    def _set_status(self, status):
         self.status = status
 
     @log_default(logger)
     def feed_data(self, data):
+        """
+        send data to server
+        Encrypt data if client has session_key and cipher
+        :param data: Any type of @dataclass from .messages or `close`
+        """
         if not data == 'close':
             if self.cipher_aes:
-                data = self.encrypt_data(data)
+                data = self._encrypt_data(data)
             length = MSG_LEN_NAME + str(len(data)) + MSG_END_LEN_NAME
             data = length.encode() + data
         self.data_queue.put(data)
 
     # @log_default(logger)
     def get_data(self):
+        """
+        get data from user GUI
+        """
         try:
             data = self.data_queue.get_nowait()
             self.data_queue.task_done()
@@ -57,6 +75,10 @@ class Client:
 
     @log_default(logger)
     def action_handler(self, msg):
+        """
+        process messages from server and client GUI
+        :param msg: Any type of @dataclass from .messages
+        """
         if isinstance(msg, Probe):
             self.feed_data(self.presence())
         # elif isinstance(msg, Msg):
@@ -66,7 +88,7 @@ class Client:
         elif isinstance(msg, Authenticate):
             self.authenticated(msg)
         elif isinstance(msg, SendKey):
-            self.set_session_key(msg)
+            self._set_session_key(msg)
         elif isinstance(msg, (GetContacts, FilterClients, Msg, Response)):
             if self.sq_gui:
                 self.sq_gui.put(msg)
@@ -95,7 +117,7 @@ class Client:
             return f'Unknown response {msg}'
 
     @log_default(logger)
-    def set_session_key(self, msg: SendKey):
+    def _set_session_key(self, msg: SendKey):
         cipher_rsa = PKCS1_OAEP.new(RSA.import_key(self.private_key))
         self.session_key = cipher_rsa.decrypt(msg.key)
         self.cipher_aes = AES.new(self.session_key, AES.MODE_EAX)
@@ -103,35 +125,28 @@ class Client:
         self.feed_data(self.authenticate())
 
     @log_default(logger)
-    def encrypt_data(self, data):
-        # print('======== encrypt Client data ===============')
-        # ic(data)
-        # ic(self.session_key)
-        # Encrypt the data with the AES session key
+    def _encrypt_data(self, data):
         self.cipher_aes = AES.new(self.session_key, AES.MODE_EAX)
-        # self.cipher_aes.update(self.session_key)
         ciphertext, tag = self.cipher_aes.encrypt_and_digest(data)
         data = self.cipher_aes.nonce + tag + ciphertext
-
-        # ic(self.cipher_aes.nonce)
-        # ic(tag)
-        # ic(ciphertext)
-        # ic(data)
         return data
 
     @log_default(logger)
     @serializer
     def send_key(self):
-        # ic(self.public_key)
-        # a = pickle.dumps(SendKey(key=self.public_key))
-        # ic(a)
-        # res = pickle.loads(a)
-        # ic(res)
-        # ic(res.action)
+        """
+        send client public key to server
+        """
         return SendKey(key=self.public_key)
 
     @log_default(logger)
     def authenticated(self, msg: Authenticate):
+        """
+        process Authenticate message from server
+        send GetContacts message if Authenticate.result is True
+        :param msg: Authenticate message from server
+        :type msg: :class: `messages.Authenticate`
+        """
         if msg.result:
             self.auth = True
             print('online')
@@ -143,56 +158,109 @@ class Client:
     @log_default(logger)
     @serializer
     def authenticate(self):
+        """
+        send Authenticate request to server
+        :return: :class: `messages.Authenticate`
+        """
         return Authenticate(username=self.username, password=self.password)
 
     @log_default(logger)
     @serializer
     def get_contacts(self):
+        """
+        send GetContacts request to server
+        :return: :class: `messages.GetContacts`
+        """
         return GetContacts(login=self.username)
 
     @log_default(logger)
     @serializer
     def sender(self, msg):
+        """
+        send message to server
+        :param msg: Any type of @dataclass from .messages
+        """
         return msg
 
     @log_default(logger)
     @serializer
     def add_contact(self, name):
+        """
+        send AddContact request to server
+        :param name: target username for adding to contact list
+        :return: :class: `messages.AddContact`
+        """
         return AddContact(username=name)
 
     @log_default(logger)
     @serializer
     def del_contact(self, name):
+        """
+        send DelContact request to server
+        :param name: target username for deleting from contact list
+        :return: :class: `messages.DelContact`
+        """
         return DelContact(username=name)
 
     @log_default(logger)
     @serializer
-    def disconnect(self):
+    def _disconnect(self):
+        """
+        disconnect from server
+        :return: :class: `messages.Quit`
+        """
         return Quit()
 
     @log_default(logger)
     @serializer
     def presence(self):
+        """
+        send Presence answer to server
+        :return: :class: `messages.Presence`
+        """
         return Presence(username=self.username, status=self.status)
 
     @log_default(logger)
     @serializer
     def send_message(self, to, text):
+        """
+        send message to server to target user
+        :param to: target username
+        :param text: message body
+        :return: :class: `messages.Msg`
+        """
         return Msg(to=to, from_=self.username, text=text)
 
     @log_default(logger)
     @serializer
     def get_messages(self, tm, contact=''):
+        """
+        send GetMessages request to server
+        :param tm: request messages created after this time
+        :type tm: float
+        :param contact: list of contacts returning by server
+        :return: :class: `messages.GetMessages`
+        """
         return GetMessages(time=tm, from_=contact)
 
     @log_default(logger)
     @serializer
     def join(self, room):
+        """
+        send Join request to server
+        :param room: room name to join
+        :return: :class: `messages.Join`
+        """
         return Join(room=room)
 
     @log_default(logger)
     @serializer
     def leave(self, room):
+        """
+        send Leave request to server
+        :param room: room name to leave
+        :return: :class: `messages.Leave`
+        """
         return Leave(room=room)
 
     @log_default(logger)
@@ -201,9 +269,12 @@ class Client:
 
     @log_default(logger)
     def close(self):
+        """
+        close connection with server
+        """
         if self.auth:
             self.auth = False
-            self.feed_data(self.disconnect())
+            self.feed_data(self._disconnect())
             time.sleep(0.5)
         self.feed_data('close')
 

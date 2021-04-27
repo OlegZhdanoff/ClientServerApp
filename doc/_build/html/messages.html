@@ -1,0 +1,478 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>messages module &#8212; ClientServerApps  documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="run_clients module" href="run_clients.html" />
+    <link rel="prev" title="chat_server module" href="chat_server.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-messages">
+<span id="messages-module"></span><h1>messages module<a class="headerlink" href="#module-messages" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="messages.AddContact">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">messages.</span></code><code class="sig-name descname"><span class="pre">AddContact</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'add_contact'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1619529721.6498425</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'user'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/messages.html#AddContact"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.AddContact" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt id="messages.AddContact.action">
+<code class="sig-name descname"><span class="pre">action</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><em class="property"> <span class="pre">=</span> <span class="pre">'add_contact'</span></em><a class="headerlink" href="#messages.AddContact.action" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="messages.AddContact.time">
+<code class="sig-name descname"><span class="pre">time</span></code><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><em class="property"> <span class="pre">=</span> <span class="pre">1619529721.6498425</span></em><a class="headerlink" href="#messages.AddContact.time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="messages.AddContact.username">
+<code class="sig-name descname"><span class="pre">username</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><em class="property"> <span class="pre">=</span> <span class="pre">'user'</span></em><a class="headerlink" href="#messages.AddContact.username" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="messages.AdminGetHistory">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">messages.</span></code><code class="sig-name descname"><span class="pre">AdminGetHistory</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'admin_get_history'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1619529721.6498425</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">history</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">tuple</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/messages.html#AdminGetHistory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.AdminGetHistory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt id="messages.AdminGetHistory.action">
+<code class="sig-name descname"><span class="pre">action</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><em class="property"> <span class="pre">=</span> <span class="pre">'admin_get_history'</span></em><a class="headerlink" href="#messages.AdminGetHistory.action" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="messages.AdminGetHistory.history">
+<code class="sig-name descname"><span class="pre">history</span></code><em class="property"><span class="pre">:</span> <span class="pre">tuple</span></em><em class="property"> <span class="pre">=</span> <span class="pre">()</span></em><a class="headerlink" href="#messages.AdminGetHistory.history" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="messages.AdminGetHistory.time">
+<code class="sig-name descname"><span class="pre">time</span></code><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><em class="property"> <span class="pre">=</span> <span class="pre">1619529721.6498425</span></em><a class="headerlink" href="#messages.AdminGetHistory.time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="messages.AdminGetHistory.user">
+<code class="sig-name descname"><span class="pre">user</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><em class="property"> <span class="pre">=</span> <span class="pre">''</span></em><a class="headerlink" href="#messages.AdminGetHistory.user" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="messages.AdminGetUsers">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">messages.</span></code><code class="sig-name descname"><span class="pre">AdminGetUsers</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'admin_get_users'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1619529721.6498425</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">users</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">tuple</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/messages.html#AdminGetUsers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.AdminGetUsers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt id="messages.AdminGetUsers.action">
+<code class="sig-name descname"><span class="pre">action</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><em class="property"> <span class="pre">=</span> <span class="pre">'admin_get_users'</span></em><a class="headerlink" href="#messages.AdminGetUsers.action" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="messages.AdminGetUsers.time">
+<code class="sig-name descname"><span class="pre">time</span></code><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><em class="property"> <span class="pre">=</span> <span class="pre">1619529721.6498425</span></em><a class="headerlink" href="#messages.AdminGetUsers.time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="messages.AdminGetUsers.users">
+<code class="sig-name descname"><span class="pre">users</span></code><em class="property"><span class="pre">:</span> <span class="pre">tuple</span></em><em class="property"> <span class="pre">=</span> <span class="pre">()</span></em><a class="headerlink" href="#messages.AdminGetUsers.users" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="messages.Authenticate">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">messages.</span></code><code class="sig-name descname"><span class="pre">Authenticate</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'authenticate'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1619529721.6498425</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'username'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'password'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alert</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/messages.html#Authenticate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.Authenticate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt id="messages.Authenticate.action">
+<code class="sig-name descname"><span class="pre">action</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><em class="property"> <span class="pre">=</span> <span class="pre">'authenticate'</span></em><a class="headerlink" href="#messages.Authenticate.action" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="messages.Authenticate.alert">
+<code class="sig-name descname"><span class="pre">alert</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><em class="property"> <span class="pre">=</span> <span class="pre">''</span></em><a class="headerlink" href="#messages.Authenticate.alert" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="messages.Authenticate.password">
+<code class="sig-name descname"><span class="pre">password</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><em class="property"> <span class="pre">=</span> <span class="pre">'password'</span></em><a class="headerlink" href="#messages.Authenticate.password" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="messages.Authenticate.result">
+<code class="sig-name descname"><span class="pre">result</span></code><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><em class="property"> <span class="pre">=</span> <span class="pre">False</span></em><a class="headerlink" href="#messages.Authenticate.result" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="messages.Authenticate.time">
+<code class="sig-name descname"><span class="pre">time</span></code><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><em class="property"> <span class="pre">=</span> <span class="pre">1619529721.6498425</span></em><a class="headerlink" href="#messages.Authenticate.time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="messages.Authenticate.username">
+<code class="sig-name descname"><span class="pre">username</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><em class="property"> <span class="pre">=</span> <span class="pre">'username'</span></em><a class="headerlink" href="#messages.Authenticate.username" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="messages.DelContact">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">messages.</span></code><code class="sig-name descname"><span class="pre">DelContact</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'del_contact'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1619529721.6498425</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'user'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/messages.html#DelContact"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.DelContact" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt id="messages.DelContact.action">
+<code class="sig-name descname"><span class="pre">action</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><em class="property"> <span class="pre">=</span> <span class="pre">'del_contact'</span></em><a class="headerlink" href="#messages.DelContact.action" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="messages.DelContact.time">
+<code class="sig-name descname"><span class="pre">time</span></code><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><em class="property"> <span class="pre">=</span> <span class="pre">1619529721.6498425</span></em><a class="headerlink" href="#messages.DelContact.time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="messages.DelContact.username">
+<code class="sig-name descname"><span class="pre">username</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><em class="property"> <span class="pre">=</span> <span class="pre">'user'</span></em><a class="headerlink" href="#messages.DelContact.username" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="messages.FilterClients">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">messages.</span></code><code class="sig-name descname"><span class="pre">FilterClients</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'filter_clients'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1619529721.6498425</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pattern</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">users</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">tuple</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/messages.html#FilterClients"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.FilterClients" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt id="messages.FilterClients.action">
+<code class="sig-name descname"><span class="pre">action</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><em class="property"> <span class="pre">=</span> <span class="pre">'filter_clients'</span></em><a class="headerlink" href="#messages.FilterClients.action" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="messages.FilterClients.pattern">
+<code class="sig-name descname"><span class="pre">pattern</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><em class="property"> <span class="pre">=</span> <span class="pre">''</span></em><a class="headerlink" href="#messages.FilterClients.pattern" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="messages.FilterClients.time">
+<code class="sig-name descname"><span class="pre">time</span></code><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><em class="property"> <span class="pre">=</span> <span class="pre">1619529721.6498425</span></em><a class="headerlink" href="#messages.FilterClients.time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="messages.FilterClients.users">
+<code class="sig-name descname"><span class="pre">users</span></code><em class="property"><span class="pre">:</span> <span class="pre">tuple</span></em><em class="property"> <span class="pre">=</span> <span class="pre">()</span></em><a class="headerlink" href="#messages.FilterClients.users" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="messages.GetContacts">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">messages.</span></code><code class="sig-name descname"><span class="pre">GetContacts</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'get_contacts'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1619529721.6498425</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contacts</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">tuple</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">login</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/messages.html#GetContacts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.GetContacts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt id="messages.GetContacts.action">
+<code class="sig-name descname"><span class="pre">action</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><em class="property"> <span class="pre">=</span> <span class="pre">'get_contacts'</span></em><a class="headerlink" href="#messages.GetContacts.action" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="messages.GetContacts.contacts">
+<code class="sig-name descname"><span class="pre">contacts</span></code><em class="property"><span class="pre">:</span> <span class="pre">tuple</span></em><em class="property"> <span class="pre">=</span> <span class="pre">()</span></em><a class="headerlink" href="#messages.GetContacts.contacts" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="messages.GetContacts.login">
+<code class="sig-name descname"><span class="pre">login</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><em class="property"> <span class="pre">=</span> <span class="pre">''</span></em><a class="headerlink" href="#messages.GetContacts.login" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="messages.GetContacts.time">
+<code class="sig-name descname"><span class="pre">time</span></code><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><em class="property"> <span class="pre">=</span> <span class="pre">1619529721.6498425</span></em><a class="headerlink" href="#messages.GetContacts.time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="messages.GetMessages">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">messages.</span></code><code class="sig-name descname"><span class="pre">GetMessages</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'get_messages'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1619529721.6498425</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/messages.html#GetMessages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.GetMessages" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt id="messages.GetMessages.action">
+<code class="sig-name descname"><span class="pre">action</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><em class="property"> <span class="pre">=</span> <span class="pre">'get_messages'</span></em><a class="headerlink" href="#messages.GetMessages.action" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="messages.GetMessages.from_">
+<code class="sig-name descname"><span class="pre">from_</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><em class="property"> <span class="pre">=</span> <span class="pre">''</span></em><a class="headerlink" href="#messages.GetMessages.from_" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="messages.GetMessages.time">
+<code class="sig-name descname"><span class="pre">time</span></code><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><em class="property"> <span class="pre">=</span> <span class="pre">1619529721.6498425</span></em><a class="headerlink" href="#messages.GetMessages.time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="messages.Join">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">messages.</span></code><code class="sig-name descname"><span class="pre">Join</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'join'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1619529721.6498425</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">room</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'#room_name'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/messages.html#Join"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.Join" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt id="messages.Join.action">
+<code class="sig-name descname"><span class="pre">action</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><em class="property"> <span class="pre">=</span> <span class="pre">'join'</span></em><a class="headerlink" href="#messages.Join.action" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="messages.Join.room">
+<code class="sig-name descname"><span class="pre">room</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><em class="property"> <span class="pre">=</span> <span class="pre">'#room_name'</span></em><a class="headerlink" href="#messages.Join.room" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="messages.Join.time">
+<code class="sig-name descname"><span class="pre">time</span></code><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><em class="property"> <span class="pre">=</span> <span class="pre">1619529721.6498425</span></em><a class="headerlink" href="#messages.Join.time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="messages.Leave">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">messages.</span></code><code class="sig-name descname"><span class="pre">Leave</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'leave'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1619529721.6498425</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">room</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'#room_name'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/messages.html#Leave"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.Leave" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt id="messages.Leave.action">
+<code class="sig-name descname"><span class="pre">action</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><em class="property"> <span class="pre">=</span> <span class="pre">'leave'</span></em><a class="headerlink" href="#messages.Leave.action" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="messages.Leave.room">
+<code class="sig-name descname"><span class="pre">room</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><em class="property"> <span class="pre">=</span> <span class="pre">'#room_name'</span></em><a class="headerlink" href="#messages.Leave.room" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="messages.Leave.time">
+<code class="sig-name descname"><span class="pre">time</span></code><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><em class="property"> <span class="pre">=</span> <span class="pre">1619529721.6498425</span></em><a class="headerlink" href="#messages.Leave.time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="messages.Msg">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">messages.</span></code><code class="sig-name descname"><span class="pre">Msg</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'msg'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1619529721.6498425</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'user'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'user'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'message'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/messages.html#Msg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.Msg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt id="messages.Msg.action">
+<code class="sig-name descname"><span class="pre">action</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><em class="property"> <span class="pre">=</span> <span class="pre">'msg'</span></em><a class="headerlink" href="#messages.Msg.action" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="messages.Msg.from_">
+<code class="sig-name descname"><span class="pre">from_</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><em class="property"> <span class="pre">=</span> <span class="pre">'user'</span></em><a class="headerlink" href="#messages.Msg.from_" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="messages.Msg.text">
+<code class="sig-name descname"><span class="pre">text</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><em class="property"> <span class="pre">=</span> <span class="pre">'message'</span></em><a class="headerlink" href="#messages.Msg.text" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="messages.Msg.time">
+<code class="sig-name descname"><span class="pre">time</span></code><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><em class="property"> <span class="pre">=</span> <span class="pre">1619529721.6498425</span></em><a class="headerlink" href="#messages.Msg.time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="messages.Msg.to">
+<code class="sig-name descname"><span class="pre">to</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><em class="property"> <span class="pre">=</span> <span class="pre">'user'</span></em><a class="headerlink" href="#messages.Msg.to" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="messages.Presence">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">messages.</span></code><code class="sig-name descname"><span class="pre">Presence</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'presence'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1619529721.6498425</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'status'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'username'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'offline'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/messages.html#Presence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.Presence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt id="messages.Presence.action">
+<code class="sig-name descname"><span class="pre">action</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><em class="property"> <span class="pre">=</span> <span class="pre">'presence'</span></em><a class="headerlink" href="#messages.Presence.action" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="messages.Presence.status">
+<code class="sig-name descname"><span class="pre">status</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><em class="property"> <span class="pre">=</span> <span class="pre">'offline'</span></em><a class="headerlink" href="#messages.Presence.status" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="messages.Presence.time">
+<code class="sig-name descname"><span class="pre">time</span></code><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><em class="property"> <span class="pre">=</span> <span class="pre">1619529721.6498425</span></em><a class="headerlink" href="#messages.Presence.time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="messages.Presence.type">
+<code class="sig-name descname"><span class="pre">type</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><em class="property"> <span class="pre">=</span> <span class="pre">'status'</span></em><a class="headerlink" href="#messages.Presence.type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="messages.Presence.username">
+<code class="sig-name descname"><span class="pre">username</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><em class="property"> <span class="pre">=</span> <span class="pre">'username'</span></em><a class="headerlink" href="#messages.Presence.username" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="messages.Probe">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">messages.</span></code><code class="sig-name descname"><span class="pre">Probe</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'probe'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1619529721.6498425</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/messages.html#Probe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.Probe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt id="messages.Probe.action">
+<code class="sig-name descname"><span class="pre">action</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><em class="property"> <span class="pre">=</span> <span class="pre">'probe'</span></em><a class="headerlink" href="#messages.Probe.action" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="messages.Probe.time">
+<code class="sig-name descname"><span class="pre">time</span></code><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><em class="property"> <span class="pre">=</span> <span class="pre">1619529721.6498425</span></em><a class="headerlink" href="#messages.Probe.time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="messages.Quit">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">messages.</span></code><code class="sig-name descname"><span class="pre">Quit</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'quit'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/messages.html#Quit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.Quit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt id="messages.Quit.action">
+<code class="sig-name descname"><span class="pre">action</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><em class="property"> <span class="pre">=</span> <span class="pre">'quit'</span></em><a class="headerlink" href="#messages.Quit.action" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="messages.Response">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">messages.</span></code><code class="sig-name descname"><span class="pre">Response</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1619529721.6498425</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alert</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'alert'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/messages.html#Response"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.Response" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt id="messages.Response.alert">
+<code class="sig-name descname"><span class="pre">alert</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><em class="property"> <span class="pre">=</span> <span class="pre">'alert'</span></em><a class="headerlink" href="#messages.Response.alert" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="messages.Response.response">
+<code class="sig-name descname"><span class="pre">response</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><em class="property"> <span class="pre">=</span> <span class="pre">200</span></em><a class="headerlink" href="#messages.Response.response" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="messages.Response.time">
+<code class="sig-name descname"><span class="pre">time</span></code><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><em class="property"> <span class="pre">=</span> <span class="pre">1619529721.6498425</span></em><a class="headerlink" href="#messages.Response.time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="messages.SendKey">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">messages.</span></code><code class="sig-name descname"><span class="pre">SendKey</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'public_key'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bytes</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">b''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/messages.html#SendKey"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.SendKey" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt id="messages.SendKey.action">
+<code class="sig-name descname"><span class="pre">action</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><em class="property"> <span class="pre">=</span> <span class="pre">'public_key'</span></em><a class="headerlink" href="#messages.SendKey.action" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="messages.SendKey.key">
+<code class="sig-name descname"><span class="pre">key</span></code><em class="property"><span class="pre">:</span> <span class="pre">bytes</span></em><em class="property"> <span class="pre">=</span> <span class="pre">b''</span></em><a class="headerlink" href="#messages.SendKey.key" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">ClientServerApps</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="chat_client.html">chat_client module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chat_server.html">chat_server module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">messages module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="run_clients.html">run_clients module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="services.html">services module</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="chat_server.html" title="previous chapter">chat_server module</a></li>
+      <li>Next: <a href="run_clients.html" title="next chapter">run_clients module</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Author.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/messages.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,264 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>services module &#8212; ClientServerApps  documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="run_clients module" href="run_clients.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-services">
+<span id="services-module"></span><h1>services module<a class="headerlink" href="#module-services" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="services.Config">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">services.</span></code><code class="sig-name descname"><span class="pre">Config</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/services.html#Config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#services.Config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="services.Config.load_config">
+<code class="sig-name descname"><span class="pre">load_config</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/services.html#Config.load_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#services.Config.load_config" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="services.Config.save_config">
+<code class="sig-name descname"><span class="pre">save_config</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/services.html#Config.save_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#services.Config.save_config" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="services.MessageEncoder">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">services.</span></code><code class="sig-name descname"><span class="pre">MessageEncoder</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skipkeys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ensure_ascii</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_circular</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_nan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/services.html#MessageEncoder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#services.MessageEncoder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">json.encoder.JSONEncoder</span></code></p>
+<p>JSONEncoder subclass that leverages an object’s <cite>__json__()</cite> method,
+if available, to obtain its default JSON representation.</p>
+<dl class="py method">
+<dt id="services.MessageEncoder.default">
+<code class="sig-name descname"><span class="pre">default</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/services.html#MessageEncoder.default"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#services.MessageEncoder.default" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement this method in a subclass such that it returns
+a serializable object for <code class="docutils literal notranslate"><span class="pre">o</span></code>, or calls the base implementation
+(to raise a <code class="docutils literal notranslate"><span class="pre">TypeError</span></code>).</p>
+<p>For example, to support arbitrary iterators, you could
+implement default like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">o</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">iterable</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
+    <span class="c1"># Let the base class default method raise the TypeError</span>
+    <span class="k">return</span> <span class="n">JSONEncoder</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">o</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="services.MessageProcessor">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">services.</span></code><code class="sig-name descname"><span class="pre">MessageProcessor</span></code><a class="reference internal" href="_modules/services.html#MessageProcessor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#services.MessageProcessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="services.MessageProcessor.from_msg">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">from_msg</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/services.html#MessageProcessor.from_msg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#services.MessageProcessor.from_msg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="services.MessagesDeserializer">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">services.</span></code><code class="sig-name descname"><span class="pre">MessagesDeserializer</span></code><a class="reference internal" href="_modules/services.html#MessagesDeserializer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#services.MessagesDeserializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="services.MessagesDeserializer.decrypt">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">decrypt</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/services.html#MessagesDeserializer.decrypt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#services.MessagesDeserializer.decrypt" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="services.MessagesDeserializer.deserialize">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">deserialize</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/services.html#MessagesDeserializer.deserialize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#services.MessagesDeserializer.deserialize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="services.MessagesDeserializer.get_messages">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">get_messages</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/services.html#MessagesDeserializer.get_messages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#services.MessagesDeserializer.get_messages" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="services.MessagesDeserializer.get_msg_lengths">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">get_msg_lengths</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/services.html#MessagesDeserializer.get_msg_lengths"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#services.MessagesDeserializer.get_msg_lengths" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="services.MessagesDeserializer.get_msg_list">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">get_msg_list</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/services.html#MessagesDeserializer.get_msg_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#services.MessagesDeserializer.get_msg_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="services.MessagesDeserializer.recv_all">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">recv_all</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/services.html#MessagesDeserializer.recv_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#services.MessagesDeserializer.recv_all" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="services.MessagesDeserializer.session_key">
+<code class="sig-name descname"><span class="pre">session_key</span></code><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#services.MessagesDeserializer.session_key" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="services.SelectableQueue">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">services.</span></code><code class="sig-name descname"><span class="pre">SelectableQueue</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">put_socket</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">get_socket</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/services.html#SelectableQueue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#services.SelectableQueue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">queue.Queue</span></code></p>
+<dl class="py method">
+<dt id="services.SelectableQueue.close">
+<code class="sig-name descname"><span class="pre">close</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/services.html#SelectableQueue.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#services.SelectableQueue.close" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="services.SelectableQueue.fileno">
+<code class="sig-name descname"><span class="pre">fileno</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/services.html#SelectableQueue.fileno"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#services.SelectableQueue.fileno" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="services.SelectableQueue.get">
+<code class="sig-name descname"><span class="pre">get</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/services.html#SelectableQueue.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#services.SelectableQueue.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove and return an item from the queue.</p>
+<p>If optional args ‘block’ is true and ‘timeout’ is None (the default),
+block if necessary until an item is available. If ‘timeout’ is
+a non-negative number, it blocks at most ‘timeout’ seconds and raises
+the Empty exception if no item was available within that time.
+Otherwise (‘block’ is false), return an item if one is immediately
+available, else raise the Empty exception (‘timeout’ is ignored
+in that case).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="services.SelectableQueue.getpeername">
+<code class="sig-name descname"><span class="pre">getpeername</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/services.html#SelectableQueue.getpeername"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#services.SelectableQueue.getpeername" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="services.SelectableQueue.is_not_empty">
+<code class="sig-name descname"><span class="pre">is_not_empty</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/services.html#SelectableQueue.is_not_empty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#services.SelectableQueue.is_not_empty" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="services.SelectableQueue.put">
+<code class="sig-name descname"><span class="pre">put</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/services.html#SelectableQueue.put"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#services.SelectableQueue.put" title="Permalink to this definition">¶</a></dt>
+<dd><p>Put an item into the queue.</p>
+<p>If optional args ‘block’ is true and ‘timeout’ is None (the default),
+block if necessary until a free slot is available. If ‘timeout’ is
+a non-negative number, it blocks at most ‘timeout’ seconds and raises
+the Full exception if no free slot was available within that time.
+Otherwise (‘block’ is false), put an item on the queue if a free slot
+is immediately available, else raise the Full exception (‘timeout’
+is ignored in that case).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="services.serializer">
+<code class="sig-prename descclassname"><span class="pre">services.</span></code><code class="sig-name descname"><span class="pre">serializer</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/services.html#serializer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#services.serializer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">ClientServerApps</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="chat_client.html">chat_client module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chat_server.html">chat_server module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="messages.html">messages module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="run_clients.html">run_clients module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">services module</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="run_clients.html" title="previous chapter">run_clients module</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Author.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/services.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

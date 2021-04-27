@@ -1,0 +1,186 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>chat_server &#8212; ClientServerApps  documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for chat_server</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">selectors</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">click</span>
+<span class="kn">import</span> <span class="nn">socket</span>
+
+<span class="kn">from</span> <span class="nn">PyQt5</span> <span class="kn">import</span> <span class="n">QtWidgets</span>
+<span class="kn">from</span> <span class="nn">icecream</span> <span class="kn">import</span> <span class="n">ic</span>
+
+<span class="kn">from</span> <span class="nn">client.client</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="kn">from</span> <span class="nn">client.client_thread</span> <span class="kn">import</span> <span class="n">ClientThread</span>
+<span class="kn">from</span> <span class="nn">log.log_config</span> <span class="kn">import</span> <span class="n">log_config</span>
+<span class="kn">from</span> <span class="nn">server.server_gui</span> <span class="kn">import</span> <span class="n">ServerMainWindow</span>
+<span class="kn">from</span> <span class="nn">server.server_thread</span> <span class="kn">import</span> <span class="n">ServerThread</span><span class="p">,</span> <span class="n">ServerEvents</span>
+<span class="kn">from</span> <span class="nn">services</span> <span class="kn">import</span> <span class="n">DEFAULT_SERVER_IP</span><span class="p">,</span> <span class="n">DEFAULT_SERVER_PORT</span><span class="p">,</span> <span class="n">LOCAL_ADMIN</span><span class="p">,</span> <span class="n">LOCAL_ADMIN_PASSWORD</span><span class="p">,</span> <span class="n">SelectableQueue</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">log_config</span><span class="p">(</span><span class="s1">&#39;server&#39;</span><span class="p">,</span> <span class="s1">&#39;server.log&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="run_admin"><a class="viewcode-back" href="../chat_server.html#chat_server.run_admin">[docs]</a><span class="k">def</span> <span class="nf">run_admin</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span> <span class="k">as</span> <span class="n">s</span><span class="p">:</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">settimeout</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">connect</span><span class="p">((</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">))</span>
+        <span class="n">admin</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">LOCAL_ADMIN</span><span class="p">,</span> <span class="n">LOCAL_ADMIN_PASSWORD</span><span class="p">,</span> <span class="s1">&#39;online&#39;</span><span class="p">)</span>
+        <span class="n">client_thread_connections</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">{</span><span class="s1">&#39;conn&#39;</span><span class="p">:</span> <span class="n">s</span><span class="p">,</span> <span class="s1">&#39;events&#39;</span><span class="p">:</span> <span class="n">selectors</span><span class="o">.</span><span class="n">EVENT_READ</span> <span class="o">|</span> <span class="n">selectors</span><span class="o">.</span><span class="n">EVENT_WRITE</span><span class="p">},</span>
+            <span class="c1"># {&#39;conn&#39;: sq_admin, &#39;events&#39;: selectors.EVENT_READ},</span>
+        <span class="p">)</span>
+        <span class="n">admin_thread</span> <span class="o">=</span> <span class="n">ClientThread</span><span class="p">(</span><span class="n">admin</span><span class="p">,</span> <span class="n">client_thread_connections</span><span class="p">)</span>
+        <span class="n">admin_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="n">admin</span><span class="o">.</span><span class="n">feed_data</span><span class="p">(</span><span class="n">admin</span><span class="o">.</span><span class="n">authenticate</span><span class="p">())</span>
+
+        <span class="n">admin</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">admin_thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">admin</span></div>
+
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;address&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">DEFAULT_SERVER_IP</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;port&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">DEFAULT_SERVER_PORT</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+    <span class="n">server_events</span> <span class="o">=</span> <span class="n">ServerEvents</span><span class="p">()</span>
+
+    <span class="n">gui_app_socket</span><span class="p">,</span> <span class="n">client_app_socket</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socketpair</span><span class="p">()</span>
+    <span class="n">sq_admin</span> <span class="o">=</span> <span class="n">SelectableQueue</span><span class="p">(</span><span class="n">gui_app_socket</span><span class="p">,</span> <span class="n">client_app_socket</span><span class="p">)</span>
+    <span class="n">sq_gui</span> <span class="o">=</span> <span class="n">SelectableQueue</span><span class="p">(</span><span class="n">client_app_socket</span><span class="p">,</span> <span class="n">gui_app_socket</span><span class="p">)</span>
+
+    <span class="n">server_thread</span> <span class="o">=</span> <span class="n">ServerThread</span><span class="p">(</span><span class="n">server_events</span><span class="p">,</span> <span class="n">sq_admin</span><span class="p">,</span> <span class="n">sq_gui</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+    <span class="n">server_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+    <span class="k">with</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span> <span class="k">as</span> <span class="n">s</span><span class="p">:</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">settimeout</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">connect</span><span class="p">((</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">))</span>
+        <span class="n">admin</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">LOCAL_ADMIN</span><span class="p">,</span> <span class="n">LOCAL_ADMIN_PASSWORD</span><span class="p">,</span> <span class="s1">&#39;online&#39;</span><span class="p">)</span>
+
+        <span class="n">client_thread_connections</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">{</span><span class="s1">&#39;conn&#39;</span><span class="p">:</span> <span class="n">s</span><span class="p">,</span> <span class="s1">&#39;events&#39;</span><span class="p">:</span> <span class="n">selectors</span><span class="o">.</span><span class="n">EVENT_READ</span> <span class="o">|</span> <span class="n">selectors</span><span class="o">.</span><span class="n">EVENT_WRITE</span><span class="p">},</span>
+        <span class="p">)</span>
+        <span class="n">admin_thread</span> <span class="o">=</span> <span class="n">ClientThread</span><span class="p">(</span><span class="n">admin</span><span class="p">,</span> <span class="n">client_thread_connections</span><span class="p">)</span>
+        <span class="n">admin_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="n">admin</span><span class="o">.</span><span class="n">feed_data</span><span class="p">(</span><span class="n">admin</span><span class="o">.</span><span class="n">send_key</span><span class="p">())</span>
+
+        <span class="n">app</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+        <span class="n">mw</span> <span class="o">=</span> <span class="n">ServerMainWindow</span><span class="p">(</span><span class="n">sq_gui</span><span class="p">,</span> <span class="n">sq_admin</span><span class="p">)</span>
+        <span class="n">mw</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="n">exit_code</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span>
+
+        <span class="n">admin</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">admin_thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+
+        <span class="n">server_events</span><span class="o">.</span><span class="n">close</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+        <span class="n">ic</span><span class="p">(</span><span class="s1">&#39;=============server closing =====================&#39;</span><span class="p">)</span>
+        <span class="n">server_thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">exit_code</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+
+    <span class="n">start</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">ClientServerApps</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chat_client.html">chat_client module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chat_server.html">chat_server module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../messages.html">messages module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../run_clients.html">run_clients module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../services.html">services module</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Author.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
