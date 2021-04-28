@@ -1,0 +1,396 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>server.server &#8212; ClientServerApps  documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for server.server</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">from</span> <span class="nn">Crypto.PublicKey</span> <span class="kn">import</span> <span class="n">RSA</span>
+<span class="kn">from</span> <span class="nn">Crypto.Random</span> <span class="kn">import</span> <span class="n">get_random_bytes</span>
+<span class="kn">from</span> <span class="nn">Crypto.Cipher</span> <span class="kn">import</span> <span class="n">AES</span><span class="p">,</span> <span class="n">PKCS1_OAEP</span>
+
+<span class="kn">from</span> <span class="nn">queue</span> <span class="kn">import</span> <span class="n">Queue</span><span class="p">,</span> <span class="n">Empty</span>
+
+<span class="kn">from</span> <span class="nn">icecream</span> <span class="kn">import</span> <span class="n">ic</span>
+
+<span class="kn">from</span> <span class="nn">db.client</span> <span class="kn">import</span> <span class="n">ClientStorage</span><span class="p">,</span> <span class="n">Client</span>
+<span class="kn">from</span> <span class="nn">db.client_history</span> <span class="kn">import</span> <span class="n">ClientHistoryStorage</span>
+<span class="kn">from</span> <span class="nn">db.contacts</span> <span class="kn">import</span> <span class="n">ContactStorage</span>
+<span class="kn">from</span> <span class="nn">db.messages</span> <span class="kn">import</span> <span class="n">MessageStorage</span>
+<span class="kn">from</span> <span class="nn">log.log_config</span> <span class="kn">import</span> <span class="n">log_config</span><span class="p">,</span> <span class="n">log_default</span>
+<span class="kn">from</span> <span class="nn">messages</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">services</span> <span class="kn">import</span> <span class="n">serializer</span><span class="p">,</span> <span class="n">LOCAL_ADMIN</span><span class="p">,</span> <span class="n">MSG_LEN_NAME</span><span class="p">,</span> <span class="n">MSG_END_LEN_NAME</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">log_config</span><span class="p">(</span><span class="s1">&#39;server&#39;</span><span class="p">,</span> <span class="s1">&#39;server.log&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ClientInstance"><a class="viewcode-back" href="../../server.server.html#server.server.ClientInstance">[docs]</a><span class="k">class</span> <span class="nc">ClientInstance</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">addr</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="n">session</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client_history_storage</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client_storage</span> <span class="o">=</span> <span class="n">ClientStorage</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">contacts</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addr</span> <span class="o">=</span> <span class="n">addr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_queue</span> <span class="o">=</span> <span class="n">Queue</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pending_status</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client_logger</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">messages</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">key</span> <span class="o">=</span> <span class="n">RSA</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="mi">2048</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">public_key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">publickey</span><span class="p">()</span><span class="o">.</span><span class="n">export_key</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">private_key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">export_key</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session_key</span> <span class="o">=</span> <span class="n">get_random_bytes</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cipher_client_pk</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cipher_aes</span> <span class="o">=</span> <span class="n">AES</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_key</span><span class="p">,</span> <span class="n">AES</span><span class="o">.</span><span class="n">MODE_EAX</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ClientInstance.find_client"><a class="viewcode-back" href="../../server.server.html#server.server.ClientInstance.find_client">[docs]</a>    <span class="k">def</span> <span class="nf">find_client</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client_storage</span><span class="o">.</span><span class="n">auth_client</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">username</span><span class="p">,</span> <span class="n">msg</span><span class="o">.</span><span class="n">password</span><span class="p">)</span>
+        <span class="n">ic</span><span class="p">(</span><span class="s1">&#39; ========== try to find client&#39;</span><span class="p">,</span> <span class="n">msg</span><span class="o">.</span><span class="n">username</span><span class="p">,</span> <span class="n">msg</span><span class="o">.</span><span class="n">password</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">msg</span><span class="o">.</span><span class="n">username</span> <span class="o">==</span> <span class="n">LOCAL_ADMIN</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">client_storage</span><span class="o">.</span><span class="n">add_client</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">username</span><span class="p">,</span> <span class="n">msg</span><span class="o">.</span><span class="n">password</span><span class="p">,</span> <span class="n">is_admin</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">client_storage</span><span class="o">.</span><span class="n">add_client</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">username</span><span class="p">,</span> <span class="n">msg</span><span class="o">.</span><span class="n">password</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client_storage</span><span class="o">.</span><span class="n">auth_client</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">username</span><span class="p">,</span> <span class="n">msg</span><span class="o">.</span><span class="n">password</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;can&#39;t create new user, username </span><span class="si">{</span><span class="n">msg</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s2"> already exists&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">client_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;can&#39;t create new user, username </span><span class="si">{</span><span class="n">msg</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s2"> already exists&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;username </span><span class="si">{</span><span class="n">msg</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s1"> - wrong password&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;username </span><span class="si">{</span><span class="n">msg</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s1"> - wrong password&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;============= found_client -----&gt; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="si">}</span><span class="s1"> &lt;------&#39;</span><span class="p">)</span>
+        <span class="n">ic</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">username</span></div>
+
+<div class="viewcode-block" id="ClientInstance.feed_data"><a class="viewcode-back" href="../../server.server.html#server.server.ClientInstance.feed_data">[docs]</a>    <span class="nd">@log_default</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">feed_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">,</span> <span class="n">Client</span><span class="p">):</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encrypt_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="n">MSG_LEN_NAME</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">))</span> <span class="o">+</span> <span class="n">MSG_END_LEN_NAME</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">length</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span> <span class="o">+</span> <span class="n">data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ClientInstance.get_data"><a class="viewcode-back" href="../../server.server.html#server.server.ClientInstance.get_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_queue</span><span class="o">.</span><span class="n">get_nowait</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_queue</span><span class="o">.</span><span class="n">task_done</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">data</span>
+        <span class="k">except</span> <span class="n">Empty</span><span class="p">:</span>
+            <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="ClientInstance.action_handler"><a class="viewcode-back" href="../../server.server.html#server.server.ClientInstance.action_handler">[docs]</a>    <span class="nd">@log_default</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">action_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">clients</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">Authenticate</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">feed_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">authenticate</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">Quit</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client_disconnect</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">Presence</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client_presence</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">Msg</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">on_msg</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">clients</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">GetMessages</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_messages</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">Join</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">Leave</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">leave</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">GetContacts</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_contacts</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">AddContact</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_contact</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">DelContact</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">del_contact</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">FilterClients</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_filtered_users</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">SendKey</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">send_secret_key</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ClientInstance.send_secret_key"><a class="viewcode-back" href="../../server.server.html#server.server.ClientInstance.send_secret_key">[docs]</a>    <span class="nd">@log_default</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">send_secret_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="n">SendKey</span><span class="p">):</span>
+        <span class="n">client_public_key</span> <span class="o">=</span> <span class="n">RSA</span><span class="o">.</span><span class="n">import_key</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cipher_client_pk</span> <span class="o">=</span> <span class="n">PKCS1_OAEP</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">client_public_key</span><span class="p">)</span>
+        <span class="n">enc_session_key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cipher_client_pk</span><span class="o">.</span><span class="n">encrypt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_key</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feed_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">SendKey</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">enc_session_key</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="ClientInstance.encrypt_data"><a class="viewcode-back" href="../../server.server.html#server.server.ClientInstance.encrypt_data">[docs]</a>    <span class="nd">@log_default</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">encrypt_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="c1"># Encrypt the data with the AES session key</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cipher_aes</span> <span class="o">=</span> <span class="n">AES</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_key</span><span class="p">,</span> <span class="n">AES</span><span class="o">.</span><span class="n">MODE_EAX</span><span class="p">)</span>
+        <span class="n">ciphertext</span><span class="p">,</span> <span class="n">tag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cipher_aes</span><span class="o">.</span><span class="n">encrypt_and_digest</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cipher_aes</span><span class="o">.</span><span class="n">nonce</span> <span class="o">+</span> <span class="n">tag</span> <span class="o">+</span> <span class="n">ciphertext</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="ClientInstance.authenticate"><a class="viewcode-back" href="../../server.server.html#server.server.ClientInstance.authenticate">[docs]</a>    <span class="nd">@log_default</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>
+    <span class="nd">@serializer</span>
+    <span class="k">def</span> <span class="nf">authenticate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;User </span><span class="si">{</span><span class="n">msg</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s1"> is authenticating...&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client_logger</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">msg</span><span class="o">.</span><span class="n">username</span><span class="p">,</span> <span class="n">address</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">addr</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;User is authenticating...&#39;</span><span class="p">)</span>
+        <span class="n">result_auth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_pwd</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">result_auth</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;User </span><span class="si">{</span><span class="n">msg</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s1"> is authenticated&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;User is authenticated&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client_history_storage</span> <span class="o">=</span> <span class="n">ClientHistoryStorage</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client_history_storage</span><span class="o">.</span><span class="n">add_record</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">addr</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">contacts</span> <span class="o">=</span> <span class="n">ContactStorage</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">messages</span> <span class="o">=</span> <span class="n">MessageStorage</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">Authenticate</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">msg</span><span class="o">.</span><span class="n">username</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">alert</span><span class="o">=</span><span class="s1">&#39;welcome to server&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">result_auth</span> <span class="o">==</span> <span class="mi">402</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;User was entered wrong password&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Authenticate</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">msg</span><span class="o">.</span><span class="n">username</span><span class="p">,</span>
+                                <span class="n">result</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                <span class="n">alert</span><span class="o">=</span><span class="s2">&quot;This could be wrong password or no account with that name&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">result_auth</span> <span class="o">==</span> <span class="mi">409</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Someone is already connected with the given user name&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Authenticate</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">msg</span><span class="o">.</span><span class="n">username</span><span class="p">,</span>
+                                <span class="n">result</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                <span class="n">alert</span><span class="o">=</span><span class="s2">&quot;Someone is already connected with the given user name&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ClientInstance.check_pwd"><a class="viewcode-back" href="../../server.server.html#server.server.ClientInstance.check_pwd">[docs]</a>    <span class="k">def</span> <span class="nf">check_pwd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">find_client</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mi">409</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;online&#39;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+                <span class="k">return</span> <span class="mi">200</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">402</span></div>
+
+<div class="viewcode-block" id="ClientInstance.client_disconnect"><a class="viewcode-back" href="../../server.server.html#server.server.ClientInstance.client_disconnect">[docs]</a>    <span class="nd">@log_default</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">client_disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">,</span> <span class="n">Client</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;disconnected&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;User was disconnected&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s1"> was disconnected&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="ClientInstance.client_presence"><a class="viewcode-back" href="../../server.server.html#server.server.ClientInstance.client_presence">[docs]</a>    <span class="k">def</span> <span class="nf">client_presence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">,</span> <span class="n">Client</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">msg</span><span class="o">.</span><span class="n">status</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">status</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pending_status</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="s1">&#39;disconnected&#39;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client_disconnect</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="ClientInstance.probe"><a class="viewcode-back" href="../../server.server.html#server.server.ClientInstance.probe">[docs]</a>    <span class="nd">@log_default</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>
+    <span class="nd">@serializer</span>
+    <span class="k">def</span> <span class="nf">probe</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">,</span> <span class="n">Client</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pending_status</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No presence() received from the user&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">client_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No presence() received from the user&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;disconnected&#39;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">client_disconnect</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">pending_status</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">return</span> <span class="n">Probe</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">response</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">alert</span><span class="o">=</span><span class="s1">&#39;server is waiting...&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ClientInstance.on_msg"><a class="viewcode-back" href="../../server.server.html#server.server.ClientInstance.on_msg">[docs]</a>    <span class="nd">@log_default</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">on_msg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">clients</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">msg</span><span class="o">.</span><span class="n">to</span><span class="p">[:</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;#&#39;</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">client</span> <span class="ow">in</span> <span class="n">clients</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">client</span><span class="o">.</span><span class="n">username</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">login</span><span class="p">:</span>
+                    <span class="n">client</span><span class="o">.</span><span class="n">feed_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">client</span> <span class="ow">in</span> <span class="n">clients</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">client</span><span class="o">.</span><span class="n">username</span> <span class="o">==</span> <span class="n">msg</span><span class="o">.</span><span class="n">to</span><span class="p">:</span>
+                    <span class="n">client</span><span class="o">.</span><span class="n">feed_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span>
+                    <span class="k">break</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">,</span> <span class="n">Client</span><span class="p">):</span>
+            <span class="n">client</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client_storage</span><span class="o">.</span><span class="n">get_client</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">to</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">client</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">msg</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">feed_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">send_response</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="s1">&#39;message is received&#39;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="ClientInstance.send_message"><a class="viewcode-back" href="../../server.server.html#server.server.ClientInstance.send_message">[docs]</a>    <span class="nd">@log_default</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>
+    <span class="nd">@serializer</span>
+    <span class="k">def</span> <span class="nf">send_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">msg</span></div>
+
+<div class="viewcode-block" id="ClientInstance.send_response"><a class="viewcode-back" href="../../server.server.html#server.server.ClientInstance.send_response">[docs]</a>    <span class="nd">@log_default</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>
+    <span class="nd">@serializer</span>
+    <span class="k">def</span> <span class="nf">send_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">response</span><span class="o">=</span><span class="n">response</span><span class="p">,</span> <span class="n">alert</span><span class="o">=</span><span class="n">message</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ClientInstance.join"><a class="viewcode-back" href="../../server.server.html#server.server.ClientInstance.join">[docs]</a>    <span class="nd">@log_default</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client_logger</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Client joined to &lt;</span><span class="si">{</span><span class="n">msg</span><span class="o">.</span><span class="n">room</span><span class="si">}</span><span class="s1">&gt;&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="ClientInstance.leave"><a class="viewcode-back" href="../../server.server.html#server.server.ClientInstance.leave">[docs]</a>    <span class="nd">@log_default</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">leave</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client_logger</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Client left &lt;</span><span class="si">{</span><span class="n">msg</span><span class="o">.</span><span class="n">room</span><span class="si">}</span><span class="s1">&gt;&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="ClientInstance.get_contacts"><a class="viewcode-back" href="../../server.server.html#server.server.ClientInstance.get_contacts">[docs]</a>    <span class="nd">@log_default</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">get_contacts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">contacts</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">feed_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">GetContacts</span><span class="p">(</span><span class="n">contacts</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">contacts</span><span class="o">.</span><span class="n">get_contacts</span><span class="p">())))</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="ClientInstance.add_contact"><a class="viewcode-back" href="../../server.server.html#server.server.ClientInstance.add_contact">[docs]</a>    <span class="nd">@log_default</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">add_contact</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;===call to add contact </span><span class="si">{</span><span class="n">msg</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s1"> === &#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">contacts</span><span class="o">.</span><span class="n">add_contact</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">username</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">feed_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">send_response</span><span class="p">(</span><span class="mi">201</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">msg</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s1"> added to contacts&#39;</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">msg</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s1"> added to contacts&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Error&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">feed_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">send_response</span><span class="p">(</span><span class="mi">405</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()))</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="ClientInstance.del_contact"><a class="viewcode-back" href="../../server.server.html#server.server.ClientInstance.del_contact">[docs]</a>    <span class="nd">@log_default</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">del_contact</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">contacts</span><span class="o">.</span><span class="n">del_contact</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">username</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">feed_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">send_response</span><span class="p">(</span><span class="mi">203</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">msg</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s1"> deleted from contacts&#39;</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Error&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">feed_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">send_response</span><span class="p">(</span><span class="mi">405</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()))</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="ClientInstance.get_filtered_users"><a class="viewcode-back" href="../../server.server.html#server.server.ClientInstance.get_filtered_users">[docs]</a>    <span class="nd">@log_default</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">get_filtered_users</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+        <span class="n">msg</span><span class="o">.</span><span class="n">users</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client_storage</span><span class="o">.</span><span class="n">filter_clients</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">pattern</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feed_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="ClientInstance.get_messages"><a class="viewcode-back" href="../../server.server.html#server.server.ClientInstance.get_messages">[docs]</a>    <span class="nd">@log_default</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">get_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+        <span class="n">client</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client_storage</span><span class="o">.</span><span class="n">get_client</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">from_</span><span class="p">)</span>
+        <span class="n">ic</span><span class="p">(</span><span class="s1">&#39;server get_messages&#39;</span><span class="p">,</span> <span class="n">client</span><span class="p">)</span>
+        <span class="n">messages</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">get_chat_msg</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+        <span class="n">ic</span><span class="p">(</span><span class="n">messages</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">messages</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="p">:</span>
+                <span class="n">message</span> <span class="o">=</span> <span class="n">Msg</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">timestamp</span><span class="p">(),</span> <span class="n">to</span><span class="o">=</span><span class="n">msg</span><span class="o">.</span><span class="n">from_</span><span class="p">,</span> <span class="n">from_</span><span class="o">=</span><span class="n">item</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">text</span><span class="o">=</span><span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">message</span> <span class="o">=</span> <span class="n">Msg</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">timestamp</span><span class="p">(),</span> <span class="n">to</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="p">,</span> <span class="n">from_</span><span class="o">=</span><span class="n">item</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">text</span><span class="o">=</span><span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">feed_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">message</span><span class="p">))</span>
+        <span class="k">return</span> <span class="kc">True</span></div></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">ClientServerApps</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../chat_client.html">chat_client module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chat_server.html">chat_server module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../client.html">client package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../db.html">db package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../log.html">log package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../messages.html">messages module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../run_clients.html">run_clients module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../server.html">server package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../services.html">services module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../test.html">test package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Author.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

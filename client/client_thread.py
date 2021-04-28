@@ -13,6 +13,11 @@ logger = log_config('client_thread', 'client.log')
 class ClientThread(threading.Thread):
 
     def __init__(self, user: Client, connections: tuple, *args, **kwargs):
+        """
+        Thread for communicate client backend with server side, client GUI
+        :param user: client object
+        :param connections: tuple of connections (server, GUI)
+        """
         super().__init__(*args, **kwargs)
 
         self.daemon = True
@@ -25,6 +30,9 @@ class ClientThread(threading.Thread):
         self.connections = connections
 
     def run(self):
+        """
+        initialize selectors for connections and start main loop
+        """
         with selectors.DefaultSelector() as self.sel:
             for conn in self.connections:
                 self.sel.register(

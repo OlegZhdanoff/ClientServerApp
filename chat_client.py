@@ -22,6 +22,13 @@ logger = log_config('chat_client', 'client.log')
 @click.option('--username', default='ivanov', help='username')
 @click.option('--password', default='123', help='password')
 def start(address, port, username, password):
+    """
+    initialize connection and client GUI
+    :param address: server IP-address
+    :param port: server port
+    :param username: optional username, default use credential from congiguration file
+    :param password: optional user password
+    """
     config_path = Path(__file__).parent.absolute() / 'client' / 'client.ini'
     try:
         config = Config(config_path)
