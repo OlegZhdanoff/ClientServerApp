@@ -41,18 +41,22 @@
 <dl class="py method">
 <dt id="services.Config.__init__">
 <code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/services.html#Config.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#services.Config.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+<dd><p>create ConfigParser object for specific configuration file
+:param path: path to configuration file</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="services.Config.load_config">
 <code class="sig-name descname"><span class="pre">load_config</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/services.html#Config.load_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#services.Config.load_config" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>load data from configuration file</p>
+</dd></dl>
 
 <dl class="py method">
 <dt id="services.Config.save_config">
 <code class="sig-name descname"><span class="pre">save_config</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/services.html#Config.save_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#services.Config.save_config" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>save data to configuration file
+:return:</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -89,6 +93,7 @@ implement default like this:</p>
 <dt id="services.MessageProcessor">
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">services.</span></code><code class="sig-name descname"><span class="pre">MessageProcessor</span></code><a class="reference internal" href="_modules/services.html#MessageProcessor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#services.MessageProcessor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>creat messages &#64;dataclass from .messages from json data</p>
 <dl class="py method">
 <dt id="services.MessageProcessor.from_msg">
 <em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">from_msg</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/services.html#MessageProcessor.from_msg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#services.MessageProcessor.from_msg" title="Permalink to this definition">¶</a></dt>
@@ -100,35 +105,39 @@ implement default like this:</p>
 <dt id="services.MessagesDeserializer">
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">services.</span></code><code class="sig-name descname"><span class="pre">MessagesDeserializer</span></code><a class="reference internal" href="_modules/services.html#MessagesDeserializer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#services.MessagesDeserializer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>class for deserialize all types of &#64;dataclass from .messages</p>
 <dl class="py method">
 <dt id="services.MessagesDeserializer.decrypt">
 <em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">decrypt</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/services.html#MessagesDeserializer.decrypt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#services.MessagesDeserializer.decrypt" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="services.MessagesDeserializer.deserialize">
-<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">deserialize</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/services.html#MessagesDeserializer.deserialize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#services.MessagesDeserializer.deserialize" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Decrypt the data with the AES session key
+:param data: received data from socket
+:return: decrypted data</p>
+</dd></dl>
 
 <dl class="py method">
 <dt id="services.MessagesDeserializer.get_messages">
 <em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">get_messages</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/services.html#MessagesDeserializer.get_messages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#services.MessagesDeserializer.get_messages" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="services.MessagesDeserializer.get_msg_lengths">
-<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">get_msg_lengths</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/services.html#MessagesDeserializer.get_msg_lengths"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#services.MessagesDeserializer.get_msg_lengths" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>get messages from socket
+:param conn: socket
+:param session_key: session key for decrypt messages
+:return: messages &#64;dataclass from .messages</p>
+</dd></dl>
 
 <dl class="py method">
 <dt id="services.MessagesDeserializer.get_msg_list">
 <em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">get_msg_list</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/services.html#MessagesDeserializer.get_msg_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#services.MessagesDeserializer.get_msg_list" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>process received data to separated messages list
+:param data: received data from socket
+:return: list of messages &#64;dataclass from .messages</p>
+</dd></dl>
 
 <dl class="py method">
 <dt id="services.MessagesDeserializer.recv_all">
 <em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">recv_all</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/services.html#MessagesDeserializer.recv_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#services.MessagesDeserializer.recv_all" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>read data from socket
+:param conn: socket
+:return: data from socket</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="services.MessagesDeserializer.session_key">
@@ -144,7 +153,9 @@ implement default like this:</p>
 <dl class="py method">
 <dt id="services.SelectableQueue.__init__">
 <code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">put_socket</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">get_socket</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/services.html#SelectableQueue.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#services.SelectableQueue.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+<dd><p>specific Queue, worked with selectors
+:param put_socket: socket for put method
+:param get_socket: socket for get method</p>
 </dd></dl>
 
 <dl class="py method">

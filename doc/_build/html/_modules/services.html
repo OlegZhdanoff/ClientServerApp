@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>services &#8212; ClientServerApps  documentation</title>
+    <title>services &#8212; GeekChat  documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -66,28 +66,45 @@
 
 
 <div class="viewcode-block" id="Config"><a class="viewcode-back" href="../services.html#services.Config">[docs]</a><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
+<div class="viewcode-block" id="Config.__init__"><a class="viewcode-back" href="../services.html#services.Config.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        create ConfigParser object for specific configuration file</span>
+<span class="sd">        :param path: path to configuration file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;config file </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> does&#39;t exists&quot;</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;config file </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> does&#39;t exists&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">load_config</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">load_config</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="Config.load_config"><a class="viewcode-back" href="../services.html#services.Config.load_config">[docs]</a>    <span class="k">def</span> <span class="nf">load_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        load data from configuration file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Config.save_config"><a class="viewcode-back" href="../services.html#services.Config.save_config">[docs]</a>    <span class="k">def</span> <span class="nf">save_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        save data to configuration file</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">ENCODING</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="SelectableQueue"><a class="viewcode-back" href="../services.html#services.SelectableQueue">[docs]</a><span class="k">class</span> <span class="nc">SelectableQueue</span><span class="p">(</span><span class="n">queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">put_socket</span><span class="p">,</span> <span class="n">get_socket</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SelectableQueue.__init__"><a class="viewcode-back" href="../services.html#services.SelectableQueue.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">put_socket</span><span class="p">,</span> <span class="n">get_socket</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        specific Queue, worked with selectors</span>
+<span class="sd">        :param put_socket: socket for put method</span>
+<span class="sd">        :param get_socket: socket for get method</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_put_socket</span> <span class="o">=</span> <span class="n">put_socket</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_get_socket</span> <span class="o">=</span> <span class="n">get_socket</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_get_socket</span> <span class="o">=</span> <span class="n">get_socket</span></div>
 
 <div class="viewcode-block" id="SelectableQueue.fileno"><a class="viewcode-back" href="../services.html#services.SelectableQueue.fileno">[docs]</a>    <span class="k">def</span> <span class="nf">fileno</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_socket</span><span class="o">.</span><span class="n">fileno</span><span class="p">()</span></div>
@@ -139,11 +156,20 @@
 
 
 <div class="viewcode-block" id="MessagesDeserializer"><a class="viewcode-back" href="../services.html#services.MessagesDeserializer">[docs]</a><span class="k">class</span> <span class="nc">MessagesDeserializer</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    class for deserialize all types of @dataclass from .messages</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">session_key</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="MessagesDeserializer.get_messages"><a class="viewcode-back" href="../services.html#services.MessagesDeserializer.get_messages">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="nd">@log_default</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">get_messages</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">conn</span><span class="p">,</span> <span class="n">session_key</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get messages from socket</span>
+<span class="sd">        :param conn: socket</span>
+<span class="sd">        :param session_key: session key for decrypt messages</span>
+<span class="sd">        :return: messages @dataclass from .messages</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">recv_all</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
         <span class="bp">cls</span><span class="o">.</span><span class="n">session_key</span> <span class="o">=</span> <span class="n">session_key</span>
         <span class="k">if</span> <span class="n">data</span><span class="p">:</span>
@@ -152,6 +178,11 @@
 
 <div class="viewcode-block" id="MessagesDeserializer.recv_all"><a class="viewcode-back" href="../services.html#services.MessagesDeserializer.recv_all">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">recv_all</span><span class="p">(</span><span class="n">conn</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        read data from socket</span>
+<span class="sd">        :param conn: socket</span>
+<span class="sd">        :return: data from socket</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="n">SelectableQueue</span><span class="p">):</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
@@ -173,7 +204,11 @@
 
 <div class="viewcode-block" id="MessagesDeserializer.decrypt"><a class="viewcode-back" href="../services.html#services.MessagesDeserializer.decrypt">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">decrypt</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="c1"># Decrypt the data with the AES session key</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Decrypt the data with the AES session key</span>
+<span class="sd">        :param data: received data from socket</span>
+<span class="sd">        :return: decrypted data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">nonce</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:</span><span class="mi">16</span><span class="p">]</span>
             <span class="n">tag</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">16</span><span class="p">:</span><span class="mi">32</span><span class="p">]</span>
@@ -187,9 +222,14 @@
 
 <div class="viewcode-block" id="MessagesDeserializer.get_msg_list"><a class="viewcode-back" href="../services.html#services.MessagesDeserializer.get_msg_list">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_msg_list</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        process received data to separated messages list</span>
+<span class="sd">        :param data: received data from socket</span>
+<span class="sd">        :return: list of messages @dataclass from .messages</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">while</span> <span class="n">data</span><span class="p">:</span>
-            <span class="n">length</span><span class="p">,</span> <span class="n">end_length</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_msg_lengths</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="n">length</span><span class="p">,</span> <span class="n">end_length</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_get_msg_lengths</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">length</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="n">end_length</span> <span class="o">+</span> <span class="n">length</span><span class="p">):</span>
                 <span class="n">current_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">end_length</span><span class="p">:</span><span class="n">end_length</span> <span class="o">+</span> <span class="n">length</span><span class="p">]</span>
 
@@ -197,21 +237,21 @@
                     <span class="n">current_data</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">decrypt</span><span class="p">(</span><span class="n">current_data</span><span class="p">)</span>
 
                 <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                    <span class="bp">cls</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="n">current_data</span><span class="p">)</span>
+                    <span class="bp">cls</span><span class="o">.</span><span class="n">_deserialize</span><span class="p">(</span><span class="n">current_data</span><span class="p">)</span>
                 <span class="p">)</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">end_length</span> <span class="o">+</span> <span class="n">length</span><span class="p">:]</span>
         <span class="k">return</span> <span class="n">res</span></div>
 
-<div class="viewcode-block" id="MessagesDeserializer.get_msg_lengths"><a class="viewcode-back" href="../services.html#services.MessagesDeserializer.get_msg_lengths">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">get_msg_lengths</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_msg_lengths</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
         <span class="n">start_length</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">MSG_LEN_NAME</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">MSG_LEN_NAME</span><span class="p">)</span>
         <span class="n">end_length</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">MSG_END_LEN_NAME</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span> <span class="n">start_length</span><span class="p">)</span>
         <span class="n">length</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">start_length</span><span class="p">:</span><span class="n">end_length</span><span class="p">]</span>
         <span class="n">end_length</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">MSG_END_LEN_NAME</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">length</span><span class="p">),</span> <span class="n">end_length</span><span class="p">)</span> <span class="k">if</span> <span class="n">length</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()</span> <span class="k">else</span> <span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">length</span><span class="p">),</span> <span class="n">end_length</span><span class="p">)</span> <span class="k">if</span> <span class="n">length</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()</span> <span class="k">else</span> <span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 
-<div class="viewcode-block" id="MessagesDeserializer.deserialize"><a class="viewcode-back" href="../services.html#services.MessagesDeserializer.deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">deserialize</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_deserialize</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">pickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">pickle</span><span class="o">.</span><span class="n">UnpicklingError</span><span class="p">:</span>
@@ -221,10 +261,13 @@
             <span class="k">return</span> <span class="s1">&#39;&#39;</span>
         <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Wrong type of data: </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="s1">&#39;&#39;</span></div></div>
+            <span class="k">return</span> <span class="s1">&#39;&#39;</span></div>
 
 
 <div class="viewcode-block" id="MessageProcessor"><a class="viewcode-back" href="../services.html#services.MessageProcessor">[docs]</a><span class="k">class</span> <span class="nc">MessageProcessor</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    creat messages @dataclass from .messages from json data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="MessageProcessor.from_msg"><a class="viewcode-back" href="../services.html#services.MessageProcessor.from_msg">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_msg</span><span class="p">(</span><span class="n">msg</span><span class="p">):</span>
         <span class="k">if</span> <span class="s2">&quot;action&quot;</span> <span class="ow">in</span> <span class="n">msg</span><span class="p">:</span>
@@ -323,7 +366,7 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="../index.html">ClientServerApps</a></h1>
+<h1 class="logo"><a href="../index.html">GeekChat</a></h1>
 
 
 
@@ -379,7 +422,7 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2021, Author.
+      &copy;2021, Oleg Zhdanov.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>

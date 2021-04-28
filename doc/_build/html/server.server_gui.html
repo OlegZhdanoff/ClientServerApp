@@ -39,6 +39,14 @@
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">server.server_gui.</span></code><code class="sig-name descname"><span class="pre">DataMonitor</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sq_gui</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="services.html#services.SelectableQueue" title="services.SelectableQueue"><span class="pre">services.SelectableQueue</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/server_gui.html#DataMonitor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.server_gui.DataMonitor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtCore.QObject</span></code></p>
 <dl class="py method">
+<dt id="server.server_gui.DataMonitor.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sq_gui</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="services.html#services.SelectableQueue" title="services.SelectableQueue"><span class="pre">services.SelectableQueue</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/server_gui.html#DataMonitor.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.server_gui.DataMonitor.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>monitor new messages from server backend
+:param parent: PyQT5 parent
+:param sq_gui: Queue for monitoring</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="server.server_gui.DataMonitor.get_data">
 <code class="sig-name descname"><span class="pre">get_data</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/server_gui.html#DataMonitor.get_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.server_gui.DataMonitor.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>get data from Queue</p>
@@ -55,6 +63,15 @@
 <dt id="server.server_gui.ServerMainWindow">
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">server.server_gui.</span></code><code class="sig-name descname"><span class="pre">ServerMainWindow</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sq_gui</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="services.html#services.SelectableQueue" title="services.SelectableQueue"><span class="pre">services.SelectableQueue</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sq_admin</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="services.html#services.SelectableQueue" title="services.SelectableQueue"><span class="pre">services.SelectableQueue</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/server_gui.html#ServerMainWindow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.server_gui.ServerMainWindow" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QMainWindow</span></code></p>
+<dl class="py method">
+<dt id="server.server_gui.ServerMainWindow.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sq_gui</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="services.html#services.SelectableQueue" title="services.SelectableQueue"><span class="pre">services.SelectableQueue</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sq_admin</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="services.html#services.SelectableQueue" title="services.SelectableQueue"><span class="pre">services.SelectableQueue</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/server_gui.html#ServerMainWindow.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.server_gui.ServerMainWindow.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Server GUI Main window object
+create thread to monitor data messages from server instance
+:param sq_gui: Queue to receive data from server instance
+:param sq_admin: Queue to send data to server instance</p>
+</dd></dl>
+
 <dl class="py method">
 <dt id="server.server_gui.ServerMainWindow.data_handler">
 <code class="sig-name descname"><span class="pre">data_handler</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/server_gui.html#ServerMainWindow.data_handler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.server_gui.ServerMainWindow.data_handler" title="Permalink to this definition">¶</a></dt>
