@@ -34,6 +34,10 @@ STATUS = ('online', 'disconnected', 'afk', 'busy')
 
 class Config:
     def __init__(self, path: Path):
+        """
+        create ConfigParser object for specific configuration file
+        :param path: path to configuration file
+        """
         if not path.exists():
             logger.warning(f"config file {path} does't exists")
             raise OSError(f"config file {path} does't exists")
@@ -42,15 +46,28 @@ class Config:
         self.load_config()
 
     def load_config(self):
+        """
+        load data from configuration file
+        """
         self.data.read(self.path)
 
     def save_config(self):
+        """
+        save data to configuration file
+        :return:
+        """
         with open(self.path, 'w', encoding=ENCODING) as f:
             self.data.write(f)
 
 
 class SelectableQueue(queue.Queue):
+
     def __init__(self, put_socket, get_socket, *args, **kwargs):
+        """
+        specific Queue, worked with selectors
+        :param put_socket: socket for put method
+        :param get_socket: socket for get method
+        """
         super().__init__(*args, **kwargs)
 
         self._put_socket = put_socket
@@ -106,11 +123,20 @@ def serializer(func):
 
 
 class MessagesDeserializer:
+    """
+    class for deserialize all types of @dataclass from .messages
+    """
     session_key = None
 
     @classmethod
     @log_default(logger)
     def get_messages(cls, conn, session_key=None):
+        """
+        get messages from socket
+        :param conn: socket
+        :param session_key: session key for decrypt messages
+        :return: messages @dataclass from .messages
+        """
         data = cls.recv_all(conn)
         cls.session_key = session_key
         if data:
@@ -119,6 +145,11 @@ class MessagesDeserializer:
 
     @staticmethod
     def recv_all(conn):
+        """
+        read data from socket
+        :param conn: socket
+        :return: data from socket
+        """
         data = b''
         if isinstance(conn, SelectableQueue):
             data = conn.get()
@@ -140,7 +171,11 @@ class MessagesDeserializer:
 
     @classmethod
     def decrypt(cls, data):
-        # Decrypt the data with the AES session key
+        """
+        Decrypt the data with the AES session key
+        :param data: received data from socket
+        :return: decrypted data
+        """
         try:
             nonce = data[:16]
             tag = data[16:32]
@@ -154,9 +189,14 @@ class MessagesDeserializer:
 
     @classmethod
     def get_msg_list(cls, data):
+        """
+        process received data to separated messages list
+        :param data: received data from socket
+        :return: list of messages @dataclass from .messages
+        """
         res = []
         while data:
-            length, end_length = cls.get_msg_lengths(data)
+            length, end_length = cls._get_msg_lengths(data)
             if length and len(data) >= (end_length + length):
                 current_data = data[end_length:end_length + length]
 
@@ -164,13 +204,13 @@ class MessagesDeserializer:
                     current_data = cls.decrypt(current_data)
 
                 res.append(
-                    cls.deserialize(current_data)
+                    cls._deserialize(current_data)
                 )
                 data = data[end_length + length:]
         return res
 
     @staticmethod
-    def get_msg_lengths(data):
+    def _get_msg_lengths(data):
         start_length = data.find(MSG_LEN_NAME.encode()) + len(MSG_LEN_NAME)
         end_length = data.find(MSG_END_LEN_NAME.encode(), start_length)
         length = data[start_length:end_length]
@@ -178,7 +218,7 @@ class MessagesDeserializer:
         return (int(length), end_length) if length.isdigit() else (False, False)
 
     @staticmethod
-    def deserialize(data):
+    def _deserialize(data):
         try:
             return pickle.loads(data)
         except pickle.UnpicklingError:
@@ -192,6 +232,9 @@ class MessagesDeserializer:
 
 
 class MessageProcessor:
+    """
+    creat messages @dataclass from .messages from json data
+    """
     @staticmethod
     def from_msg(msg):
         if "action" in msg:
