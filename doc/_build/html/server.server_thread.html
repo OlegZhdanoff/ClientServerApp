@@ -38,18 +38,43 @@
 <dt id="server.server_thread.PortProperty">
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">server.server_thread.</span></code><code class="sig-name descname"><span class="pre">PortProperty</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">7777</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/server_thread.html#PortProperty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.server_thread.PortProperty" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="server.server_thread.PortProperty.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">7777</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/server_thread.html#PortProperty.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.server_thread.PortProperty.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>create correct port property from right interval
+:param default: default server port</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
 <dt id="server.server_thread.ServerEvents">
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">server.server_thread.</span></code><code class="sig-name descname"><span class="pre">ServerEvents</span></code><a class="reference internal" href="_modules/server/server_thread.html#ServerEvents"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.server_thread.ServerEvents" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="server.server_thread.ServerEvents.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/server_thread.html#ServerEvents.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.server_thread.ServerEvents.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
 <dt id="server.server_thread.ServerThread">
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">server.server_thread.</span></code><code class="sig-name descname"><span class="pre">ServerThread</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">events</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#server.server_thread.ServerEvents" title="server.server_thread.ServerEvents"><span class="pre">server.server_thread.ServerEvents</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sq_admin</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="services.html#services.SelectableQueue" title="services.SelectableQueue"><span class="pre">services.SelectableQueue</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sq_gui</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="services.html#services.SelectableQueue" title="services.SelectableQueue"><span class="pre">services.SelectableQueue</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">address</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'localhost'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">7777</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/server_thread.html#ServerThread"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.server_thread.ServerThread" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">threading.Thread</span></code></p>
+<dl class="py method">
+<dt id="server.server_thread.ServerThread.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">events</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#server.server_thread.ServerEvents" title="server.server_thread.ServerEvents"><span class="pre">server.server_thread.ServerEvents</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sq_admin</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="services.html#services.SelectableQueue" title="services.SelectableQueue"><span class="pre">services.SelectableQueue</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sq_gui</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="services.html#services.SelectableQueue" title="services.SelectableQueue"><span class="pre">services.SelectableQueue</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">address</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'localhost'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">7777</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/server_thread.html#ServerThread.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.server_thread.ServerThread.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>server backend instance for process client’s requests
+accept client’s connection and create client instance
+:param events: specific server ServerEvents()
+:param sq_admin: Queue for communicating with local_admin
+:param sq_gui: Queue for communicating with admin GUI
+:param address: server IP-address
+:param port: server port</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt id="server.server_thread.ServerThread.port">
 <code class="sig-name descname"><span class="pre">port</span></code><em class="property"> <span class="pre">=</span> <span class="pre">7777</span></em><a class="headerlink" href="#server.server_thread.ServerThread.port" title="Permalink to this definition">¶</a></dt>

@@ -48,6 +48,17 @@
 <code class="sig-name descname"><span class="pre">Message</span></code><a class="headerlink" href="#db.client.Client.Message" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="py method">
+<dt id="db.client.Client.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#db.client.Client.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code class="docutils literal notranslate"><span class="pre">kwargs</span></code>.</p>
+<p>Only keys that are present as
+attributes of the instance’s class are allowed. These could be,
+for example, any mapped columns or relationships.</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt id="db.client.Client.id">
 <code class="sig-name descname"><span class="pre">id</span></code><a class="headerlink" href="#db.client.Client.id" title="Permalink to this definition">¶</a></dt>
@@ -79,6 +90,12 @@
 <dt id="db.client.ClientStorage">
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">db.client.</span></code><code class="sig-name descname"><span class="pre">ClientStorage</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/db/client.html#ClientStorage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#db.client.ClientStorage" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="db.client.ClientStorage.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/db/client.html#ClientStorage.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#db.client.ClientStorage.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt id="db.client.ClientStorage.add_client">
 <code class="sig-name descname"><span class="pre">add_client</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">login</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_admin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/db/client.html#ClientStorage.add_client"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#db.client.ClientStorage.add_client" title="Permalink to this definition">¶</a></dt>

@@ -39,6 +39,12 @@
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">db.contacts.</span></code><code class="sig-name descname"><span class="pre">ContactStorage</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">owner</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/db/contacts.html#ContactStorage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#db.contacts.ContactStorage" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
+<dt id="db.contacts.ContactStorage.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">owner</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/db/contacts.html#ContactStorage.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#db.contacts.ContactStorage.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="db.contacts.ContactStorage.add_contact">
 <code class="sig-name descname"><span class="pre">add_contact</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client_login</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/db/contacts.html#ContactStorage.add_contact"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#db.contacts.ContactStorage.add_contact" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -63,6 +69,17 @@
 <dt id="db.contacts.Contacts.Client">
 <code class="sig-name descname"><span class="pre">Client</span></code><a class="headerlink" href="#db.contacts.Contacts.Client" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt id="db.contacts.Contacts.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#db.contacts.Contacts.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code class="docutils literal notranslate"><span class="pre">kwargs</span></code>.</p>
+<p>Only keys that are present as
+attributes of the instance’s class are allowed. These could be,
+for example, any mapped columns or relationships.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="db.contacts.Contacts.client_id">

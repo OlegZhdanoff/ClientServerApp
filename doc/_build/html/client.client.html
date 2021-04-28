@@ -40,6 +40,16 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class for process communication between client and server</p>
 <dl class="py method">
+<dt id="client.client.Client.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">account_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'disconnected'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sq_gui</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/client.html#Client.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.client.Client.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructor method
+:param account_name: user name
+:param password: plain user password
+:param status: user status
+:param sq_gui: Queue for communication with GUI</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="client.client.Client.action_handler">
 <code class="sig-name descname"><span class="pre">action_handler</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/client.html#Client.action_handler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.client.Client.action_handler" title="Permalink to this definition">¶</a></dt>
 <dd><p>process messages from server and client GUI

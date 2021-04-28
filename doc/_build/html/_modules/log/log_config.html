@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>log.log_config &#8212; ClientServerApps  documentation</title>
+    <title>log.log_config &#8212; GeekChat  documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -46,6 +46,12 @@
 
 
 <div class="viewcode-block" id="log_config"><a class="viewcode-back" href="../../log.log_config.html#log.log_config.log_config">[docs]</a><span class="k">def</span> <span class="nf">log_config</span><span class="p">(</span><span class="n">logger_name</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    configure logger with specific data</span>
+<span class="sd">    :param logger_name: name of logger</span>
+<span class="sd">    :param filename: file to store logging information</span>
+<span class="sd">    :return: logger instance</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">logger</span> <span class="o">=</span> <span class="n">structlog</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="n">logger_name</span><span class="p">)</span>
 
     <span class="n">file_handler</span> <span class="o">=</span> <span class="n">TimedRotatingFileHandler</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">when</span><span class="o">=</span><span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
@@ -70,7 +76,7 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="../../index.html">ClientServerApps</a></h1>
+<h1 class="logo"><a href="../../index.html">GeekChat</a></h1>
 
 
 
@@ -126,7 +132,7 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2021, Author.
+      &copy;2021, Oleg Zhdanov.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>

@@ -43,6 +43,17 @@
 <code class="sig-name descname"><span class="pre">Client</span></code><a class="headerlink" href="#db.messages.Message.Client" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="py method">
+<dt id="db.messages.Message.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#db.messages.Message.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code class="docutils literal notranslate"><span class="pre">kwargs</span></code>.</p>
+<p>Only keys that are present as
+attributes of the instance’s class are allowed. These could be,
+for example, any mapped columns or relationships.</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt id="db.messages.Message.from_id">
 <code class="sig-name descname"><span class="pre">from_id</span></code><a class="headerlink" href="#db.messages.Message.from_id" title="Permalink to this definition">¶</a></dt>
@@ -75,8 +86,14 @@
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">db.messages.</span></code><code class="sig-name descname"><span class="pre">MessageStorage</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">owner</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/db/messages.html#MessageStorage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#db.messages.MessageStorage" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
+<dt id="db.messages.MessageStorage.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">owner</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/db/messages.html#MessageStorage.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#db.messages.MessageStorage.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="db.messages.MessageStorage.add_message">
-<code class="sig-name descname"><span class="pre">add_message</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recipient</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="db.client.html#db.client.Client" title="db.client.Client"><span class="pre">db.client.Client</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">when</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">datetime.datetime(2021,</span> <span class="pre">4,</span> <span class="pre">28,</span> <span class="pre">12,</span> <span class="pre">35,</span> <span class="pre">27,</span> <span class="pre">576849)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/db/messages.html#MessageStorage.add_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#db.messages.MessageStorage.add_message" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">add_message</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recipient</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="db.client.html#db.client.Client" title="db.client.Client"><span class="pre">db.client.Client</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">when</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">datetime.datetime(2021,</span> <span class="pre">4,</span> <span class="pre">28,</span> <span class="pre">12,</span> <span class="pre">44,</span> <span class="pre">5,</span> <span class="pre">230931)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/db/messages.html#MessageStorage.add_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#db.messages.MessageStorage.add_message" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">

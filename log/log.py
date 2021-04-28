@@ -4,6 +4,11 @@ import structlog
 
 
 def configure_logging(processor, log_level='DEBUG'):
+    """
+    configure logging for application
+    :param processor: processor for logger
+    :param log_level: level for logging
+    """
     logging.config.dictConfig({
         'version': 1,
         'disable_existing_loggers': False,

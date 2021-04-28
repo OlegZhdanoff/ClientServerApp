@@ -13,6 +13,12 @@ configure_logging(proc)
 
 
 def log_config(logger_name, filename):
+    """
+    configure logger with specific data
+    :param logger_name: name of logger
+    :param filename: file to store logging information
+    :return: logger instance
+    """
     logger = structlog.get_logger(logger_name)
 
     file_handler = TimedRotatingFileHandler(filename, when='D', interval=1, encoding='utf-8')
