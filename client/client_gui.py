@@ -1,3 +1,4 @@
+import datetime
 from pathlib import Path
 
 from PyQt5 import QtWidgets, uic
@@ -17,6 +18,18 @@ logger = log_config('client_gui', 'client.log')
 
 class ClientMainWindow(QtWidgets.QMainWindow):
     def __init__(self, client: Client, sq_gui: SelectableQueue, sq_client: SelectableQueue, cfg: Config):
+        """
+        Client GUI Main window object
+
+        :param client: Client object
+        :type client: :class:`client.Client`
+        :param sq_gui: Queue to receive data from Client Object
+        :type sq_gui: :class:`services.SelectableQueue`
+        :param sq_client: Queue to send data to Client Object
+        :type sq_client: :class:`services.SelectableQueue`
+        :param cfg: client configuration file
+        :type cfg: :class:`services.Config`
+        """
         super().__init__()
         self.client = client
         self.sq_client = sq_client
@@ -94,6 +107,10 @@ class ClientMainWindow(QtWidgets.QMainWindow):
 
     @pyqtSlot(tuple)
     def data_handler(self, data):
+        """
+        process messages from server through :class:`client.Client`
+        :param data: tuple with one element of any type of @dataclass from .messages
+        """
         data = data[0]
         if isinstance(data, GetContacts):
             self.show_contacts(data)
@@ -107,27 +124,47 @@ class ClientMainWindow(QtWidgets.QMainWindow):
             self.add_log(data.time, data.alert)
 
     def feed_data(self, data):
+        """
+        send data to Queue for :class:`client.Client`
+        :param data: any type of @dataclass from .messages
+        """
         self.sq_client.put(data)
 
     def connecting(self):
+        """
+        process connecting to server, send public key to server
+        """
         self.connectButton.setDisabled(True)
         if not self.client.auth:
             self.client.feed_data(self.client.send_key())
             self.add_log(time.time(), f'connecting to server {self.config.data["server"]["address"]}')
 
     def add_log(self, tm: float, msg: str):
+        """
+        adding message from server to status bar and list for server messages
+        :param tm: time in time() format
+        :param msg: string message from server
+        """
         tm = datetime.datetime.fromtimestamp(tm)
         item = QStandardItem(f'{tm.strftime("%Y-%m-%d %H:%M")} >> {msg}')
         self.serverMessages.appendRow(item)
         self.statusbar.showMessage(item.text())
 
     def toggle_login_widget(self):
+        """
+        show or hide login frame
+        """
         if self.loginWidget.isHidden():
             self.loginWidget.show()
         else:
             self.loginWidget.hide()
 
     def on_auth(self, msg: Authenticate):
+        """
+        process Authenticate message from server
+        :param msg: Authenticate message from server
+        :type msg: :class:`messages.Authenticate`
+        """
         if not msg.result:
             self.loginWidget.show()
             self.profileWidget.show()
@@ -138,7 +175,12 @@ class ClientMainWindow(QtWidgets.QMainWindow):
             self.connectButton.setDisabled(True)
         self.add_log(msg.time, msg.alert)
 
-    def show_contacts(self, data):
+    def show_contacts(self, data: GetContacts):
+        """
+        show contact list received from server
+        :param data: GetContacts message with list of usernames from client contact list
+        :type data: :class:`messages.GetContacts`
+        """
         self.contacts.clear()
         for contact in data.contacts:
             item = QStandardItem(contact)
@@ -147,6 +189,11 @@ class ClientMainWindow(QtWidgets.QMainWindow):
         self.add_log(data.time, data.action)
 
     def show_filter_users(self, users):
+        """
+        process :class:`messages.FilterClients` message from server
+        :param users: filtered by mask list of users
+        :type users: tuple
+        """
         self.filterUsers.clear()
         for user in users:
             item = QStandardItem(user)
@@ -158,6 +205,9 @@ class ClientMainWindow(QtWidgets.QMainWindow):
         self.add_log(time.time(), 'show filtered users')
 
     def get_filter_users(self):
+        """
+        sent to server message :class:`messages.FilterClients` with specific mask
+        """
         if self.search_btn.text() == 'Close':
             self.search_btn.setText('Search')
             return self.filterUsersList.hide()
@@ -171,6 +221,9 @@ class ClientMainWindow(QtWidgets.QMainWindow):
         self.search_btn.setText('Search')
 
     def is_not_contact(self):
+        """
+        checking username for being in contact list
+        """
         for item in self.filterUsersList.selectedIndexes():
             if self.contacts.findItems(item.data()):
                 self.add_btn.setDisabled(True)
@@ -180,6 +233,9 @@ class ClientMainWindow(QtWidgets.QMainWindow):
         return True
 
     def add_to_contacts(self):
+        """
+        adding user to contact list
+        """
         self.add_btn.setDisabled(True)
         for item in self.filterUsersList.selectedIndexes():
             self.client.feed_data(self.client.add_contact(item.data()))
@@ -187,6 +243,11 @@ class ClientMainWindow(QtWidgets.QMainWindow):
         self.client.feed_data(self.client.get_contacts())
 
     def contact_selected(self):
+        """
+        load chat history for selected user from contact list
+        send :class:`messages.GetMessages` request to server if local history is not exists
+        :return:
+        """
         if self.contactList.selectedIndexes():
             contact = self.contactList.selectedIndexes()[0].data()
             if self.is_contact(contact):
@@ -207,6 +268,10 @@ class ClientMainWindow(QtWidgets.QMainWindow):
         return True
 
     def del_contact(self):
+        """
+        delete user from contact list
+        send :class:`messages.DelContact` request to server
+        """
         self.del_btn.setDisabled(True)
         for item in self.contactList.selectedIndexes():
             self.client.feed_data(self.client.del_contact(item.data()))
@@ -214,6 +279,9 @@ class ClientMainWindow(QtWidgets.QMainWindow):
         self.client.feed_data(self.client.get_contacts())
 
     def send_message(self):
+        """
+        send message :class:`messages.Msg` to server
+        """
         text = self.msg_edit.text()
         self.msg_edit.setText('')
         recipient = self.contactList.currentIndex().data()
@@ -222,6 +290,12 @@ class ClientMainWindow(QtWidgets.QMainWindow):
             self.update_chat(recipient, self.client.username, datetime.datetime.now(), text)
 
     def on_msg(self, msg: Msg):
+        """
+        process :class:`messages.Msg` message received from server
+        adding this message to appropriate chat
+        :param msg: message received from server
+        :type msg: :class:`messages.Msg`
+        """
         tm = datetime.datetime.fromtimestamp(msg.time)
         if msg.from_ == self.client.username:
             self.update_chat(msg.to, msg.from_, tm, msg.text)
@@ -230,12 +304,22 @@ class ClientMainWindow(QtWidgets.QMainWindow):
         ic(msg)
 
     def update_chat(self, contact, sender, tm, text):
+        """
+        update selected chat with new message
+        :param contact: username from contact list
+        :param sender: message sender username
+        :param tm: time in time() format
+        :param text: message body
+        """
         if not self.messages.get(contact):
             self.messages.setdefault(contact, QStandardItemModel(parent=self))
         item = QStandardItem(f'{tm.strftime("%Y-%m-%d %H:%M")} {sender} >> {text}')
         self.messages[contact].appendRow(item)
 
     def load_config(self):
+        """
+        load data from configuration file
+        """
         self.login_edit.setText(self.config.data['user']['login'])
         self.password_edit.setText(self.config.data['user']['password'])
         status_idx = self.statusComboBox.findText(self.config.data['user']['status'])
@@ -246,16 +330,25 @@ class ClientMainWindow(QtWidgets.QMainWindow):
             self.logger.warning(f"wrong status in config - {self.config.data['user']['status']}")
 
     def cancel_profile(self):
+        """
+        cancel changes in profile and loading data from configuration file
+        """
         self.load_config()
         self.toggle_profile()
 
     def toggle_profile(self):
+        """
+        show or hide profile frame
+        """
         if self.profileWidget.isHidden():
             self.profileWidget.show()
         else:
             self.profileWidget.hide()
 
     def save_profile(self):
+        """
+        save new profile data to configuration file and hide profile frame
+        """
         self.config.data['user']['login'] = self.login_edit.text()
         self.client.username = self.login_edit.text()
         self.config.data['user']['password'] = self.password_edit.text()
@@ -267,6 +360,9 @@ class ClientMainWindow(QtWidgets.QMainWindow):
         self.toggle_profile()
 
     def closeEvent(self, *args, **kwargs):
+        """
+        closing main window
+        """
         ic('========== closing ==================')
         self.monitor_thread.quit()
         self.monitor_thread.disconnect()

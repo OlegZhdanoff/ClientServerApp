@@ -1,5 +1,5 @@
 .. ClientServerApps documentation master file, created by
-   sphinx-quickstart on Tue Apr 27 18:21:24 2021.
+   sphinx-quickstart on Tue Apr 27 18:38:01 2021.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
@@ -12,9 +12,14 @@ Welcome to ClientServerApps's documentation!
 
    chat_client
    chat_server
+   client
+   db
+   log
    messages
    run_clients
+   server
    services
+   test
 
 
 Indices and tables

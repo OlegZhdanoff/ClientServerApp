@@ -37,6 +37,7 @@
  <a href="#A"><strong>A</strong></a>
  | <a href="#C"><strong>C</strong></a>
  | <a href="#D"><strong>D</strong></a>
+ | <a href="#E"><strong>E</strong></a>
  | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
  | <a href="#H"><strong>H</strong></a>
@@ -45,12 +46,14 @@
  | <a href="#K"><strong>K</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
+ | <a href="#O"><strong>O</strong></a>
  | <a href="#P"><strong>P</strong></a>
  | <a href="#Q"><strong>Q</strong></a>
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
  | <a href="#U"><strong>U</strong></a>
+ | <a href="#W"><strong>W</strong></a>
  
 </div>
 <h2 id="A">A</h2>
@@ -88,8 +91,36 @@
         <li><a href="messages.html#messages.SendKey.action">(messages.SendKey attribute)</a>
 </li>
       </ul></li>
+      <li><a href="client.client.html#client.client.Client.action_handler">action_handler() (client.client.Client method)</a>
+
+      <ul>
+        <li><a href="client.client_gui_processor.html#client.client_gui_processor.ClientGuiProcessor.action_handler">(client.client_gui_processor.ClientGuiProcessor method)</a>
+</li>
+        <li><a href="server.server.html#server.server.ClientInstance.action_handler">(server.server.ClientInstance method)</a>
+</li>
+        <li><a href="server.server_gui_processor.html#server.server_gui_processor.ServerGuiProcessor.action_handler">(server.server_gui_processor.ServerGuiProcessor method)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="db.client.html#db.client.ClientStorage.add_client">add_client() (db.client.ClientStorage method)</a>
+</li>
+      <li><a href="client.client.html#client.client.Client.add_contact">add_contact() (client.client.Client method)</a>
+
+      <ul>
+        <li><a href="db.contacts.html#db.contacts.ContactStorage.add_contact">(db.contacts.ContactStorage method)</a>
+</li>
+        <li><a href="server.server.html#server.server.ClientInstance.add_contact">(server.server.ClientInstance method)</a>
+</li>
+      </ul></li>
+      <li><a href="client.client_gui.html#client.client_gui.ClientMainWindow.add_log">add_log() (client.client_gui.ClientMainWindow method)</a>
+</li>
+      <li><a href="db.messages.html#db.messages.MessageStorage.add_message">add_message() (db.messages.MessageStorage method)</a>
+</li>
+      <li><a href="db.client_history.html#db.client_history.ClientHistoryStorage.add_record">add_record() (db.client_history.ClientHistoryStorage method)</a>
+</li>
+      <li><a href="client.client_gui.html#client.client_gui.ClientMainWindow.add_to_contacts">add_to_contacts() (client.client_gui.ClientMainWindow method)</a>
+</li>
       <li><a href="messages.html#messages.AddContact">AddContact (class in messages)</a>
 </li>
       <li><a href="messages.html#messages.AdminGetHistory">AdminGetHistory (class in messages)</a>
@@ -102,7 +133,17 @@
         <li><a href="messages.html#messages.Response.alert">(messages.Response attribute)</a>
 </li>
       </ul></li>
+      <li><a href="db.client.html#db.client.ClientStorage.auth_client">auth_client() (db.client.ClientStorage method)</a>
+</li>
       <li><a href="messages.html#messages.Authenticate">Authenticate (class in messages)</a>
+</li>
+      <li><a href="client.client.html#client.client.Client.authenticate">authenticate() (client.client.Client method)</a>
+
+      <ul>
+        <li><a href="server.server.html#server.server.ClientInstance.authenticate">(server.server.ClientInstance method)</a>
+</li>
+      </ul></li>
+      <li><a href="client.client.html#client.client.Client.authenticated">authenticated() (client.client.Client method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -110,6 +151,10 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="client.client_gui.html#client.client_gui.ClientMainWindow.cancel_profile">cancel_profile() (client.client_gui.ClientMainWindow method)</a>
+</li>
+      <li><a href="client.client_gui.html#client.client_gui.ClientMainWindow.change_search">change_search() (client.client_gui.ClientMainWindow method)</a>
+</li>
       <li>
     chat_client
 
@@ -124,13 +169,110 @@
         <li><a href="chat_server.html#module-chat_server">module</a>
 </li>
       </ul></li>
+      <li><a href="server.server.html#server.server.ClientInstance.check_pwd">check_pwd() (server.server.ClientInstance method)</a>
+</li>
+      <li>
+    client
+
+      <ul>
+        <li><a href="client.html#module-client">module</a>
+</li>
+      </ul></li>
+      <li><a href="client.client.html#client.client.Client">Client (class in client.client)</a>
+
+      <ul>
+        <li><a href="db.client.html#db.client.Client">(class in db.client)</a>
+</li>
+        <li><a href="db.client_history.html#db.client_history.ClientHistory.Client">(db.client_history.ClientHistory attribute)</a>
+</li>
+        <li><a href="db.contacts.html#db.contacts.Contacts.Client">(db.contacts.Contacts attribute)</a>
+</li>
+        <li><a href="db.messages.html#db.messages.Message.Client">(db.messages.Message attribute)</a>
+</li>
+      </ul></li>
+      <li>
+    client.client
+
+      <ul>
+        <li><a href="client.client.html#module-client.client">module</a>
+</li>
+      </ul></li>
+      <li>
+    client.client_gui
+
+      <ul>
+        <li><a href="client.client_gui.html#module-client.client_gui">module</a>
+</li>
+      </ul></li>
+      <li>
+    client.client_gui_processor
+
+      <ul>
+        <li><a href="client.client_gui_processor.html#module-client.client_gui_processor">module</a>
+</li>
+      </ul></li>
+      <li>
+    client.client_thread
+
+      <ul>
+        <li><a href="client.client_thread.html#module-client.client_thread">module</a>
+</li>
+      </ul></li>
+      <li><a href="test.test_client.html#test.test_client.client_create">client_create() (in module test.test_client)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="services.html#services.SelectableQueue.close">close() (services.SelectableQueue method)</a>
+      <li><a href="server.server.html#server.server.ClientInstance.client_disconnect">client_disconnect() (server.server.ClientInstance method)</a>
+</li>
+      <li><a href="db.client_history.html#db.client_history.ClientHistory.client_id">client_id (db.client_history.ClientHistory attribute)</a>
+
+      <ul>
+        <li><a href="db.contacts.html#db.contacts.Contacts.client_id">(db.contacts.Contacts attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="test.test_server.html#test.test_server.client_messages">client_messages() (in module test.test_server)</a>
+</li>
+      <li><a href="server.server.html#server.server.ClientInstance.client_presence">client_presence() (server.server.ClientInstance method)</a>
+</li>
+      <li><a href="client.client_gui_processor.html#client.client_gui_processor.ClientGuiProcessor">ClientGuiProcessor (class in client.client_gui_processor)</a>
+</li>
+      <li><a href="db.client_history.html#db.client_history.ClientHistory">ClientHistory (class in db.client_history)</a>
+</li>
+      <li><a href="db.client_history.html#db.client_history.ClientHistoryStorage">ClientHistoryStorage (class in db.client_history)</a>
+</li>
+      <li><a href="server.server.html#server.server.ClientInstance">ClientInstance (class in server.server)</a>
+</li>
+      <li><a href="client.client_gui.html#client.client_gui.ClientMainWindow">ClientMainWindow (class in client.client_gui)</a>
+</li>
+      <li><a href="db.client.html#db.client.ClientStorage">ClientStorage (class in db.client)</a>
+</li>
+      <li><a href="client.client_thread.html#client.client_thread.ClientThread">ClientThread (class in client.client_thread)</a>
+</li>
+      <li><a href="client.client.html#client.client.Client.close">close() (client.client.Client method)</a>
+
+      <ul>
+        <li><a href="services.html#services.SelectableQueue.close">(services.SelectableQueue method)</a>
+</li>
+      </ul></li>
+      <li><a href="client.client_gui.html#client.client_gui.ClientMainWindow.closeEvent">closeEvent() (client.client_gui.ClientMainWindow method)</a>
 </li>
       <li><a href="services.html#services.Config">Config (class in services)</a>
 </li>
+      <li><a href="log.log.html#log.log.configure_logging">configure_logging() (in module log.log)</a>
+</li>
+      <li><a href="client.client_gui.html#client.client_gui.ClientMainWindow.connecting">connecting() (client.client_gui.ClientMainWindow method)</a>
+</li>
+      <li><a href="client.client_gui.html#client.client_gui.ClientMainWindow.contact_selected">contact_selected() (client.client_gui.ClientMainWindow method)</a>
+</li>
+      <li><a href="db.contacts.html#db.contacts.Contacts">Contacts (class in db.contacts)</a>
+
+      <ul>
+        <li><a href="db.client.html#db.client.Client.Contacts">(db.client.Client attribute)</a>
+</li>
+      </ul></li>
       <li><a href="messages.html#messages.GetContacts.contacts">contacts (messages.GetContacts attribute)</a>
+</li>
+      <li><a href="db.contacts.html#db.contacts.ContactStorage">ContactStorage (class in db.contacts)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -138,12 +280,72 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="client.client_gui.html#client.client_gui.ClientMainWindow.data_handler">data_handler() (client.client_gui.ClientMainWindow method)</a>
+
+      <ul>
+        <li><a href="server.server_gui.html#server.server_gui.ServerMainWindow.data_handler">(server.server_gui.ServerMainWindow method)</a>
+</li>
+      </ul></li>
+      <li><a href="server.server_gui.html#server.server_gui.DataMonitor">DataMonitor (class in server.server_gui)</a>
+</li>
+      <li>
+    db
+
+      <ul>
+        <li><a href="db.html#module-db">module</a>
+</li>
+      </ul></li>
+      <li>
+    db.base
+
+      <ul>
+        <li><a href="db.base.html#module-db.base">module</a>
+</li>
+      </ul></li>
+      <li>
+    db.client
+
+      <ul>
+        <li><a href="db.client.html#module-db.client">module</a>
+</li>
+      </ul></li>
+      <li>
+    db.client_history
+
+      <ul>
+        <li><a href="db.client_history.html#module-db.client_history">module</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    db.contacts
+
+      <ul>
+        <li><a href="db.contacts.html#module-db.contacts">module</a>
+</li>
+      </ul></li>
+      <li>
+    db.messages
+
+      <ul>
+        <li><a href="db.messages.html#module-db.messages">module</a>
+</li>
+      </ul></li>
       <li><a href="services.html#services.MessagesDeserializer.decrypt">decrypt() (services.MessagesDeserializer class method)</a>
 </li>
       <li><a href="services.html#services.MessageEncoder.default">default() (services.MessageEncoder method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="client.client.html#client.client.Client.del_contact">del_contact() (client.client.Client method)</a>
+
+      <ul>
+        <li><a href="client.client_gui.html#client.client_gui.ClientMainWindow.del_contact">(client.client_gui.ClientMainWindow method)</a>
+</li>
+        <li><a href="db.contacts.html#db.contacts.ContactStorage.del_contact">(db.contacts.ContactStorage method)</a>
+</li>
+        <li><a href="server.server.html#server.server.ClientInstance.del_contact">(server.server.ClientInstance method)</a>
+</li>
+      </ul></li>
       <li><a href="messages.html#messages.DelContact">DelContact (class in messages)</a>
 </li>
       <li><a href="services.html#services.MessagesDeserializer.deserialize">deserialize() (services.MessagesDeserializer static method)</a>
@@ -151,21 +353,49 @@
   </ul></td>
 </tr></table>
 
+<h2 id="E">E</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="server.server.html#server.server.ClientInstance.encrypt_data">encrypt_data() (server.server.ClientInstance method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="services.html#services.SelectableQueue.fileno">fileno() (services.SelectableQueue method)</a>
+      <li><a href="client.client.html#client.client.Client.feed_data">feed_data() (client.client.Client method)</a>
+
+      <ul>
+        <li><a href="client.client_gui.html#client.client_gui.ClientMainWindow.feed_data">(client.client_gui.ClientMainWindow method)</a>
 </li>
-      <li><a href="messages.html#messages.FilterClients">FilterClients (class in messages)</a>
+        <li><a href="client.client_gui_processor.html#client.client_gui_processor.ClientGuiProcessor.feed_data">(client.client_gui_processor.ClientGuiProcessor method)</a>
+</li>
+        <li><a href="server.server.html#server.server.ClientInstance.feed_data">(server.server.ClientInstance method)</a>
+</li>
+        <li><a href="server.server_gui.html#server.server_gui.ServerMainWindow.feed_data">(server.server_gui.ServerMainWindow method)</a>
+</li>
+        <li><a href="server.server_gui_processor.html#server.server_gui_processor.ServerGuiProcessor.feed_data">(server.server_gui_processor.ServerGuiProcessor method)</a>
+</li>
+      </ul></li>
+      <li><a href="services.html#services.SelectableQueue.fileno">fileno() (services.SelectableQueue method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="db.client.html#db.client.ClientStorage.filter_clients">filter_clients() (db.client.ClientStorage method)</a>
+</li>
+      <li><a href="messages.html#messages.FilterClients">FilterClients (class in messages)</a>
+</li>
+      <li><a href="server.server.html#server.server.ClientInstance.find_client">find_client() (server.server.ClientInstance method)</a>
+</li>
       <li><a href="messages.html#messages.GetMessages.from_">from_ (messages.GetMessages attribute)</a>
 
       <ul>
         <li><a href="messages.html#messages.Msg.from_">(messages.Msg attribute)</a>
 </li>
       </ul></li>
+      <li><a href="db.messages.html#db.messages.Message.from_id">from_id (db.messages.Message attribute)</a>
+</li>
       <li><a href="services.html#services.MessageProcessor.from_msg">from_msg() (services.MessageProcessor static method)</a>
 </li>
   </ul></td>
@@ -176,19 +406,75 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="services.html#services.SelectableQueue.get">get() (services.SelectableQueue method)</a>
 </li>
-      <li><a href="services.html#services.MessagesDeserializer.get_messages">get_messages() (services.MessagesDeserializer class method)</a>
+      <li><a href="db.client.html#db.client.ClientStorage.get_all">get_all() (db.client.ClientStorage method)</a>
 </li>
-      <li><a href="services.html#services.MessagesDeserializer.get_msg_lengths">get_msg_lengths() (services.MessagesDeserializer static method)</a>
+      <li><a href="db.messages.html#db.messages.MessageStorage.get_chat_msg">get_chat_msg() (db.messages.MessageStorage method)</a>
 </li>
+      <li><a href="db.client.html#db.client.ClientStorage.get_client">get_client() (db.client.ClientStorage method)</a>
+</li>
+      <li><a href="client.client.html#client.client.Client.get_contacts">get_contacts() (client.client.Client method)</a>
+
+      <ul>
+        <li><a href="db.contacts.html#db.contacts.ContactStorage.get_contacts">(db.contacts.ContactStorage method)</a>
+</li>
+        <li><a href="server.server.html#server.server.ClientInstance.get_contacts">(server.server.ClientInstance method)</a>
+</li>
+      </ul></li>
+      <li><a href="client.client.html#client.client.Client.get_data">get_data() (client.client.Client method)</a>
+
+      <ul>
+        <li><a href="server.server.html#server.server.ClientInstance.get_data">(server.server.ClientInstance method)</a>
+</li>
+        <li><a href="server.server_gui.html#server.server_gui.DataMonitor.get_data">(server.server_gui.DataMonitor method)</a>
+</li>
+      </ul></li>
+      <li><a href="client.client_gui.html#client.client_gui.ClientMainWindow.get_filter_users">get_filter_users() (client.client_gui.ClientMainWindow method)</a>
+</li>
+      <li><a href="server.server.html#server.server.ClientInstance.get_filtered_users">get_filtered_users() (server.server.ClientInstance method)</a>
+</li>
+      <li><a href="db.messages.html#db.messages.MessageStorage.get_from_owner_messages">get_from_owner_messages() (db.messages.MessageStorage method)</a>
+</li>
+      <li><a href="client.client_gui_processor.html#client.client_gui_processor.ClientGuiProcessor.get_history">get_history() (client.client_gui_processor.ClientGuiProcessor method)</a>
+
+      <ul>
+        <li><a href="db.client_history.html#db.client_history.ClientHistoryStorage.get_history">(db.client_history.ClientHistoryStorage method)</a>
+</li>
+        <li><a href="server.server_gui.html#server.server_gui.ServerMainWindow.get_history">(server.server_gui.ServerMainWindow method)</a>
+</li>
+        <li><a href="server.server_gui_processor.html#server.server_gui_processor.ServerGuiProcessor.get_history">(server.server_gui_processor.ServerGuiProcessor method)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="client.client.html#client.client.Client.get_messages">get_messages() (client.client.Client method)</a>
+
+      <ul>
+        <li><a href="server.server.html#server.server.ClientInstance.get_messages">(server.server.ClientInstance method)</a>
+</li>
+        <li><a href="services.html#services.MessagesDeserializer.get_messages">(services.MessagesDeserializer class method)</a>
+</li>
+      </ul></li>
+      <li><a href="services.html#services.MessagesDeserializer.get_msg_lengths">get_msg_lengths() (services.MessagesDeserializer static method)</a>
+</li>
       <li><a href="services.html#services.MessagesDeserializer.get_msg_list">get_msg_list() (services.MessagesDeserializer class method)</a>
 </li>
+      <li><a href="db.messages.html#db.messages.MessageStorage.get_to_owner_msg_from_time">get_to_owner_msg_from_time() (db.messages.MessageStorage method)</a>
+</li>
+      <li><a href="db.messages.html#db.messages.MessageStorage.get_to_user_messages">get_to_user_messages() (db.messages.MessageStorage method)</a>
+</li>
+      <li><a href="client.client_gui_processor.html#client.client_gui_processor.ClientGuiProcessor.get_users">get_users() (client.client_gui_processor.ClientGuiProcessor method)</a>
+
+      <ul>
+        <li><a href="server.server_gui_processor.html#server.server_gui_processor.ServerGuiProcessor.get_users">(server.server_gui_processor.ServerGuiProcessor method)</a>
+</li>
+      </ul></li>
       <li><a href="messages.html#messages.GetContacts">GetContacts (class in messages)</a>
 </li>
       <li><a href="messages.html#messages.GetMessages">GetMessages (class in messages)</a>
 </li>
       <li><a href="services.html#services.SelectableQueue.getpeername">getpeername() (services.SelectableQueue method)</a>
+</li>
+      <li><a href="server.server_gui.html#server.server_gui.DataMonitor.gotData">gotData (server.server_gui.DataMonitor attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -204,6 +490,26 @@
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="db.client.html#db.client.Client.id">id (db.client.Client attribute)</a>
+
+      <ul>
+        <li><a href="db.client_history.html#db.client_history.ClientHistory.id">(db.client_history.ClientHistory attribute)</a>
+</li>
+        <li><a href="db.contacts.html#db.contacts.Contacts.id">(db.contacts.Contacts attribute)</a>
+</li>
+        <li><a href="db.messages.html#db.messages.Message.id">(db.messages.Message attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="db.client_history.html#db.client_history.ClientHistory.ip_address">ip_address (db.client_history.ClientHistory attribute)</a>
+</li>
+      <li><a href="db.client.html#db.client.Client.is_admin">is_admin (db.client.Client attribute)</a>
+</li>
+      <li><a href="client.client_gui.html#client.client_gui.ClientMainWindow.is_contact">is_contact() (client.client_gui.ClientMainWindow method)</a>
+</li>
+      <li><a href="client.client_gui.html#client.client_gui.ClientMainWindow.is_not_contact">is_not_contact() (client.client_gui.ClientMainWindow method)</a>
+</li>
       <li><a href="services.html#services.SelectableQueue.is_not_empty">is_not_empty() (services.SelectableQueue method)</a>
 </li>
   </ul></td>
@@ -214,6 +520,14 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="messages.html#messages.Join">Join (class in messages)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="client.client.html#client.client.Client.join">join() (client.client.Client method)</a>
+
+      <ul>
+        <li><a href="server.server.html#server.server.ClientInstance.join">(server.server.ClientInstance method)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -230,18 +544,65 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="messages.html#messages.Leave">Leave (class in messages)</a>
 </li>
+      <li><a href="client.client.html#client.client.Client.leave">leave() (client.client.Client method)</a>
+
+      <ul>
+        <li><a href="server.server.html#server.server.ClientInstance.leave">(server.server.ClientInstance method)</a>
+</li>
+      </ul></li>
+      <li><a href="client.client_gui.html#client.client_gui.ClientMainWindow.load_config">load_config() (client.client_gui.ClientMainWindow method)</a>
+
+      <ul>
+        <li><a href="services.html#services.Config.load_config">(services.Config method)</a>
+</li>
+      </ul></li>
+      <li>
+    log
+
+      <ul>
+        <li><a href="log.html#module-log">module</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="services.html#services.Config.load_config">load_config() (services.Config method)</a>
+      <li>
+    log.log
+
+      <ul>
+        <li><a href="log.log.html#module-log.log">module</a>
 </li>
-      <li><a href="messages.html#messages.GetContacts.login">login (messages.GetContacts attribute)</a>
+      </ul></li>
+      <li>
+    log.log_config
+
+      <ul>
+        <li><a href="log.log_config.html#module-log.log_config">module</a>
 </li>
+      </ul></li>
+      <li><a href="log.log_config.html#log.log_config.log_config">log_config() (in module log.log_config)</a>
+</li>
+      <li><a href="log.log_config.html#log.log_config.log_default">log_default() (in module log.log_config)</a>
+</li>
+      <li><a href="db.client.html#db.client.Client.login">login (db.client.Client attribute)</a>
+
+      <ul>
+        <li><a href="messages.html#messages.GetContacts.login">(messages.GetContacts attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="db.messages.html#db.messages.Message">Message (class in db.messages)</a>
+
+      <ul>
+        <li><a href="db.client.html#db.client.Client.Message">(db.client.Client attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="db.messages.html#db.messages.Message.message">message (db.messages.Message attribute)</a>
+</li>
       <li><a href="services.html#services.MessageEncoder">MessageEncoder (class in services)</a>
 </li>
       <li><a href="services.html#services.MessageProcessor">MessageProcessor (class in services)</a>
@@ -255,6 +616,8 @@
       </ul></li>
       <li><a href="services.html#services.MessagesDeserializer">MessagesDeserializer (class in services)</a>
 </li>
+      <li><a href="db.messages.html#db.messages.MessageStorage">MessageStorage (class in db.messages)</a>
+</li>
       <li>
     module
 
@@ -263,11 +626,55 @@
 </li>
         <li><a href="chat_server.html#module-chat_server">chat_server</a>
 </li>
+        <li><a href="client.html#module-client">client</a>
+</li>
+        <li><a href="client.client.html#module-client.client">client.client</a>
+</li>
+        <li><a href="client.client_gui.html#module-client.client_gui">client.client_gui</a>
+</li>
+        <li><a href="client.client_gui_processor.html#module-client.client_gui_processor">client.client_gui_processor</a>
+</li>
+        <li><a href="client.client_thread.html#module-client.client_thread">client.client_thread</a>
+</li>
+        <li><a href="db.html#module-db">db</a>
+</li>
+        <li><a href="db.base.html#module-db.base">db.base</a>
+</li>
+        <li><a href="db.client.html#module-db.client">db.client</a>
+</li>
+        <li><a href="db.client_history.html#module-db.client_history">db.client_history</a>
+</li>
+        <li><a href="db.contacts.html#module-db.contacts">db.contacts</a>
+</li>
+        <li><a href="db.messages.html#module-db.messages">db.messages</a>
+</li>
+        <li><a href="log.html#module-log">log</a>
+</li>
+        <li><a href="log.log.html#module-log.log">log.log</a>
+</li>
+        <li><a href="log.log_config.html#module-log.log_config">log.log_config</a>
+</li>
         <li><a href="messages.html#module-messages">messages</a>
 </li>
         <li><a href="run_clients.html#module-run_clients">run_clients</a>
 </li>
+        <li><a href="server.html#module-server">server</a>
+</li>
+        <li><a href="server.server.html#module-server.server">server.server</a>
+</li>
+        <li><a href="server.server_gui.html#module-server.server_gui">server.server_gui</a>
+</li>
+        <li><a href="server.server_gui_processor.html#module-server.server_gui_processor">server.server_gui_processor</a>
+</li>
+        <li><a href="server.server_thread.html#module-server.server_thread">server.server_thread</a>
+</li>
         <li><a href="services.html#module-services">services</a>
+</li>
+        <li><a href="test.html#module-test">test</a>
+</li>
+        <li><a href="test.test_client.html#module-test.test_client">test.test_client</a>
+</li>
+        <li><a href="test.test_server.html#module-test.test_server">test.test_server</a>
 </li>
       </ul></li>
   </ul></td>
@@ -277,18 +684,58 @@
   </ul></td>
 </tr></table>
 
+<h2 id="O">O</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="client.client_gui.html#client.client_gui.ClientMainWindow.on_auth">on_auth() (client.client_gui.ClientMainWindow method)</a>
+</li>
+      <li><a href="server.server_gui.html#server.server_gui.ServerMainWindow.on_login">on_login() (server.server_gui.ServerMainWindow method)</a>
+</li>
+      <li><a href="client.client.html#client.client.Client.on_msg">on_msg() (client.client.Client method)</a>
+
+      <ul>
+        <li><a href="client.client_gui.html#client.client_gui.ClientMainWindow.on_msg">(client.client_gui.ClientMainWindow method)</a>
+</li>
+        <li><a href="server.server.html#server.server.ClientInstance.on_msg">(server.server.ClientInstance method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="db.contacts.html#db.contacts.Contacts.owner_id">owner_id (db.contacts.Contacts attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="messages.html#messages.Authenticate.password">password (messages.Authenticate attribute)</a>
+      <li><a href="db.client.html#db.client.Client.password">password (db.client.Client attribute)</a>
+
+      <ul>
+        <li><a href="messages.html#messages.Authenticate.password">(messages.Authenticate attribute)</a>
 </li>
+      </ul></li>
       <li><a href="messages.html#messages.FilterClients.pattern">pattern (messages.FilterClients attribute)</a>
+</li>
+      <li><a href="server.server_thread.html#server.server_thread.ServerThread.port">port (server.server_thread.ServerThread attribute)</a>
+</li>
+      <li><a href="server.server_thread.html#server.server_thread.PortProperty">PortProperty (class in server.server_thread)</a>
+</li>
+      <li><a href="messages.html#messages.Presence">Presence (class in messages)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="messages.html#messages.Presence">Presence (class in messages)</a>
+      <li><a href="client.client.html#client.client.Client.presence">presence() (client.client.Client method)</a>
+
+      <ul>
+        <li><a href="test.test_client.html#test.test_client.presence">(in module test.test_client)</a>
 </li>
+      </ul></li>
       <li><a href="messages.html#messages.Probe">Probe (class in messages)</a>
+</li>
+      <li><a href="server.server.html#server.server.ClientInstance.probe">probe() (server.server.ClientInstance method)</a>
+</li>
+      <li><a href="log.log_config.html#log.log_config.proc">proc() (in module log.log_config)</a>
 </li>
       <li><a href="services.html#services.SelectableQueue.put">put() (services.SelectableQueue method)</a>
 </li>
@@ -312,14 +759,22 @@
 </li>
       <li><a href="messages.html#messages.Response.response">response (messages.Response attribute)</a>
 </li>
+      <li><a href="client.client.html#client.client.Client.response_processor">response_processor() (client.client.Client method)</a>
+</li>
       <li><a href="messages.html#messages.Authenticate.result">result (messages.Authenticate attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="messages.html#messages.Join.room">room (messages.Join attribute)</a>
 
       <ul>
         <li><a href="messages.html#messages.Leave.room">(messages.Leave attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="client.client_thread.html#client.client_thread.ClientThread.run">run() (client.client_thread.ClientThread method)</a>
+
+      <ul>
+        <li><a href="server.server_thread.html#server.server_thread.ServerThread.run">(server.server_thread.ServerThread method)</a>
 </li>
       </ul></li>
       <li><a href="chat_server.html#chat_server.run_admin">run_admin() (in module chat_server)</a>
@@ -339,14 +794,79 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="services.html#services.Config.save_config">save_config() (services.Config method)</a>
 </li>
+      <li><a href="client.client_gui.html#client.client_gui.ClientMainWindow.save_profile">save_profile() (client.client_gui.ClientMainWindow method)</a>
+</li>
       <li><a href="services.html#services.SelectableQueue">SelectableQueue (class in services)</a>
+</li>
+      <li><a href="client.client.html#client.client.Client.send_key">send_key() (client.client.Client method)</a>
+</li>
+      <li><a href="client.client.html#client.client.Client.send_message">send_message() (client.client.Client method)</a>
+
+      <ul>
+        <li><a href="client.client_gui.html#client.client_gui.ClientMainWindow.send_message">(client.client_gui.ClientMainWindow method)</a>
+</li>
+        <li><a href="server.server.html#server.server.ClientInstance.send_message">(server.server.ClientInstance method)</a>
+</li>
+      </ul></li>
+      <li><a href="server.server_thread.html#server.server_thread.ServerThread.send_probe">send_probe() (server.server_thread.ServerThread method)</a>
+</li>
+      <li><a href="server.server.html#server.server.ClientInstance.send_response">send_response() (server.server.ClientInstance method)</a>
+</li>
+      <li><a href="server.server.html#server.server.ClientInstance.send_secret_key">send_secret_key() (server.server.ClientInstance method)</a>
+</li>
+      <li><a href="client.client.html#client.client.Client.sender">sender() (client.client.Client method)</a>
 </li>
       <li><a href="messages.html#messages.SendKey">SendKey (class in messages)</a>
 </li>
       <li><a href="services.html#services.serializer">serializer() (in module services)</a>
 </li>
+      <li>
+    server
+
+      <ul>
+        <li><a href="server.html#module-server">module</a>
+</li>
+      </ul></li>
+      <li>
+    server.server
+
+      <ul>
+        <li><a href="server.server.html#module-server.server">module</a>
+</li>
+      </ul></li>
+      <li>
+    server.server_gui
+
+      <ul>
+        <li><a href="server.server_gui.html#module-server.server_gui">module</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    server.server_gui_processor
+
+      <ul>
+        <li><a href="server.server_gui_processor.html#module-server.server_gui_processor">module</a>
+</li>
+      </ul></li>
+      <li>
+    server.server_thread
+
+      <ul>
+        <li><a href="server.server_thread.html#module-server.server_thread">module</a>
+</li>
+      </ul></li>
+      <li><a href="test.test_server.html#test.test_server.server_create">server_create() (in module test.test_server)</a>
+</li>
+      <li><a href="server.server_thread.html#server.server_thread.ServerEvents">ServerEvents (class in server.server_thread)</a>
+</li>
+      <li><a href="server.server_gui_processor.html#server.server_gui_processor.ServerGuiProcessor">ServerGuiProcessor (class in server.server_gui_processor)</a>
+</li>
+      <li><a href="server.server_gui.html#server.server_gui.ServerMainWindow">ServerMainWindow (class in server.server_gui)</a>
+</li>
+      <li><a href="server.server_thread.html#server.server_thread.ServerThread">ServerThread (class in server.server_thread)</a>
+</li>
       <li>
     services
 
@@ -356,14 +876,71 @@
       </ul></li>
       <li><a href="services.html#services.MessagesDeserializer.session_key">session_key (services.MessagesDeserializer attribute)</a>
 </li>
-      <li><a href="messages.html#messages.Presence.status">status (messages.Presence attribute)</a>
+      <li><a href="server.server_gui.html#server.server_gui.ServerMainWindow.set_filter">set_filter() (server.server_gui.ServerMainWindow method)</a>
 </li>
+      <li><a href="db.client.html#db.client.ClientStorage.set_status">set_status() (db.client.ClientStorage method)</a>
+</li>
+      <li><a href="client.client_gui.html#client.client_gui.ClientMainWindow.show_contacts">show_contacts() (client.client_gui.ClientMainWindow method)</a>
+</li>
+      <li><a href="client.client_gui.html#client.client_gui.ClientMainWindow.show_filter_users">show_filter_users() (client.client_gui.ClientMainWindow method)</a>
+</li>
+      <li><a href="server.server_gui.html#server.server_gui.ServerMainWindow.show_history">show_history() (server.server_gui.ServerMainWindow method)</a>
+</li>
+      <li><a href="server.server_gui.html#server.server_gui.ServerMainWindow.show_users">show_users() (server.server_gui.ServerMainWindow method)</a>
+</li>
+      <li><a href="db.client.html#db.client.Client.status">status (db.client.Client attribute)</a>
+
+      <ul>
+        <li><a href="messages.html#messages.Presence.status">(messages.Presence attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    test
+
+      <ul>
+        <li><a href="test.html#module-test">module</a>
+</li>
+      </ul></li>
+      <li>
+    test.test_client
+
+      <ul>
+        <li><a href="test.test_client.html#module-test.test_client">module</a>
+</li>
+      </ul></li>
+      <li>
+    test.test_server
+
+      <ul>
+        <li><a href="test.test_server.html#module-test.test_server">module</a>
+</li>
+      </ul></li>
+      <li><a href="test.test_client.html#test.test_client.test_action_handler_probe">test_action_handler_probe() (in module test.test_client)</a>
+</li>
+      <li><a href="test.test_client.html#test.test_client.test_authenticate">test_authenticate() (in module test.test_client)</a>
+</li>
+      <li><a href="test.test_server.html#test.test_server.test_authenticate_200">test_authenticate_200() (in module test.test_server)</a>
+</li>
+      <li><a href="test.test_server.html#test.test_server.test_authenticate_402_wrong_pwd">test_authenticate_402_wrong_pwd() (in module test.test_server)</a>
+</li>
+      <li><a href="test.test_server.html#test.test_server.test_authenticate_402_wrong_user">test_authenticate_402_wrong_user() (in module test.test_server)</a>
+</li>
+      <li><a href="test.test_server.html#test.test_server.test_authenticate_409_already_connected">test_authenticate_409_already_connected() (in module test.test_server)</a>
+</li>
+      <li><a href="test.test_server.html#test.test_server.test_check_pwd">test_check_pwd() (in module test.test_server)</a>
+</li>
+      <li><a href="test.test_server.html#test.test_server.test_check_pwd_wrong">test_check_pwd_wrong() (in module test.test_server)</a>
+</li>
+      <li><a href="test.test_client.html#test.test_client.test_disconnect">test_disconnect() (in module test.test_client)</a>
+</li>
+      <li><a href="test.test_server.html#test.test_server.test_probe">test_probe() (in module test.test_server)</a>
+</li>
       <li><a href="messages.html#messages.Msg.text">text (messages.Msg attribute)</a>
 </li>
       <li><a href="messages.html#messages.AddContact.time">time (messages.AddContact attribute)</a>
@@ -400,6 +977,12 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="messages.html#messages.Msg.to">to (messages.Msg attribute)</a>
 </li>
+      <li><a href="db.messages.html#db.messages.Message.to_id">to_id (db.messages.Message attribute)</a>
+</li>
+      <li><a href="client.client_gui.html#client.client_gui.ClientMainWindow.toggle_login_widget">toggle_login_widget() (client.client_gui.ClientMainWindow method)</a>
+</li>
+      <li><a href="client.client_gui.html#client.client_gui.ClientMainWindow.toggle_profile">toggle_profile() (client.client_gui.ClientMainWindow method)</a>
+</li>
       <li><a href="messages.html#messages.Presence.type">type (messages.Presence attribute)</a>
 </li>
   </ul></td>
@@ -408,6 +991,8 @@
 <h2 id="U">U</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="client.client_gui.html#client.client_gui.ClientMainWindow.update_chat">update_chat() (client.client_gui.ClientMainWindow method)</a>
+</li>
       <li><a href="messages.html#messages.AdminGetHistory.user">user (messages.AdminGetHistory attribute)</a>
 </li>
       <li><a href="messages.html#messages.AddContact.username">username (messages.AddContact attribute)</a>
@@ -426,6 +1011,18 @@
 
       <ul>
         <li><a href="messages.html#messages.FilterClients.users">(messages.FilterClients attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="W">W</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="db.client_history.html#db.client_history.ClientHistory.when">when (db.client_history.ClientHistory attribute)</a>
+
+      <ul>
+        <li><a href="db.messages.html#db.messages.Message.when">(db.messages.Message attribute)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -453,9 +1050,14 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="chat_client.html">chat_client module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chat_server.html">chat_server module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="client.html">client package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="db.html">db package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="log.html">log package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="messages.html">messages module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="run_clients.html">run_clients module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="server.html">server package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="services.html">services module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="test.html">test package</a></li>
 </ul>
 
 <div class="relations">

@@ -145,7 +145,7 @@ class Client:
         process Authenticate message from server
         send GetContacts message if Authenticate.result is True
         :param msg: Authenticate message from server
-        :type msg: :class: `messages.Authenticate`
+        :type msg: :class:`messages.Authenticate`
         """
         if msg.result:
             self.auth = True
@@ -160,7 +160,7 @@ class Client:
     def authenticate(self):
         """
         send Authenticate request to server
-        :return: :class: `messages.Authenticate`
+        :return: :class:`messages.Authenticate`
         """
         return Authenticate(username=self.username, password=self.password)
 
@@ -169,7 +169,7 @@ class Client:
     def get_contacts(self):
         """
         send GetContacts request to server
-        :return: :class: `messages.GetContacts`
+        :return: :class:`messages.GetContacts`
         """
         return GetContacts(login=self.username)
 
@@ -188,7 +188,7 @@ class Client:
         """
         send AddContact request to server
         :param name: target username for adding to contact list
-        :return: :class: `messages.AddContact`
+        :return: :class:`messages.AddContact`
         """
         return AddContact(username=name)
 
@@ -198,7 +198,7 @@ class Client:
         """
         send DelContact request to server
         :param name: target username for deleting from contact list
-        :return: :class: `messages.DelContact`
+        :return: :class:`messages.DelContact`
         """
         return DelContact(username=name)
 
@@ -207,7 +207,7 @@ class Client:
     def _disconnect(self):
         """
         disconnect from server
-        :return: :class: `messages.Quit`
+        :return: :class:`messages.Quit`
         """
         return Quit()
 
@@ -216,7 +216,7 @@ class Client:
     def presence(self):
         """
         send Presence answer to server
-        :return: :class: `messages.Presence`
+        :return: :class:`messages.Presence`
         """
         return Presence(username=self.username, status=self.status)
 
@@ -227,7 +227,7 @@ class Client:
         send message to server to target user
         :param to: target username
         :param text: message body
-        :return: :class: `messages.Msg`
+        :return: :class:`messages.Msg`
         """
         return Msg(to=to, from_=self.username, text=text)
 
@@ -239,7 +239,7 @@ class Client:
         :param tm: request messages created after this time
         :type tm: float
         :param contact: list of contacts returning by server
-        :return: :class: `messages.GetMessages`
+        :return: :class:`messages.GetMessages`
         """
         return GetMessages(time=tm, from_=contact)
 
@@ -249,7 +249,7 @@ class Client:
         """
         send Join request to server
         :param room: room name to join
-        :return: :class: `messages.Join`
+        :return: :class:`messages.Join`
         """
         return Join(room=room)
 
@@ -259,7 +259,7 @@ class Client:
         """
         send Leave request to server
         :param room: room name to leave
-        :return: :class: `messages.Leave`
+        :return: :class:`messages.Leave`
         """
         return Leave(room=room)
 
