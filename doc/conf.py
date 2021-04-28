@@ -17,9 +17,9 @@ sys.path.insert(0, 'f:\\GeekBrains\\ClientServerApps')
 
 # -- Project information -----------------------------------------------------
 
-project = 'ClientServerApps'
-copyright = '2021, Author'
-author = 'Author'
+project = 'GeekChat'
+copyright = '2021, Oleg Zhdanov'
+author = 'Oleg Zhdanov'
 
 
 # -- General configuration ---------------------------------------------------

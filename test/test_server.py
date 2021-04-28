@@ -53,12 +53,12 @@ def client_messages(server_create):
 
 
 def test_check_pwd(server_create, client_messages):
-    assert server_create.check_pwd(server_create.clients[ADDR], client_messages['authenticate']['user']) == 200
+    assert server_create._check_pwd(server_create.clients[ADDR], client_messages['authenticate']['user']) == 200
 
 
 def test_check_pwd_wrong(server_create):
-    assert server_create.check_pwd(server_create.clients[ADDR],
-                                   {
+    assert server_create._check_pwd(server_create.clients[ADDR],
+                                    {
                                         "account_name": server_create.clients[ADDR].username,
                                         "password": 'wrong password'
                                     }) == 402

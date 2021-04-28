@@ -21,7 +21,11 @@ logger = log_config('server', 'server.log')
 class ClientInstance:
 
     def __init__(self, session, addr):
-
+        """
+        Client instance on server
+        :param session: SQLAlchemy DB session
+        :param addr: client IP-address
+        """
         self.session = session
         self.client_history_storage = None
         self.client_storage = ClientStorage(self.session)
@@ -41,9 +45,9 @@ class ClientInstance:
         self.cipher_client_pk = None
         self.cipher_aes = AES.new(self.session_key, AES.MODE_EAX)
 
-    def find_client(self, msg):
+    def _find_client(self, msg):
         self.client = self.client_storage.auth_client(msg.username, msg.password)
-        ic(' ========== try to find client', msg.username, msg.password)
+        # ic(' ========== try to find client', msg.username, msg.password)
 
         if self.client == -1:
             try:
@@ -58,12 +62,17 @@ class ClientInstance:
         elif not self.client:
             print(f'username {msg.username} - wrong password')
             self.client_logger.exception(f'username {msg.username} - wrong password')
-        print(f'============= found_client -----> {self.client} <------')
-        ic(self.client)
+        # print(f'============= found_client -----> {self.client} <------')
+        # ic(self.client)
         self.username = msg.username
 
     @log_default(logger)
     def feed_data(self, data):
+        """
+        send data to client
+        Encrypt data if client exists in DB
+        :param data: Any type of @dataclass from .messages or `close`
+        """
         if isinstance(self.client, Client):
             data = self.encrypt_data(data)
         length = MSG_LEN_NAME + str(len(data)) + MSG_END_LEN_NAME
@@ -80,6 +89,10 @@ class ClientInstance:
 
     @log_default(logger)
     def action_handler(self, msg, clients):
+        """
+        process messages from client
+        :param msg: Any type of @dataclass from .messages
+        """
         if isinstance(msg, Authenticate):
             self.feed_data(self.authenticate(msg))
             return True
@@ -109,6 +122,11 @@ class ClientInstance:
 
     @log_default(logger)
     def send_secret_key(self, msg: SendKey):
+        """
+        encrypt session key with client public key and send to client
+        :param msg: message with client public key
+        :type msg: :class:`messages.SendKey`
+        """
         client_public_key = RSA.import_key(msg.key)
         self.cipher_client_pk = PKCS1_OAEP.new(client_public_key)
         enc_session_key = self.cipher_client_pk.encrypt(self.session_key)
@@ -117,6 +135,11 @@ class ClientInstance:
 
     @log_default(logger)
     def encrypt_data(self, data):
+        """
+        encrypt data with session key
+        :param data: Any type of @dataclass from .messages
+        :return: encrypted data
+        """
         # Encrypt the data with the AES session key
         self.cipher_aes = AES.new(self.session_key, AES.MODE_EAX)
         ciphertext, tag = self.cipher_aes.encrypt_and_digest(data)
@@ -125,11 +148,17 @@ class ClientInstance:
 
     @log_default(logger)
     @serializer
-    def authenticate(self, msg):
+    def authenticate(self, msg: Authenticate):
+        """
+        authenticating user on server, find user in DB, create user if not exists, check password
+        :param msg: user credential
+        :type msg: :class:`messages.Authenticate`
+        :return: :class:`messages.Authenticate`
+        """
         print(f'User {msg.username} is authenticating...')
         self.client_logger = logger.bind(username=msg.username, address=self.addr)
         self.client_logger.info('User is authenticating...')
-        result_auth = self.check_pwd(msg)
+        result_auth = self._check_pwd(msg)
 
         if result_auth == 200:
             print(f'User {msg.username} is authenticated')
@@ -151,8 +180,8 @@ class ClientInstance:
                                 result=False,
                                 alert="Someone is already connected with the given user name")
 
-    def check_pwd(self, msg):
-        self.find_client(msg)
+    def _check_pwd(self, msg):
+        self._find_client(msg)
         if self.client:
             if self.client == -1:
                 return 409
@@ -165,6 +194,10 @@ class ClientInstance:
 
     @log_default(logger)
     def client_disconnect(self):
+        """
+        disconnect client from server, set client.status = 'disconnected'
+        :return: False
+        """
         if isinstance(self.client, Client):
             self.client.status = 'disconnected'
             self.session.commit()
@@ -172,7 +205,12 @@ class ClientInstance:
         print(f'{self.username} was disconnected')
         return False
 
-    def client_presence(self, msg):
+    def client_presence(self, msg: Presence):
+        """
+        process Presence message from client
+        :param msg: client answer to Probe
+        :type msg: :class:`messages.Presence`
+        """
         if isinstance(self.client, Client):
             print(self.client)
             if not self.client.status == msg.status:
@@ -186,6 +224,11 @@ class ClientInstance:
     @log_default(logger)
     @serializer
     def probe(self):
+        """
+        send :class:`messages.Probe` request to client, if client doesn't authenticated just send
+        informational :class:`messages.Response`
+        :return: :class:`messages.Probe` or :class:`messages.Response`
+        """
         if isinstance(self.client, Client):
             if self.pending_status:
                 print("No presence() received from the user")
@@ -198,7 +241,13 @@ class ClientInstance:
         return Response(response=200, alert='server is waiting...')
 
     @log_default(logger)
-    def on_msg(self, msg, clients):
+    def on_msg(self, msg: Msg, clients):
+        """
+        process :class:`messages.Msg` from client, store message in DB, send to recipient, if his online
+        :param msg: message from client
+        :type msg: :class:`messages.Msg`
+        :param clients: list of dict {conn: Client} with connected users
+        """
         if msg.to[:1] == '#':
             for client in clients.values():
                 if client.username != self.client.login:
@@ -218,31 +267,61 @@ class ClientInstance:
     @log_default(logger)
     @serializer
     def send_message(self, msg):
+        """
+        send any type of messages to client
+        :param msg: any type of messages to client
+        :return: any type of messages to client
+        """
         return msg
 
     @log_default(logger)
     @serializer
     def send_response(self, response, message):
+        """
+        send response to user
+        :param response: response code
+        :param message: response text
+        :return: :class:`messages.Response`
+        """
         return Response(response=response, alert=message)
 
     @log_default(logger)
-    def join(self, msg):
+    def join(self, msg: Join):
+        """
+        join client to channel
+        :param msg: message from client
+        :type msg: :class:`messages.Join`
+        """
         self.client_logger(f'Client joined to <{msg.room}>')
         return True
 
     @log_default(logger)
-    def leave(self, msg):
+    def leave(self, msg: Leave):
+        """
+        leave client from channel
+        :param msg: message from client
+        :type msg: :class:`messages.Leave`
+        """
         self.client_logger(f'Client left <{msg.room}>')
         return True
 
     @log_default(logger)
-    def get_contacts(self, msg):
+    def get_contacts(self, msg: GetContacts):
+        """
+        get contact list for user
+        :param msg: :class:`messages.GetContacts`
+        """
         if self.contacts:
             self.feed_data(self.send_message(GetContacts(contacts=self.contacts.get_contacts())))
         return True
 
     @log_default(logger)
-    def add_contact(self, msg):
+    def add_contact(self, msg: AddContact):
+        """
+        add specific user to contact list
+        :param msg: message from user
+        :type msg: :class:`messages.AddContact`
+        """
         try:
             print(f'===call to add contact {msg.username} === ')
             self.contacts.add_contact(msg.username)
@@ -255,7 +334,12 @@ class ClientInstance:
         return True
 
     @log_default(logger)
-    def del_contact(self, msg):
+    def del_contact(self, msg: DelContact):
+        """
+        add specific user to contact list
+        :param msg: message from user
+        :type msg: :class:`messages.DelContact`
+        """
         try:
             self.contacts.del_contact(msg.username)
             self.feed_data(self.send_response(203, f'{msg.username} deleted from contacts'))
@@ -266,13 +350,21 @@ class ClientInstance:
         return True
 
     @log_default(logger)
-    def get_filtered_users(self, msg):
+    def get_filtered_users(self, msg: FilterClients):
+        """
+        send filtered list of users from DB to client
+        :param msg: message with mask
+        """
         msg.users = self.client_storage.filter_clients(msg.pattern)
         self.feed_data(self.send_message(msg))
         return True
 
     @log_default(logger)
-    def get_messages(self, msg):
+    def get_messages(self, msg: GetMessages):
+        """
+        find in DB and send chat messages between client and specific user
+        :param msg: message from client
+        """
         client = self.client_storage.get_client(msg.from_)
         ic('server get_messages', client)
         messages = self.messages.get_chat_msg(client)

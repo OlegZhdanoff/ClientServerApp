@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>chat_server &#8212; ClientServerApps  documentation</title>
+    <title>chat_server &#8212; GeekChat  documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -72,6 +72,14 @@
 <span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;address&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">DEFAULT_SERVER_IP</span><span class="p">)</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;port&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">DEFAULT_SERVER_PORT</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    start server application</span>
+<span class="sd">    initialize Queues for backend and GUI</span>
+<span class="sd">    create backed server thread</span>
+<span class="sd">    initialize GUI</span>
+<span class="sd">    :param address: server IP-address</span>
+<span class="sd">    :param port: server port</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
     <span class="n">server_events</span> <span class="o">=</span> <span class="n">ServerEvents</span><span class="p">()</span>
 
@@ -120,7 +128,7 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="../index.html">ClientServerApps</a></h1>
+<h1 class="logo"><a href="../index.html">GeekChat</a></h1>
 
 
 
@@ -176,7 +184,7 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2021, Author.
+      &copy;2021, Oleg Zhdanov.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>

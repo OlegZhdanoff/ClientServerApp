@@ -13,11 +13,19 @@ class DataMonitor(QObject):
     gotData = pyqtSignal(tuple)
 
     def __init__(self, parent, sq_gui: SelectableQueue):
+        """
+        monitor new messages from server backend
+        :param parent: PyQT5 parent
+        :param sq_gui: Queue for monitoring
+        """
         super().__init__()
         self.parent = parent
         self.sq_gui = sq_gui
 
     def get_data(self):
+        """
+        get data from Queue
+        """
         while True:
             data = self.sq_gui.get()
             self.gotData.emit((data,))
@@ -26,6 +34,12 @@ class DataMonitor(QObject):
 
 class ServerMainWindow(QtWidgets.QMainWindow):
     def __init__(self, sq_gui: SelectableQueue, sq_admin: SelectableQueue):
+        """
+        Server GUI Main window object
+        create thread to monitor data messages from server instance
+        :param sq_gui: Queue to receive data from server instance
+        :param sq_admin: Queue to send data to server instance
+        """
         super().__init__()
         self.sq_admin = sq_admin
         self.monitor = DataMonitor(self, sq_gui)
@@ -61,6 +75,10 @@ class ServerMainWindow(QtWidgets.QMainWindow):
 
     @pyqtSlot(tuple)
     def data_handler(self, data):
+        """
+        process data messages from server instance
+        :param data: tuple with one element of specific type of @dataclass from .messages
+        """
         data = data[0]
         if isinstance(data, AdminGetUsers):
             self.show_users(data)
@@ -70,9 +88,17 @@ class ServerMainWindow(QtWidgets.QMainWindow):
             self.on_login(data)
 
     def feed_data(self, data):
+        """
+        put data to Queue for server instance
+        :param data: specific type of @dataclass from .messages
+        """
         self.sq_admin.put(data)
 
-    def show_users(self, data):
+    def show_users(self, data: AdminGetUsers):
+        """
+        show all users on GUI
+        :param data: message from backend with list of users
+        """
         self.users.clear()
         for user in data.users:
             item = QStandardItem(user[0])
@@ -80,9 +106,17 @@ class ServerMainWindow(QtWidgets.QMainWindow):
         self.userList.setModel(self.filter_users)
 
     def get_history(self, item):
+        """
+        send history request for specific user
+        :param item: PyQT object with method .data() where stored username
+        """
         self.feed_data(AdminGetHistory(user=item.data()))
 
-    def show_history(self, data):
+    def show_history(self, data: AdminGetHistory):
+        """
+        show user history
+        :param data: message from backend with user history
+        """
         self.history.clear()
         for row in data.history:
             items = [QStandardItem(item) for item in row]
@@ -90,10 +124,18 @@ class ServerMainWindow(QtWidgets.QMainWindow):
         self.historyTable.setModel(self.history)
         self.historyTable.resizeColumnsToContents()
 
-    def set_filter(self, text):
+    def set_filter(self, text: str):
+        """
+        set filter for list of user
+        :param text: mask for filter
+        """
         self.filter_users.setFilterFixedString(text)
 
     def on_login(self, data: GetContacts):
+        """
+        update user history when user is connected
+        :param data: new list of contacts from server
+        """
         users = self.users.findItems(data.login)
         if not users:
             return self.feed_data(AdminGetUsers())

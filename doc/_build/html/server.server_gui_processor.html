@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>server.server_gui_processor module &#8212; ClientServerApps  documentation</title>
+    <title>server.server_gui_processor module &#8212; GeekChat  documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -41,22 +41,29 @@
 <dl class="py method">
 <dt id="server.server_gui_processor.ServerGuiProcessor.action_handler">
 <code class="sig-name descname"><span class="pre">action_handler</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/server_gui_processor.html#ServerGuiProcessor.action_handler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.server_gui_processor.ServerGuiProcessor.action_handler" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>process messages from server GUI
+:param msg: specific type of &#64;dataclass from .messages</p>
+</dd></dl>
 
 <dl class="py method">
 <dt id="server.server_gui_processor.ServerGuiProcessor.feed_data">
 <code class="sig-name descname"><span class="pre">feed_data</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/server_gui_processor.html#ServerGuiProcessor.feed_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.server_gui_processor.ServerGuiProcessor.feed_data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>put data to Queue
+:param data: specific type of &#64;dataclass from .messages</p>
+</dd></dl>
 
 <dl class="py method">
 <dt id="server.server_gui_processor.ServerGuiProcessor.get_history">
-<code class="sig-name descname"><span class="pre">get_history</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/server_gui_processor.html#ServerGuiProcessor.get_history"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.server_gui_processor.ServerGuiProcessor.get_history" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-name descname"><span class="pre">get_history</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="messages.html#messages.AdminGetHistory" title="messages.AdminGetHistory"><span class="pre">messages.AdminGetHistory</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/server_gui_processor.html#ServerGuiProcessor.get_history"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.server_gui_processor.ServerGuiProcessor.get_history" title="Permalink to this definition">¶</a></dt>
+<dd><p>get login history for specific user
+:param msg: message with target username</p>
+</dd></dl>
 
 <dl class="py method">
 <dt id="server.server_gui_processor.ServerGuiProcessor.get_users">
 <code class="sig-name descname"><span class="pre">get_users</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/server_gui_processor.html#ServerGuiProcessor.get_users"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.server_gui_processor.ServerGuiProcessor.get_users" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>get list of all users to admin GUI</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -69,7 +76,7 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="index.html">ClientServerApps</a></h1>
+<h1 class="logo"><a href="index.html">GeekChat</a></h1>
 
 
 
@@ -137,7 +144,7 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2021, Author.
+      &copy;2021, Oleg Zhdanov.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>

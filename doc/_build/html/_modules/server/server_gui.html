@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>server.server_gui &#8212; ClientServerApps  documentation</title>
+    <title>server.server_gui &#8212; GeekChat  documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -46,11 +46,19 @@
     <span class="n">gotData</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">tuple</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">sq_gui</span><span class="p">:</span> <span class="n">SelectableQueue</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        monitor new messages from server backend</span>
+<span class="sd">        :param parent: PyQT5 parent</span>
+<span class="sd">        :param sq_gui: Queue for monitoring</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sq_gui</span> <span class="o">=</span> <span class="n">sq_gui</span>
 
 <div class="viewcode-block" id="DataMonitor.get_data"><a class="viewcode-back" href="../../server.server_gui.html#server.server_gui.DataMonitor.get_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get data from Queue</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sq_gui</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">gotData</span><span class="o">.</span><span class="n">emit</span><span class="p">((</span><span class="n">data</span><span class="p">,))</span>
@@ -59,6 +67,12 @@
 
 <div class="viewcode-block" id="ServerMainWindow"><a class="viewcode-back" href="../../server.server_gui.html#server.server_gui.ServerMainWindow">[docs]</a><span class="k">class</span> <span class="nc">ServerMainWindow</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMainWindow</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sq_gui</span><span class="p">:</span> <span class="n">SelectableQueue</span><span class="p">,</span> <span class="n">sq_admin</span><span class="p">:</span> <span class="n">SelectableQueue</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Server GUI Main window object</span>
+<span class="sd">        create thread to monitor data messages from server instance</span>
+<span class="sd">        :param sq_gui: Queue to receive data from server instance</span>
+<span class="sd">        :param sq_admin: Queue to send data to server instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sq_admin</span> <span class="o">=</span> <span class="n">sq_admin</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">monitor</span> <span class="o">=</span> <span class="n">DataMonitor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sq_gui</span><span class="p">)</span>
@@ -94,6 +108,10 @@
 
 <div class="viewcode-block" id="ServerMainWindow.data_handler"><a class="viewcode-back" href="../../server.server_gui.html#server.server_gui.ServerMainWindow.data_handler">[docs]</a>    <span class="nd">@pyqtSlot</span><span class="p">(</span><span class="nb">tuple</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">data_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        process data messages from server instance</span>
+<span class="sd">        :param data: tuple with one element of specific type of @dataclass from .messages</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">AdminGetUsers</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">show_users</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -103,9 +121,17 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">on_login</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ServerMainWindow.feed_data"><a class="viewcode-back" href="../../server.server_gui.html#server.server_gui.ServerMainWindow.feed_data">[docs]</a>    <span class="k">def</span> <span class="nf">feed_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        put data to Queue for server instance</span>
+<span class="sd">        :param data: specific type of @dataclass from .messages</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sq_admin</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ServerMainWindow.show_users"><a class="viewcode-back" href="../../server.server_gui.html#server.server_gui.ServerMainWindow.show_users">[docs]</a>    <span class="k">def</span> <span class="nf">show_users</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<div class="viewcode-block" id="ServerMainWindow.show_users"><a class="viewcode-back" href="../../server.server_gui.html#server.server_gui.ServerMainWindow.show_users">[docs]</a>    <span class="k">def</span> <span class="nf">show_users</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">AdminGetUsers</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        show all users on GUI</span>
+<span class="sd">        :param data: message from backend with list of users</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">users</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">users</span><span class="p">:</span>
             <span class="n">item</span> <span class="o">=</span> <span class="n">QStandardItem</span><span class="p">(</span><span class="n">user</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -113,9 +139,17 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">userList</span><span class="o">.</span><span class="n">setModel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filter_users</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ServerMainWindow.get_history"><a class="viewcode-back" href="../../server.server_gui.html#server.server_gui.ServerMainWindow.get_history">[docs]</a>    <span class="k">def</span> <span class="nf">get_history</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        send history request for specific user</span>
+<span class="sd">        :param item: PyQT object with method .data() where stored username</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">feed_data</span><span class="p">(</span><span class="n">AdminGetHistory</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">item</span><span class="o">.</span><span class="n">data</span><span class="p">()))</span></div>
 
-<div class="viewcode-block" id="ServerMainWindow.show_history"><a class="viewcode-back" href="../../server.server_gui.html#server.server_gui.ServerMainWindow.show_history">[docs]</a>    <span class="k">def</span> <span class="nf">show_history</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<div class="viewcode-block" id="ServerMainWindow.show_history"><a class="viewcode-back" href="../../server.server_gui.html#server.server_gui.ServerMainWindow.show_history">[docs]</a>    <span class="k">def</span> <span class="nf">show_history</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">AdminGetHistory</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        show user history</span>
+<span class="sd">        :param data: message from backend with user history</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">history</span><span class="p">:</span>
             <span class="n">items</span> <span class="o">=</span> <span class="p">[</span><span class="n">QStandardItem</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">row</span><span class="p">]</span>
@@ -123,10 +157,18 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">historyTable</span><span class="o">.</span><span class="n">setModel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">historyTable</span><span class="o">.</span><span class="n">resizeColumnsToContents</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="ServerMainWindow.set_filter"><a class="viewcode-back" href="../../server.server_gui.html#server.server_gui.ServerMainWindow.set_filter">[docs]</a>    <span class="k">def</span> <span class="nf">set_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+<div class="viewcode-block" id="ServerMainWindow.set_filter"><a class="viewcode-back" href="../../server.server_gui.html#server.server_gui.ServerMainWindow.set_filter">[docs]</a>    <span class="k">def</span> <span class="nf">set_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set filter for list of user</span>
+<span class="sd">        :param text: mask for filter</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filter_users</span><span class="o">.</span><span class="n">setFilterFixedString</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ServerMainWindow.on_login"><a class="viewcode-back" href="../../server.server_gui.html#server.server_gui.ServerMainWindow.on_login">[docs]</a>    <span class="k">def</span> <span class="nf">on_login</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">GetContacts</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        update user history when user is connected</span>
+<span class="sd">        :param data: new list of contacts from server</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">users</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">users</span><span class="o">.</span><span class="n">findItems</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">login</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">users</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">feed_data</span><span class="p">(</span><span class="n">AdminGetUsers</span><span class="p">())</span>
@@ -140,7 +182,7 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="../../index.html">ClientServerApps</a></h1>
+<h1 class="logo"><a href="../../index.html">GeekChat</a></h1>
 
 
 
@@ -196,7 +238,7 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2021, Author.
+      &copy;2021, Oleg Zhdanov.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>

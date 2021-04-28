@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>server.server_thread &#8212; ClientServerApps  documentation</title>
+    <title>server.server_thread &#8212; GeekChat  documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -58,6 +58,10 @@
 
 <div class="viewcode-block" id="PortProperty"><a class="viewcode-back" href="../../server.server_thread.html#server.server_thread.PortProperty">[docs]</a><span class="k">class</span> <span class="nc">PortProperty</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">DEFAULT_SERVER_PORT</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        create correct port property from right interval</span>
+<span class="sd">        :param default: default server port</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="n">default</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -80,8 +84,17 @@
 <div class="viewcode-block" id="ServerThread"><a class="viewcode-back" href="../../server.server_thread.html#server.server_thread.ServerThread">[docs]</a><span class="k">class</span> <span class="nc">ServerThread</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
     <span class="n">port</span> <span class="o">=</span> <span class="n">PortProperty</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">events</span><span class="p">,</span> <span class="n">sq_admin</span><span class="p">:</span> <span class="n">SelectableQueue</span><span class="p">,</span> <span class="n">sq_gui</span><span class="p">:</span> <span class="n">SelectableQueue</span><span class="p">,</span> <span class="n">address</span><span class="o">=</span><span class="n">DEFAULT_SERVER_IP</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">events</span><span class="p">:</span> <span class="n">ServerEvents</span><span class="p">,</span> <span class="n">sq_admin</span><span class="p">:</span> <span class="n">SelectableQueue</span><span class="p">,</span> <span class="n">sq_gui</span><span class="p">:</span> <span class="n">SelectableQueue</span><span class="p">,</span> <span class="n">address</span><span class="o">=</span><span class="n">DEFAULT_SERVER_IP</span><span class="p">,</span>
                  <span class="n">port</span><span class="o">=</span><span class="n">DEFAULT_SERVER_PORT</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        server backend instance for process client&#39;s requests</span>
+<span class="sd">        accept client&#39;s connection and create client instance</span>
+<span class="sd">        :param events: specific server ServerEvents()</span>
+<span class="sd">        :param sq_admin: Queue for communicating with local_admin</span>
+<span class="sd">        :param sq_gui: Queue for communicating with admin GUI</span>
+<span class="sd">        :param address: server IP-address</span>
+<span class="sd">        :param port: server port</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>
@@ -108,6 +121,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">server_gui_processor</span> <span class="o">=</span> <span class="n">ServerGuiProcessor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sq_gui</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ServerThread.run"><a class="viewcode-back" href="../../server.server_thread.html#server.server_thread.ServerThread.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        run server instance</span>
+<span class="sd">        connect to DB</span>
+<span class="sd">        create socket and selectors for client listening</span>
+<span class="sd">        start main loop</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_connect_db</span><span class="p">()</span>
 
         <span class="k">try</span><span class="p">:</span>
@@ -138,6 +158,9 @@
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Server </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">address</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="si">}</span><span class="s1"> was closed &#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ServerThread.send_probe"><a class="viewcode-back" href="../../server.server_thread.html#server.server_thread.ServerThread.send_probe">[docs]</a>    <span class="k">def</span> <span class="nf">send_probe</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        send ping to all connected clients over specific interval</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">client</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">clients</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="n">client</span><span class="o">.</span><span class="n">feed_data</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">probe</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">probe</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="n">PING_INTERVAL</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">send_probe</span><span class="p">)</span>
@@ -224,7 +247,7 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="../../index.html">ClientServerApps</a></h1>
+<h1 class="logo"><a href="../../index.html">GeekChat</a></h1>
 
 
 
@@ -280,7 +303,7 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2021, Author.
+      &copy;2021, Oleg Zhdanov.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>

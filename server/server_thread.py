@@ -25,6 +25,10 @@ class ServerEvents:
 
 class PortProperty:
     def __init__(self, default=DEFAULT_SERVER_PORT):
+        """
+        create correct port property from right interval
+        :param default: default server port
+        """
         self.default = default
         self._name = None
 
@@ -47,8 +51,17 @@ class PortProperty:
 class ServerThread(threading.Thread):
     port = PortProperty()
 
-    def __init__(self, events, sq_admin: SelectableQueue, sq_gui: SelectableQueue, address=DEFAULT_SERVER_IP,
+    def __init__(self, events: ServerEvents, sq_admin: SelectableQueue, sq_gui: SelectableQueue, address=DEFAULT_SERVER_IP,
                  port=DEFAULT_SERVER_PORT, *args, **kwargs):
+        """
+        server backend instance for process client's requests
+        accept client's connection and create client instance
+        :param events: specific server ServerEvents()
+        :param sq_admin: Queue for communicating with local_admin
+        :param sq_gui: Queue for communicating with admin GUI
+        :param address: server IP-address
+        :param port: server port
+        """
         super().__init__(*args, **kwargs)
 
         self.daemon = True
@@ -75,6 +88,13 @@ class ServerThread(threading.Thread):
         self.server_gui_processor = ServerGuiProcessor(self.sq_gui, self.session)
 
     def run(self):
+        """
+        run server instance
+        connect to DB
+        create socket and selectors for client listening
+        start main loop
+        :return:
+        """
         self._connect_db()
 
         try:
@@ -105,6 +125,9 @@ class ServerThread(threading.Thread):
             logger.info(f'Server {self.address}:{self.port} was closed ')
 
     def send_probe(self):
+        """
+        send ping to all connected clients over specific interval
+        """
         for client in self.clients.values():
             client.feed_data(client.probe())
         self.probe = threading.Timer(PING_INTERVAL, self.send_probe)

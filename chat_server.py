@@ -39,6 +39,14 @@ def run_admin(events, address, port):
 @click.argument('address', default=DEFAULT_SERVER_IP)
 @click.argument('port', default=DEFAULT_SERVER_PORT)
 def start(address, port):
+    """
+    start server application
+    initialize Queues for backend and GUI
+    create backed server thread
+    initialize GUI
+    :param address: server IP-address
+    :param port: server port
+    """
     print(address, port)
     server_events = ServerEvents()
 
