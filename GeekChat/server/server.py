@@ -9,10 +9,10 @@ from icecream import ic
 
 from GeekChat.db.client import ClientStorage, Client
 from GeekChat.db.client_history import ClientHistoryStorage
-from GeekChat.db import ContactStorage
+from GeekChat.db.contacts import ContactStorage
 from GeekChat.db.messages import MessageStorage
 from GeekChat.log.log_config import log_config, log_default
-from messages import *
+from GeekChat.messages import *
 from GeekChat.services import serializer, LOCAL_ADMIN, MSG_LEN_NAME, MSG_END_LEN_NAME
 
 logger = log_config('server', 'server.log')

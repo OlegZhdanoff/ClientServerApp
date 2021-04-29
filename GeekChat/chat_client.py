@@ -6,9 +6,9 @@ import click
 from socket import *
 from PyQt5 import QtWidgets
 
-from client.client_gui import ClientMainWindow
-from client.client import Client
-from client.client_thread import ClientThread
+from GeekChat.client.client_gui import ClientMainWindow
+from GeekChat.client.client import Client
+from GeekChat.client.client_thread import ClientThread
 from GeekChat.services import SelectableQueue, Config
 from GeekChat.log.log_config import log_config
 from GeekChat import services

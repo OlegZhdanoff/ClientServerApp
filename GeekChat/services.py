@@ -11,7 +11,7 @@ from Crypto.Cipher import AES
 from icecream import ic
 
 from GeekChat.log.log_config import log_config, log_default
-from messages import *
+from .messages import *
 
 ENCODING = 'utf-8'
 MAX_MSG_SIZE = 1024

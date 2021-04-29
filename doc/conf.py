@@ -10,9 +10,11 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-import os
+# import os
 import sys
-base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+import Path
+# base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+config_path = Path(__file__).parent.parent.absolute() / 'GeekChat'
 sys.path.insert(0, base_dir)
 
 

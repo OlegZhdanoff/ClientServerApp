@@ -5,7 +5,7 @@ from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, QThread, QSortFilterProx
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from PyQt5.QtWidgets import QListView, QTableView, QLineEdit
 
-from messages import *
+from GeekChat.messages import *
 from GeekChat.services import SelectableQueue
 
 

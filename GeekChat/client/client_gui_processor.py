@@ -1,6 +1,6 @@
 from GeekChat.db.client import ClientStorage
 from GeekChat.db.client_history import ClientHistoryStorage
-from messages import *
+from GeekChat.messages import *
 from GeekChat.services import SelectableQueue
 
 

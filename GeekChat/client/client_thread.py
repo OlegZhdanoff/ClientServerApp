@@ -3,7 +3,7 @@ import threading
 
 from icecream import ic
 
-from client.client import Client
+from GeekChat.client.client import Client
 from GeekChat.log.log_config import log_config
 from GeekChat.services import SelectableQueue, MessagesDeserializer
 

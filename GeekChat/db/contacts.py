@@ -1,7 +1,7 @@
 from sqlalchemy import and_, Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 
-from GeekChat.db import Base
+from GeekChat.db.base import Base
 from GeekChat.db.client import Client
 from GeekChat.log.log_config import log_config
 
