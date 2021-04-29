@@ -9,9 +9,9 @@ from PyQt5 import QtWidgets
 from client.client_gui import ClientMainWindow
 from client.client import Client
 from client.client_thread import ClientThread
-from services import SelectableQueue, Config
-from log.log_config import log_config
-import services
+from GeekChat.services import SelectableQueue, Config
+from GeekChat.log.log_config import log_config
+from GeekChat import services
 
 logger = log_config('chat_client', 'client.log')
 

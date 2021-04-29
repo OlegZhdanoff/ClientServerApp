@@ -8,10 +8,10 @@ from PyQt5.QtWidgets import QListView, QWidget, QComboBox, QPushButton, QLineEdi
 from icecream import ic
 
 from client.client import Client
-from log.log_config import log_config
+from GeekChat.log.log_config import log_config
 from messages import *
 from server.server_gui import DataMonitor
-from services import SelectableQueue, Config, STATUS
+from GeekChat.services import SelectableQueue, Config, STATUS
 
 logger = log_config('client_gui', 'client.log')
 

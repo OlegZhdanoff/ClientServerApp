@@ -1,6 +1,6 @@
 import pytest
 from freezegun import freeze_time
-import services
+from GeekChat import services
 import json
 from client.client import *
 

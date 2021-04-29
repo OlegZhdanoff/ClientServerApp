@@ -6,7 +6,7 @@ from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from PyQt5.QtWidgets import QListView, QTableView, QLineEdit
 
 from messages import *
-from services import SelectableQueue
+from GeekChat.services import SelectableQueue
 
 
 class DataMonitor(QObject):

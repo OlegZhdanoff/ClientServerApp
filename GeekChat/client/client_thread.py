@@ -4,8 +4,8 @@ import threading
 from icecream import ic
 
 from client.client import Client
-from log.log_config import log_config
-from services import SelectableQueue, MessagesDeserializer
+from GeekChat.log.log_config import log_config
+from GeekChat.services import SelectableQueue, MessagesDeserializer
 
 logger = log_config('client_thread', 'client.log')
 

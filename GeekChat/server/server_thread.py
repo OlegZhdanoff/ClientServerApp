@@ -7,12 +7,12 @@ from icecream import ic
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 
-from db.base import Base
+from GeekChat.db import Base
 
-from log.log_config import log_config
+from GeekChat.log.log_config import log_config
 from server.server import ClientInstance
 from server.server_gui_processor import ServerGuiProcessor
-from services import MessagesDeserializer, PING_INTERVAL, DEFAULT_SERVER_IP, \
+from GeekChat.services import MessagesDeserializer, PING_INTERVAL, DEFAULT_SERVER_IP, \
     DEFAULT_SERVER_PORT, DEFAULT_DB, SelectableQueue
 
 logger = log_config('server_thread', 'server.log')

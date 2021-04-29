@@ -7,13 +7,13 @@ from queue import Queue, Empty
 
 from icecream import ic
 
-from db.client import ClientStorage, Client
-from db.client_history import ClientHistoryStorage
-from db.contacts import ContactStorage
-from db.messages import MessageStorage
-from log.log_config import log_config, log_default
+from GeekChat.db.client import ClientStorage, Client
+from GeekChat.db.client_history import ClientHistoryStorage
+from GeekChat.db import ContactStorage
+from GeekChat.db.messages import MessageStorage
+from GeekChat.log.log_config import log_config, log_default
 from messages import *
-from services import serializer, LOCAL_ADMIN, MSG_LEN_NAME, MSG_END_LEN_NAME
+from GeekChat.services import serializer, LOCAL_ADMIN, MSG_LEN_NAME, MSG_END_LEN_NAME
 
 logger = log_config('server', 'server.log')
 

@@ -1,7 +1,7 @@
-from db.client import ClientStorage
-from db.client_history import ClientHistoryStorage
+from GeekChat.db.client import ClientStorage
+from GeekChat.db.client_history import ClientHistoryStorage
 from messages import *
-from services import SelectableQueue
+from GeekChat.services import SelectableQueue
 
 
 class ServerGuiProcessor:

@@ -5,13 +5,12 @@ import pickle
 import queue
 from functools import wraps
 import socket
-from json import JSONDecodeError
 from pathlib import Path
 
 from Crypto.Cipher import AES
 from icecream import ic
 
-from log.log_config import log_config, log_default
+from GeekChat.log.log_config import log_config, log_default
 from messages import *
 
 ENCODING = 'utf-8'

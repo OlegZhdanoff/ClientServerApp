@@ -3,7 +3,7 @@ from freezegun import freeze_time
 
 from server.server import *
 from client.client import Client
-import services
+from GeekChat import services
 import json
 
 ADDR = '127.0.0.1'

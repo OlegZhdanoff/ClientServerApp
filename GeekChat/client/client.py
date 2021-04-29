@@ -4,8 +4,8 @@ from queue import Queue, Empty
 from Crypto.Cipher import PKCS1_OAEP, AES
 from Crypto.PublicKey import RSA
 
-from log.log_config import log_config, log_default
-from services import serializer, MSG_LEN_NAME, MSG_END_LEN_NAME
+from GeekChat.log.log_config import log_config, log_default
+from GeekChat.services import serializer, MSG_LEN_NAME, MSG_END_LEN_NAME
 from messages import *
 
 logger = log_config('client', 'client.log')

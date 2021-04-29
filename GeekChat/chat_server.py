@@ -9,10 +9,10 @@ from icecream import ic
 
 from client.client import Client
 from client.client_thread import ClientThread
-from log.log_config import log_config
+from GeekChat.log.log_config import log_config
 from server.server_gui import ServerMainWindow
 from server.server_thread import ServerThread, ServerEvents
-from services import DEFAULT_SERVER_IP, DEFAULT_SERVER_PORT, LOCAL_ADMIN, LOCAL_ADMIN_PASSWORD, SelectableQueue
+from GeekChat.services import DEFAULT_SERVER_IP, DEFAULT_SERVER_PORT, LOCAL_ADMIN, LOCAL_ADMIN_PASSWORD, SelectableQueue
 
 logger = log_config('server', 'server.log')
 

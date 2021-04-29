@@ -3,9 +3,9 @@ import datetime
 from sqlalchemy import and_, Column, Integer, ForeignKey, DateTime, String, or_
 from sqlalchemy.orm import relationship
 
-from db.base import Base
-from db.client import Client
-from log.log_config import log_config
+from GeekChat.db import Base
+from GeekChat.db.client import Client
+from GeekChat.log.log_config import log_config
 
 logger = log_config('Messages', 'database.log')
 
