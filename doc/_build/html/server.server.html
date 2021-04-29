@@ -1,0 +1,290 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>server.server module &#8212; GeekChat  documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="server.server_gui module" href="server.server_gui.html" />
+    <link rel="prev" title="server package" href="server.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-server.server">
+<span id="server-server-module"></span><h1>server.server module<a class="headerlink" href="#module-server.server" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="server.server.ClientInstance">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">server.server.</span></code><code class="sig-name descname"><span class="pre">ClientInstance</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/server.html#ClientInstance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.server.ClientInstance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="server.server.ClientInstance.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/server.html#ClientInstance.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.server.ClientInstance.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Client instance on server
+:param session: SQLAlchemy DB session
+:param addr: client IP-address</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="server.server.ClientInstance.action_handler">
+<code class="sig-name descname"><span class="pre">action_handler</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clients</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/server.html#ClientInstance.action_handler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.server.ClientInstance.action_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>process messages from client
+:param msg: Any type of &#64;dataclass from .messages</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="server.server.ClientInstance.add_contact">
+<code class="sig-name descname"><span class="pre">add_contact</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="messages.html#messages.AddContact" title="messages.AddContact"><span class="pre">messages.AddContact</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/server.html#ClientInstance.add_contact"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.server.ClientInstance.add_contact" title="Permalink to this definition">¶</a></dt>
+<dd><p>add specific user to contact list
+:param msg: message from user
+:type msg: <a class="reference internal" href="messages.html#messages.AddContact" title="messages.AddContact"><code class="xref py py-class docutils literal notranslate"><span class="pre">messages.AddContact</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="server.server.ClientInstance.authenticate">
+<code class="sig-name descname"><span class="pre">authenticate</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="messages.html#messages.Authenticate" title="messages.Authenticate"><span class="pre">messages.Authenticate</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/server.html#ClientInstance.authenticate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.server.ClientInstance.authenticate" title="Permalink to this definition">¶</a></dt>
+<dd><p>authenticating user on server, find user in DB, create user if not exists, check password
+:param msg: user credential
+:type msg: <a class="reference internal" href="messages.html#messages.Authenticate" title="messages.Authenticate"><code class="xref py py-class docutils literal notranslate"><span class="pre">messages.Authenticate</span></code></a>
+:return: <a class="reference internal" href="messages.html#messages.Authenticate" title="messages.Authenticate"><code class="xref py py-class docutils literal notranslate"><span class="pre">messages.Authenticate</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="server.server.ClientInstance.client_disconnect">
+<code class="sig-name descname"><span class="pre">client_disconnect</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/server.html#ClientInstance.client_disconnect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.server.ClientInstance.client_disconnect" title="Permalink to this definition">¶</a></dt>
+<dd><p>disconnect client from server, set client.status = ‘disconnected’
+:return: False</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="server.server.ClientInstance.client_presence">
+<code class="sig-name descname"><span class="pre">client_presence</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="messages.html#messages.Presence" title="messages.Presence"><span class="pre">messages.Presence</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/server.html#ClientInstance.client_presence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.server.ClientInstance.client_presence" title="Permalink to this definition">¶</a></dt>
+<dd><p>process Presence message from client
+:param msg: client answer to Probe
+:type msg: <a class="reference internal" href="messages.html#messages.Presence" title="messages.Presence"><code class="xref py py-class docutils literal notranslate"><span class="pre">messages.Presence</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="server.server.ClientInstance.del_contact">
+<code class="sig-name descname"><span class="pre">del_contact</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="messages.html#messages.DelContact" title="messages.DelContact"><span class="pre">messages.DelContact</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/server.html#ClientInstance.del_contact"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.server.ClientInstance.del_contact" title="Permalink to this definition">¶</a></dt>
+<dd><p>add specific user to contact list
+:param msg: message from user
+:type msg: <a class="reference internal" href="messages.html#messages.DelContact" title="messages.DelContact"><code class="xref py py-class docutils literal notranslate"><span class="pre">messages.DelContact</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="server.server.ClientInstance.encrypt_data">
+<code class="sig-name descname"><span class="pre">encrypt_data</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/server.html#ClientInstance.encrypt_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.server.ClientInstance.encrypt_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>encrypt data with session key
+:param data: Any type of &#64;dataclass from .messages
+:return: encrypted data</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="server.server.ClientInstance.feed_data">
+<code class="sig-name descname"><span class="pre">feed_data</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/server.html#ClientInstance.feed_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.server.ClientInstance.feed_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>send data to client
+Encrypt data if client exists in DB
+:param data: Any type of &#64;dataclass from .messages or <cite>close</cite></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="server.server.ClientInstance.get_contacts">
+<code class="sig-name descname"><span class="pre">get_contacts</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="messages.html#messages.GetContacts" title="messages.GetContacts"><span class="pre">messages.GetContacts</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/server.html#ClientInstance.get_contacts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.server.ClientInstance.get_contacts" title="Permalink to this definition">¶</a></dt>
+<dd><p>get contact list for user
+:param msg: <a class="reference internal" href="messages.html#messages.GetContacts" title="messages.GetContacts"><code class="xref py py-class docutils literal notranslate"><span class="pre">messages.GetContacts</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="server.server.ClientInstance.get_data">
+<code class="sig-name descname"><span class="pre">get_data</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/server.html#ClientInstance.get_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.server.ClientInstance.get_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="server.server.ClientInstance.get_filtered_users">
+<code class="sig-name descname"><span class="pre">get_filtered_users</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="messages.html#messages.FilterClients" title="messages.FilterClients"><span class="pre">messages.FilterClients</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/server.html#ClientInstance.get_filtered_users"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.server.ClientInstance.get_filtered_users" title="Permalink to this definition">¶</a></dt>
+<dd><p>send filtered list of users from DB to client
+:param msg: message with mask</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="server.server.ClientInstance.get_messages">
+<code class="sig-name descname"><span class="pre">get_messages</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="messages.html#messages.GetMessages" title="messages.GetMessages"><span class="pre">messages.GetMessages</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/server.html#ClientInstance.get_messages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.server.ClientInstance.get_messages" title="Permalink to this definition">¶</a></dt>
+<dd><p>find in DB and send chat messages between client and specific user
+:param msg: message from client</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="server.server.ClientInstance.join">
+<code class="sig-name descname"><span class="pre">join</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="messages.html#messages.Join" title="messages.Join"><span class="pre">messages.Join</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/server.html#ClientInstance.join"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.server.ClientInstance.join" title="Permalink to this definition">¶</a></dt>
+<dd><p>join client to channel
+:param msg: message from client
+:type msg: <a class="reference internal" href="messages.html#messages.Join" title="messages.Join"><code class="xref py py-class docutils literal notranslate"><span class="pre">messages.Join</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="server.server.ClientInstance.leave">
+<code class="sig-name descname"><span class="pre">leave</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="messages.html#messages.Leave" title="messages.Leave"><span class="pre">messages.Leave</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/server.html#ClientInstance.leave"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.server.ClientInstance.leave" title="Permalink to this definition">¶</a></dt>
+<dd><p>leave client from channel
+:param msg: message from client
+:type msg: <a class="reference internal" href="messages.html#messages.Leave" title="messages.Leave"><code class="xref py py-class docutils literal notranslate"><span class="pre">messages.Leave</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="server.server.ClientInstance.on_msg">
+<code class="sig-name descname"><span class="pre">on_msg</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="messages.html#messages.Msg" title="messages.Msg"><span class="pre">messages.Msg</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">clients</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/server.html#ClientInstance.on_msg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.server.ClientInstance.on_msg" title="Permalink to this definition">¶</a></dt>
+<dd><p>process <a class="reference internal" href="messages.html#messages.Msg" title="messages.Msg"><code class="xref py py-class docutils literal notranslate"><span class="pre">messages.Msg</span></code></a> from client, store message in DB, send to recipient, if his online
+:param msg: message from client
+:type msg: <a class="reference internal" href="messages.html#messages.Msg" title="messages.Msg"><code class="xref py py-class docutils literal notranslate"><span class="pre">messages.Msg</span></code></a>
+:param clients: list of dict {conn: Client} with connected users</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="server.server.ClientInstance.probe">
+<code class="sig-name descname"><span class="pre">probe</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/server.html#ClientInstance.probe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.server.ClientInstance.probe" title="Permalink to this definition">¶</a></dt>
+<dd><p>send <a class="reference internal" href="messages.html#messages.Probe" title="messages.Probe"><code class="xref py py-class docutils literal notranslate"><span class="pre">messages.Probe</span></code></a> request to client, if client doesn’t authenticated just send
+informational <a class="reference internal" href="messages.html#messages.Response" title="messages.Response"><code class="xref py py-class docutils literal notranslate"><span class="pre">messages.Response</span></code></a>
+:return: <a class="reference internal" href="messages.html#messages.Probe" title="messages.Probe"><code class="xref py py-class docutils literal notranslate"><span class="pre">messages.Probe</span></code></a> or <a class="reference internal" href="messages.html#messages.Response" title="messages.Response"><code class="xref py py-class docutils literal notranslate"><span class="pre">messages.Response</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="server.server.ClientInstance.send_message">
+<code class="sig-name descname"><span class="pre">send_message</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/server.html#ClientInstance.send_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.server.ClientInstance.send_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>send any type of messages to client
+:param msg: any type of messages to client
+:return: any type of messages to client</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="server.server.ClientInstance.send_response">
+<code class="sig-name descname"><span class="pre">send_response</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/server.html#ClientInstance.send_response"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.server.ClientInstance.send_response" title="Permalink to this definition">¶</a></dt>
+<dd><p>send response to user
+:param response: response code
+:param message: response text
+:return: <a class="reference internal" href="messages.html#messages.Response" title="messages.Response"><code class="xref py py-class docutils literal notranslate"><span class="pre">messages.Response</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="server.server.ClientInstance.send_secret_key">
+<code class="sig-name descname"><span class="pre">send_secret_key</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="messages.html#messages.SendKey" title="messages.SendKey"><span class="pre">messages.SendKey</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/server.html#ClientInstance.send_secret_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.server.ClientInstance.send_secret_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>encrypt session key with client public key and send to client
+:param msg: message with client public key
+:type msg: <a class="reference internal" href="messages.html#messages.SendKey" title="messages.SendKey"><code class="xref py py-class docutils literal notranslate"><span class="pre">messages.SendKey</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">GeekChat</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="chat_client.html">chat_client module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chat_server.html">chat_server module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="client.html">client package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="db.html">db package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="log.html">log package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="messages.html">messages module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="run_clients.html">run_clients module</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="server.html">server package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="server.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">server.server module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="server.server_gui.html">server.server_gui module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="server.server_gui_processor.html">server.server_gui_processor module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="server.server_thread.html">server.server_thread module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="server.html#module-server">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="services.html">services module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="test.html">test package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="server.html">server package</a><ul>
+      <li>Previous: <a href="server.html" title="previous chapter">server package</a></li>
+      <li>Next: <a href="server.server_gui.html" title="next chapter">server.server_gui module</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Oleg Zhdanov.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/server.server.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

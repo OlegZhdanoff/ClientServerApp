@@ -1,0 +1,194 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>db.contacts module &#8212; GeekChat  documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="db.messages module" href="db.messages.html" />
+    <link rel="prev" title="db.client_history module" href="db.client_history.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-db.contacts">
+<span id="db-contacts-module"></span><h1>db.contacts module<a class="headerlink" href="#module-db.contacts" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="db.contacts.ContactStorage">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">db.contacts.</span></code><code class="sig-name descname"><span class="pre">ContactStorage</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">owner</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/db/contacts.html#ContactStorage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#db.contacts.ContactStorage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="db.contacts.ContactStorage.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">owner</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/db/contacts.html#ContactStorage.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#db.contacts.ContactStorage.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="db.contacts.ContactStorage.add_contact">
+<code class="sig-name descname"><span class="pre">add_contact</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client_login</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/db/contacts.html#ContactStorage.add_contact"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#db.contacts.ContactStorage.add_contact" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="db.contacts.ContactStorage.del_contact">
+<code class="sig-name descname"><span class="pre">del_contact</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client_login</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/db/contacts.html#ContactStorage.del_contact"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#db.contacts.ContactStorage.del_contact" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="db.contacts.ContactStorage.get_contacts">
+<code class="sig-name descname"><span class="pre">get_contacts</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/db/contacts.html#ContactStorage.get_contacts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#db.contacts.ContactStorage.get_contacts" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="db.contacts.Contacts">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">db.contacts.</span></code><code class="sig-name descname"><span class="pre">Contacts</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/db/contacts.html#Contacts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#db.contacts.Contacts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.orm.decl_api.Base</span></code></p>
+<dl class="py attribute">
+<dt id="db.contacts.Contacts.Client">
+<code class="sig-name descname"><span class="pre">Client</span></code><a class="headerlink" href="#db.contacts.Contacts.Client" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="db.contacts.Contacts.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#db.contacts.Contacts.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code class="docutils literal notranslate"><span class="pre">kwargs</span></code>.</p>
+<p>Only keys that are present as
+attributes of the instance’s class are allowed. These could be,
+for example, any mapped columns or relationships.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="db.contacts.Contacts.client_id">
+<code class="sig-name descname"><span class="pre">client_id</span></code><a class="headerlink" href="#db.contacts.Contacts.client_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="db.contacts.Contacts.id">
+<code class="sig-name descname"><span class="pre">id</span></code><a class="headerlink" href="#db.contacts.Contacts.id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="db.contacts.Contacts.owner_id">
+<code class="sig-name descname"><span class="pre">owner_id</span></code><a class="headerlink" href="#db.contacts.Contacts.owner_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">GeekChat</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="chat_client.html">chat_client module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chat_server.html">chat_server module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="client.html">client package</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="db.html">db package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="db.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="db.base.html">db.base module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="db.client.html">db.client module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="db.client_history.html">db.client_history module</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">db.contacts module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="db.messages.html">db.messages module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="db.html#module-db">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="log.html">log package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="messages.html">messages module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="run_clients.html">run_clients module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="server.html">server package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="services.html">services module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="test.html">test package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="db.html">db package</a><ul>
+      <li>Previous: <a href="db.client_history.html" title="previous chapter">db.client_history module</a></li>
+      <li>Next: <a href="db.messages.html" title="next chapter">db.messages module</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Oleg Zhdanov.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/db.contacts.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

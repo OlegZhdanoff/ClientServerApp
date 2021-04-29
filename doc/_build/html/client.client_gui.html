@@ -1,0 +1,307 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>client.client_gui module &#8212; GeekChat  documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="client.client_gui_processor module" href="client.client_gui_processor.html" />
+    <link rel="prev" title="client.client module" href="client.client.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-client.client_gui">
+<span id="client-client-gui-module"></span><h1>client.client_gui module<a class="headerlink" href="#module-client.client_gui" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="client.client_gui.ClientMainWindow">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">client.client_gui.</span></code><code class="sig-name descname"><span class="pre">ClientMainWindow</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="client.client.html#client.client.Client" title="client.client.Client"><span class="pre">client.client.Client</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sq_gui</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="services.html#services.SelectableQueue" title="services.SelectableQueue"><span class="pre">services.SelectableQueue</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sq_client</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="services.html#services.SelectableQueue" title="services.SelectableQueue"><span class="pre">services.SelectableQueue</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="services.html#services.Config" title="services.Config"><span class="pre">services.Config</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/client_gui.html#ClientMainWindow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.client_gui.ClientMainWindow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QMainWindow</span></code></p>
+<dl class="py method">
+<dt id="client.client_gui.ClientMainWindow.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="client.client.html#client.client.Client" title="client.client.Client"><span class="pre">client.client.Client</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sq_gui</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="services.html#services.SelectableQueue" title="services.SelectableQueue"><span class="pre">services.SelectableQueue</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sq_client</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="services.html#services.SelectableQueue" title="services.SelectableQueue"><span class="pre">services.SelectableQueue</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="services.html#services.Config" title="services.Config"><span class="pre">services.Config</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/client_gui.html#ClientMainWindow.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.client_gui.ClientMainWindow.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Client GUI Main window object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">client.Client</span></code>) – Client object</p></li>
+<li><p><strong>sq_gui</strong> (<a class="reference internal" href="services.html#services.SelectableQueue" title="services.SelectableQueue"><code class="xref py py-class docutils literal notranslate"><span class="pre">services.SelectableQueue</span></code></a>) – Queue to receive data from Client Object</p></li>
+<li><p><strong>sq_client</strong> (<a class="reference internal" href="services.html#services.SelectableQueue" title="services.SelectableQueue"><code class="xref py py-class docutils literal notranslate"><span class="pre">services.SelectableQueue</span></code></a>) – Queue to send data to Client Object</p></li>
+<li><p><strong>cfg</strong> (<a class="reference internal" href="services.html#services.Config" title="services.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">services.Config</span></code></a>) – client configuration file</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.client_gui.ClientMainWindow.add_log">
+<code class="sig-name descname"><span class="pre">add_log</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tm</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/client_gui.html#ClientMainWindow.add_log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.client_gui.ClientMainWindow.add_log" title="Permalink to this definition">¶</a></dt>
+<dd><p>adding message from server to status bar and list for server messages
+:param tm: time in time() format
+:param msg: string message from server</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.client_gui.ClientMainWindow.add_to_contacts">
+<code class="sig-name descname"><span class="pre">add_to_contacts</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/client_gui.html#ClientMainWindow.add_to_contacts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.client_gui.ClientMainWindow.add_to_contacts" title="Permalink to this definition">¶</a></dt>
+<dd><p>adding user to contact list</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.client_gui.ClientMainWindow.cancel_profile">
+<code class="sig-name descname"><span class="pre">cancel_profile</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/client_gui.html#ClientMainWindow.cancel_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.client_gui.ClientMainWindow.cancel_profile" title="Permalink to this definition">¶</a></dt>
+<dd><p>cancel changes in profile and loading data from configuration file</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.client_gui.ClientMainWindow.change_search">
+<code class="sig-name descname"><span class="pre">change_search</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/client_gui.html#ClientMainWindow.change_search"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.client_gui.ClientMainWindow.change_search" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="client.client_gui.ClientMainWindow.closeEvent">
+<code class="sig-name descname"><span class="pre">closeEvent</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/client_gui.html#ClientMainWindow.closeEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.client_gui.ClientMainWindow.closeEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>closing main window</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.client_gui.ClientMainWindow.connecting">
+<code class="sig-name descname"><span class="pre">connecting</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/client_gui.html#ClientMainWindow.connecting"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.client_gui.ClientMainWindow.connecting" title="Permalink to this definition">¶</a></dt>
+<dd><p>process connecting to server, send public key to server</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.client_gui.ClientMainWindow.contact_selected">
+<code class="sig-name descname"><span class="pre">contact_selected</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/client_gui.html#ClientMainWindow.contact_selected"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.client_gui.ClientMainWindow.contact_selected" title="Permalink to this definition">¶</a></dt>
+<dd><p>load chat history for selected user from contact list
+send <a class="reference internal" href="messages.html#messages.GetMessages" title="messages.GetMessages"><code class="xref py py-class docutils literal notranslate"><span class="pre">messages.GetMessages</span></code></a> request to server if local history is not exists
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.client_gui.ClientMainWindow.data_handler">
+<code class="sig-name descname"><span class="pre">data_handler</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/client_gui.html#ClientMainWindow.data_handler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.client_gui.ClientMainWindow.data_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>process messages from server through <code class="xref py py-class docutils literal notranslate"><span class="pre">client.Client</span></code>
+:param data: tuple with one element of any type of &#64;dataclass from .messages</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.client_gui.ClientMainWindow.del_contact">
+<code class="sig-name descname"><span class="pre">del_contact</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/client_gui.html#ClientMainWindow.del_contact"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.client_gui.ClientMainWindow.del_contact" title="Permalink to this definition">¶</a></dt>
+<dd><p>delete user from contact list
+send <a class="reference internal" href="messages.html#messages.DelContact" title="messages.DelContact"><code class="xref py py-class docutils literal notranslate"><span class="pre">messages.DelContact</span></code></a> request to server</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.client_gui.ClientMainWindow.feed_data">
+<code class="sig-name descname"><span class="pre">feed_data</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/client_gui.html#ClientMainWindow.feed_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.client_gui.ClientMainWindow.feed_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>send data to Queue for <code class="xref py py-class docutils literal notranslate"><span class="pre">client.Client</span></code>
+:param data: any type of &#64;dataclass from .messages</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.client_gui.ClientMainWindow.get_filter_users">
+<code class="sig-name descname"><span class="pre">get_filter_users</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/client_gui.html#ClientMainWindow.get_filter_users"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.client_gui.ClientMainWindow.get_filter_users" title="Permalink to this definition">¶</a></dt>
+<dd><p>sent to server message <a class="reference internal" href="messages.html#messages.FilterClients" title="messages.FilterClients"><code class="xref py py-class docutils literal notranslate"><span class="pre">messages.FilterClients</span></code></a> with specific mask</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.client_gui.ClientMainWindow.is_contact">
+<code class="sig-name descname"><span class="pre">is_contact</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contact</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/client_gui.html#ClientMainWindow.is_contact"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.client_gui.ClientMainWindow.is_contact" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="client.client_gui.ClientMainWindow.is_not_contact">
+<code class="sig-name descname"><span class="pre">is_not_contact</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/client_gui.html#ClientMainWindow.is_not_contact"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.client_gui.ClientMainWindow.is_not_contact" title="Permalink to this definition">¶</a></dt>
+<dd><p>checking username for being in contact list</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.client_gui.ClientMainWindow.load_config">
+<code class="sig-name descname"><span class="pre">load_config</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/client_gui.html#ClientMainWindow.load_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.client_gui.ClientMainWindow.load_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>load data from configuration file</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.client_gui.ClientMainWindow.on_auth">
+<code class="sig-name descname"><span class="pre">on_auth</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="messages.html#messages.Authenticate" title="messages.Authenticate"><span class="pre">messages.Authenticate</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/client_gui.html#ClientMainWindow.on_auth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.client_gui.ClientMainWindow.on_auth" title="Permalink to this definition">¶</a></dt>
+<dd><p>process Authenticate message from server
+:param msg: Authenticate message from server
+:type msg: <a class="reference internal" href="messages.html#messages.Authenticate" title="messages.Authenticate"><code class="xref py py-class docutils literal notranslate"><span class="pre">messages.Authenticate</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.client_gui.ClientMainWindow.on_msg">
+<code class="sig-name descname"><span class="pre">on_msg</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="messages.html#messages.Msg" title="messages.Msg"><span class="pre">messages.Msg</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/client_gui.html#ClientMainWindow.on_msg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.client_gui.ClientMainWindow.on_msg" title="Permalink to this definition">¶</a></dt>
+<dd><p>process <a class="reference internal" href="messages.html#messages.Msg" title="messages.Msg"><code class="xref py py-class docutils literal notranslate"><span class="pre">messages.Msg</span></code></a> message received from server
+adding this message to appropriate chat
+:param msg: message received from server
+:type msg: <a class="reference internal" href="messages.html#messages.Msg" title="messages.Msg"><code class="xref py py-class docutils literal notranslate"><span class="pre">messages.Msg</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.client_gui.ClientMainWindow.save_profile">
+<code class="sig-name descname"><span class="pre">save_profile</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/client_gui.html#ClientMainWindow.save_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.client_gui.ClientMainWindow.save_profile" title="Permalink to this definition">¶</a></dt>
+<dd><p>save new profile data to configuration file and hide profile frame</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.client_gui.ClientMainWindow.send_message">
+<code class="sig-name descname"><span class="pre">send_message</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/client_gui.html#ClientMainWindow.send_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.client_gui.ClientMainWindow.send_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>send message <a class="reference internal" href="messages.html#messages.Msg" title="messages.Msg"><code class="xref py py-class docutils literal notranslate"><span class="pre">messages.Msg</span></code></a> to server</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.client_gui.ClientMainWindow.show_contacts">
+<code class="sig-name descname"><span class="pre">show_contacts</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="messages.html#messages.GetContacts" title="messages.GetContacts"><span class="pre">messages.GetContacts</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/client_gui.html#ClientMainWindow.show_contacts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.client_gui.ClientMainWindow.show_contacts" title="Permalink to this definition">¶</a></dt>
+<dd><p>show contact list received from server
+:param data: GetContacts message with list of usernames from client contact list
+:type data: <a class="reference internal" href="messages.html#messages.GetContacts" title="messages.GetContacts"><code class="xref py py-class docutils literal notranslate"><span class="pre">messages.GetContacts</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.client_gui.ClientMainWindow.show_filter_users">
+<code class="sig-name descname"><span class="pre">show_filter_users</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">users</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/client_gui.html#ClientMainWindow.show_filter_users"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.client_gui.ClientMainWindow.show_filter_users" title="Permalink to this definition">¶</a></dt>
+<dd><p>process <a class="reference internal" href="messages.html#messages.FilterClients" title="messages.FilterClients"><code class="xref py py-class docutils literal notranslate"><span class="pre">messages.FilterClients</span></code></a> message from server
+:param users: filtered by mask list of users
+:type users: tuple</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.client_gui.ClientMainWindow.toggle_login_widget">
+<code class="sig-name descname"><span class="pre">toggle_login_widget</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/client_gui.html#ClientMainWindow.toggle_login_widget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.client_gui.ClientMainWindow.toggle_login_widget" title="Permalink to this definition">¶</a></dt>
+<dd><p>show or hide login frame</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.client_gui.ClientMainWindow.toggle_profile">
+<code class="sig-name descname"><span class="pre">toggle_profile</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/client_gui.html#ClientMainWindow.toggle_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.client_gui.ClientMainWindow.toggle_profile" title="Permalink to this definition">¶</a></dt>
+<dd><p>show or hide profile frame</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.client_gui.ClientMainWindow.update_chat">
+<code class="sig-name descname"><span class="pre">update_chat</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contact</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sender</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/client_gui.html#ClientMainWindow.update_chat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.client_gui.ClientMainWindow.update_chat" title="Permalink to this definition">¶</a></dt>
+<dd><p>update selected chat with new message
+:param contact: username from contact list
+:param sender: message sender username
+:param tm: time in time() format
+:param text: message body</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">GeekChat</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="chat_client.html">chat_client module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chat_server.html">chat_server module</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="client.html">client package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="client.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="client.client.html">client.client module</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">client.client_gui module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="client.client_gui_processor.html">client.client_gui_processor module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="client.client_thread.html">client.client_thread module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="client.html#module-client">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="db.html">db package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="log.html">log package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="messages.html">messages module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="run_clients.html">run_clients module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="server.html">server package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="services.html">services module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="test.html">test package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="client.html">client package</a><ul>
+      <li>Previous: <a href="client.client.html" title="previous chapter">client.client module</a></li>
+      <li>Next: <a href="client.client_gui_processor.html" title="next chapter">client.client_gui_processor module</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Oleg Zhdanov.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/client.client_gui.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

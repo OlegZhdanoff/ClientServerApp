@@ -1,0 +1,149 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>client.client_thread module &#8212; GeekChat  documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="db package" href="db.html" />
+    <link rel="prev" title="client.client_gui_processor module" href="client.client_gui_processor.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-client.client_thread">
+<span id="client-client-thread-module"></span><h1>client.client_thread module<a class="headerlink" href="#module-client.client_thread" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="client.client_thread.ClientThread">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">client.client_thread.</span></code><code class="sig-name descname"><span class="pre">ClientThread</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="client.client.html#client.client.Client" title="client.client.Client"><span class="pre">client.client.Client</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">connections</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/client_thread.html#ClientThread"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.client_thread.ClientThread" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">threading.Thread</span></code></p>
+<dl class="py method">
+<dt id="client.client_thread.ClientThread.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="client.client.html#client.client.Client" title="client.client.Client"><span class="pre">client.client.Client</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">connections</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/client_thread.html#ClientThread.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.client_thread.ClientThread.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thread for communicate client backend with server side, client GUI
+:param user: client object
+:param connections: tuple of connections (server, GUI)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.client_thread.ClientThread.run">
+<code class="sig-name descname"><span class="pre">run</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/client_thread.html#ClientThread.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.client_thread.ClientThread.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>initialize selectors for connections and start main loop</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">GeekChat</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="chat_client.html">chat_client module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chat_server.html">chat_server module</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="client.html">client package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="client.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="client.client.html">client.client module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="client.client_gui.html">client.client_gui module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="client.client_gui_processor.html">client.client_gui_processor module</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">client.client_thread module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="client.html#module-client">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="db.html">db package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="log.html">log package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="messages.html">messages module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="run_clients.html">run_clients module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="server.html">server package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="services.html">services module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="test.html">test package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="client.html">client package</a><ul>
+      <li>Previous: <a href="client.client_gui_processor.html" title="previous chapter">client.client_gui_processor module</a></li>
+      <li>Next: <a href="db.html" title="next chapter">db package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Oleg Zhdanov.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/client.client_thread.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
