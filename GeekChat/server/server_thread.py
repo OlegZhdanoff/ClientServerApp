@@ -7,11 +7,11 @@ from icecream import ic
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 
-from GeekChat.db import Base
+from GeekChat.db.base import Base
 
 from GeekChat.log.log_config import log_config
-from server.server import ClientInstance
-from server.server_gui_processor import ServerGuiProcessor
+from GeekChat.server.server import ClientInstance
+from GeekChat.server.server_gui_processor import ServerGuiProcessor
 from GeekChat.services import MessagesDeserializer, PING_INTERVAL, DEFAULT_SERVER_IP, \
     DEFAULT_SERVER_PORT, DEFAULT_DB, SelectableQueue
 
